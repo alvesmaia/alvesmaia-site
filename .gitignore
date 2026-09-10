@@ -1,4 +1,5 @@
 node_modules/
-.wrangler/
-.dev.vars
+api/node_modules/
+api/dist/
+api/local.settings.json
 .DS_Store

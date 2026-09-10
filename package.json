@@ -5,12 +5,14 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "tipos": "tsc --noEmit",
+    "tipos": "tsc --noEmit -p api/tsconfig.json",
     "verificar": "npm run tipos && npm test"
   },
   "devDependencies": {
     "vitest": "^2.1.8",
     "typescript": "^5.7.2",
-    "@cloudflare/workers-types": "^4.20241218.0"
+    "@types/node": "^22.10.2",
+    "@azure/functions": "^4.6.0",
+    "@azure/data-tables": "^13.3.0"
   }
 }
