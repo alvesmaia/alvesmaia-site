@@ -125,3 +125,12 @@ a{color:var(--am-link)}
   color:var(--am-navy-900);padding:12px 20px;z-index:100;font-weight:700;
 }
 .pular-para-conteudo:focus{left:0}
+
+/* Avisos revelados por âncora — a Function redireciona para
+   /contato.html#enviado, #erro ou #robo. Funciona sem JavaScript. */
+.aviso[id]{display:none}
+.aviso[id]:target{display:block}
+/* Sem isto o navegador rola ate a ancora e o visitante cai numa tela sem
+   cabecalho nem titulo, com o aviso colado no topo. A margem folgada faz a
+   rolagem parar no inicio da pagina. */
+.aviso[id]{scroll-margin-top:100vh}

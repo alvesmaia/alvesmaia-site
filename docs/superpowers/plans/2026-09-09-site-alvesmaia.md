@@ -556,6 +556,10 @@ Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
 /* Avisos revelados por âncora — funciona sem JavaScript */
 .aviso[id]{display:none}
 .aviso[id]:target{display:block}
+/* Sem isto o navegador rola ate a ancora e o visitante cai numa tela sem
+   cabecalho nem titulo, com o aviso colado no topo. A margem folgada faz a
+   rolagem parar no inicio da pagina. */
+.aviso[id]{scroll-margin-top:100vh}
 ```
 
 - [ ] **Passo 2: Criar `public/contato.html`**

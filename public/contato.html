@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contato — Alvesmaia</title>
+<meta name="description" content="Fale sobre seu projeto de automação, integração ou desenvolvimento.">
+<link rel="icon" href="/img/favicon/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/img/favicon/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/img/favicon/apple-touch-icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;900&display=swap">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+
+<a class="pular-para-conteudo" href="#conteudo">Pular para o conteúdo</a>
+
+<header class="cabecalho">
+  <div class="container">
+    <a class="cabecalho__logo" href="/" aria-label="Alvesmaia, página inicial">
+      <img src="/img/logo-horizontal-escuro.svg" alt="Alvesmaia">
+    </a>
+    <input type="checkbox" id="menu-toggle" aria-label="Abrir menu de navegação">
+    <label class="cabecalho__hamburguer" for="menu-toggle" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </label>
+    <nav class="cabecalho__nav" aria-label="Principal">
+      <ul>
+        <li><a href="/">Início</a></li>
+        <li><a href="/servicos.html">Serviços</a></li>
+        <li><a href="/sobre.html">Sobre</a></li>
+        <li><a href="/contato.html" aria-current="page">Contato</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="conteudo">
+
+  <section class="secao">
+    <div class="container">
+      <div class="secao__intro">
+        <h1>Contato</h1>
+        <p style="margin-top:16px">Me conte o que você precisa resolver. Respondo em até um dia útil.</p>
+      </div>
+
+      <div class="aviso aviso--ok" id="enviado" role="status">
+        <p><strong>Mensagem enviada.</strong> Recebi seu contato e respondo em até um dia útil.</p>
+      </div>
+
+      <div class="aviso aviso--erro" id="erro" role="alert">
+        <p><strong>Não consegui enviar.</strong> Tente de novo em alguns instantes, ou escreva direto para <a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a>.</p>
+      </div>
+
+      <div class="aviso aviso--erro" id="robo" role="alert">
+        <p><strong>Verificação não concluída.</strong> Marque a caixa de verificação antes de enviar.</p>
+      </div>
+
+      <form class="form" method="POST" action="/api/contato">
+        <div class="campo">
+          <label for="nome">Nome</label>
+          <input type="text" id="nome" name="nome" required minlength="2" autocomplete="name">
+        </div>
+
+        <div class="campo">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email" required autocomplete="email">
+        </div>
+
+        <div class="campo">
+          <label for="assunto">Assunto</label>
+          <select id="assunto" name="assunto" required>
+            <option value="Orçamento">Orçamento</option>
+            <option value="Dúvida técnica">Dúvida técnica</option>
+            <option value="Suporte">Suporte</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="mensagem">Mensagem</label>
+          <textarea id="mensagem" name="mensagem" required minlength="10" maxlength="5000"></textarea>
+        </div>
+
+        <div class="cf-turnstile" data-sitekey="COLAR_SITE_KEY_AQUI"></div>
+
+        <button type="submit">Enviar mensagem</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="secao secao--alt">
+    <div class="container">
+      <h2>Ou escreva direto</h2>
+      <p>Se preferir usar seu próprio e-mail:</p>
+      <ul style="margin-top:16px;display:flex;flex-direction:column;gap:8px;color:var(--am-texto-suave)">
+        <li><a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a> — assuntos gerais</li>
+        <li><a href="mailto:suporte@alvesmaia.com">suporte@alvesmaia.com</a> — clientes com contrato</li>
+        <li><a href="mailto:financeiro@alvesmaia.com">financeiro@alvesmaia.com</a> — notas e pagamentos</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer class="rodape">
+  <div class="container">
+    <div>
+      <img src="/img/simbolo-escuro.svg" alt="">
+      <p style="color:#9CBBD2;margin-top:14px;font-size:14px">Soluções sob medida para a sua empresa</p>
+    </div>
+    <div>
+      <p style="color:#CFE3F0;font-weight:700;margin-bottom:6px">Contato</p>
+      <p style="font-size:14px"><a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a></p>
+    </div>
+    <div class="rodape__legal">
+      Alvesmaia · Consultoria de TI
+    </div>
+  </div>
+</footer>
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+</body>
+</html>
