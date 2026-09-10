@@ -63,9 +63,14 @@ Quatro blocos. Cada um descreve o problema que resolve, não uma lista de tecnol
 | Power Platform | Automação e apps dentro do Microsoft 365 que a empresa já paga |
 
 ### `sobre.html` — Sobre
-Aplica a decisão de posicionamento já tomada: a Alvesmaia é a porta de entrada
-institucional, Uemerson é a prova. Texto em primeira pessoa. **Não simular equipe** —
-nada de "nossa equipe de especialistas".
+Voz institucional: quem fala é a Alvesmaia, não Uemerson. Uemerson aparece nomeado como
+fundador, uma vez.
+
+**Não simular equipe.** Voz institucional não autoriza inventar estrutura: nada de
+"nossa equipe de especialistas". Pelo contrário — a seção "Clareza sobre o perfil de
+projeto" declara abertamente que a operação é enxuta e que tipo de projeto isso exclui.
+Honestidade sobre o tamanho é diferencial, não fraqueza, e é o que sustenta a promessa
+de interlocutor único.
 
 ### `contato.html` — Contato
 - Formulário (nome, e-mail, assunto, mensagem)
@@ -78,7 +83,9 @@ nada de "nossa equipe de especialistas".
 - **Tipografia:** Nunito Sans via Google Fonts
 - **Logos:** variantes brancas — cabeçalho e rodapé ficam sobre fundo navy
 - **Favicon:** conjunto completo já existente em `brand/favicon/`
-- **Tema:** claro e escuro via `prefers-color-scheme`
+- **Tema:** único, claro. Decisão de 10/09/2026 — o tema escuro deixava a leitura
+  pesada demais para um site institucional. Cabeçalho, hero e rodapé em navy dão o
+  contraponto escuro sem escurecer o corpo do texto
 - **JavaScript próprio:** nenhum. O menu mobile usa CSS puro (checkbox oculto +
   `:checked`) e os avisos de estado usam `:target`, então navegação e formulário
   funcionam com JavaScript desabilitado. O único `<script>` do site é o widget do
@@ -243,6 +250,8 @@ diferença entre um segredo vazado mandar spam e um segredo vazado se passar por
 
 | Decisão | Alternativa descartada | Motivo |
 |---|---|---|
+| Tema único claro | Claro + escuro automático | Escuro pesava demais para site institucional |
+| Voz institucional | Primeira pessoa | É uma empresa que se apresenta, não uma pessoa |
 | HTML/CSS puro | Astro | Menos peças móveis; site pequeno; mantido por uma pessoa |
 | Duplicar cabeçalho/rodapé nos 4 arquivos | Layout compartilhado | Custo aceitável em 4 páginas; evita build step |
 | POST clássico + redirect | `fetch` com JS | Funciona sem JavaScript; Function mais simples |

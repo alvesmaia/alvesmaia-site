@@ -28,7 +28,8 @@ Tasks 1 a 4 estão **concluídas e commitadas**. A migração de Cloudflare Page
 - **Zero build step para o site.** O Azure serve `public/` direto. A pasta `api/` é compilada à parte.
 - **Idioma:** todo o conteúdo visível em português do Brasil, com acentuação correta.
 - **Contraste:** o ciano da marca `#00A8E8` reprova sobre branco (2,70:1). Para texto e links usar `--am-ciano-700` (`#0077AB`). Ciano puro só em elementos gráficos.
-- **Nunca simular equipe.** O texto fala em primeira pessoa. Proibido "nossa equipe", "nossos especialistas", "somos uma empresa que".
+- **Voz institucional, sem inventar estrutura.** Quem fala é a Alvesmaia. Proibido "nossa equipe de especialistas" e qualquer coisa que sugira uma estrutura que não existe — a página Sobre declara explicitamente que a operação é enxuta.
+- **Tema único, claro.** Nenhum bloco `prefers-color-scheme` no CSS. Navy só em cabeçalho, hero e rodapé.
 - **Segredos nunca no repositório.** `GRAPH_CLIENT_SECRET`, `TURNSTILE_SECRET_KEY` e `TABLES_CONNECTION_STRING` só como Application Settings no SWA.
 - **Não tocar em registros de e-mail.** MX, SPF, DKIM e DMARC de `alvesmaia.com` estão em produção. Só se criam um `TXT` de validação e um `CNAME` para `www`.
 - **Gravar antes de enviar.** A submissão vai para o Table Storage antes da chamada ao Graph. Se o envio falhar, o lead não se perde.

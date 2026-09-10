@@ -30,7 +30,11 @@
   --am-fonte:"Nunito Sans","Segoe UI",Helvetica,Arial,sans-serif;
 }
 
-/* ---- Tema: superfícies semânticas ---- */
+/* ---- Tema: superfícies semânticas ----
+   O site assume um único tema, claro. A decisão é deliberada: navy e ciano
+   sobre fundo claro é a leitura institucional da marca, e garante que todo
+   visitante veja a mesma apresentação. Header, hero e rodapé em navy dão o
+   contraponto escuro sem escurecer a leitura. */
 :root{
   --am-fundo:#FFFFFF;
   --am-fundo-alt:var(--am-neutro-50);
@@ -43,16 +47,3 @@
   --am-cabecalho-texto:#FFFFFF;
 }
 
-@media (prefers-color-scheme: dark){
-  :root{
-    --am-fundo:#08131F;
-    --am-fundo-alt:#0E2233;
-    --am-superficie:#0E2233;
-    --am-texto:#E6EFF6;
-    --am-texto-suave:#9BB1C3;
-    --am-borda:#1B3346;
-    --am-link:#4FC9F8;
-    --am-cabecalho-fundo:#08131F;
-    --am-cabecalho-texto:#FFFFFF;
-  }
-}
