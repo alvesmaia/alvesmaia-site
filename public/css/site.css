@@ -54,19 +54,6 @@ a:hover { color: var(--am-link-hover); }
   flex-shrink: 0;
 }
 
-/* ---------- Faixa técnica ---------- */
-.faixa {
-  background: var(--am-tinta);
-  padding: 9px 0;
-  font-family: var(--am-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--am-faixa-texto);
-}
-.faixa .container { display: flex; justify-content: space-between; gap: 20px; }
-.faixa span:last-child { white-space: nowrap; }
-
 /* ---------- Cabeçalho ---------- */
 .cabecalho {
   position: sticky;
@@ -104,6 +91,7 @@ a:hover { color: var(--am-link-hover); }
   content: "";
   width: 6px;
   height: 6px;
+  border-radius: 50%;
   background: var(--am-ciano);
 }
 
@@ -287,7 +275,7 @@ p { text-wrap: pretty; }
 .painel--fraco .painel__cabeca { border-bottom-color: var(--am-linha-tenue); }
 .painel__cabeca .rotulo { color: var(--am-tinta); }
 .painel--fraco .painel__cabeca .rotulo { color: var(--am-tinta-3); }
-.marcador { width: 8px; height: 8px; background: var(--am-ciano); flex-shrink: 0; }
+.marcador { width: 8px; height: 8px; border-radius: 50%; background: var(--am-ciano); flex-shrink: 0; }
 .marcador--vazio { background: transparent; border: 1px solid var(--am-tinta-3); }
 .painel__lista { padding: 8px 22px 20px; }
 .painel__lista li {
@@ -410,19 +398,6 @@ p { text-wrap: pretty; }
 .rodape__coluna .rotulo { color: var(--am-sobre-navy-fraco); }
 .rodape__coluna a { font-size: 14px; color: var(--am-sobre-navy-forte); }
 .rodape__coluna a:hover { color: #FFFFFF; }
-.rodape__legal { border-top: 1px solid var(--am-linha-navy); }
-.rodape__legal .container {
-  padding-top: 18px;
-  padding-bottom: 18px;
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  font-family: var(--am-mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--am-sobre-navy-fraco);
-}
 
 /* ---------- Acessibilidade ---------- */
 .pular-para-conteudo {
@@ -481,14 +456,10 @@ p { text-wrap: pretty; }
   #menu-toggle:checked ~ .cabecalho__nav { display: block; }
 
   .atuacao { grid-template-columns: 1fr; }
-  .faixa .container { font-size: 10px; letter-spacing: 0.1em; }
-  .faixa span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .rodape__colunas { gap: 40px; }
-  .rodape__legal .container { flex-direction: column; gap: 8px; }
 }
 
 @media (max-width: 520px) {
-  .faixa span:last-child { display: none; }
   .acoes { flex-direction: column; align-items: stretch; }
   .form button { align-self: stretch; }
 }
