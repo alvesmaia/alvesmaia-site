@@ -41,6 +41,7 @@ beforeEach(() => {
   process.env.GRAPH_CLIENT_ID = "client";
   process.env.GRAPH_CLIENT_SECRET = "segredo";
   process.env.TURNSTILE_SECRET_KEY = "turnstile";
+  process.env.TURNSTILE_HOSTNAMES = "alvesmaia.com,www.alvesmaia.com";
   process.env.TABLES_CONNECTION_STRING = "conexao";
   turnstileValido.mockResolvedValue(true);
   gravarSubmissao.mockResolvedValue(ROW_KEY);
@@ -120,5 +121,19 @@ describe("contato", () => {
     const res = await chamar();
     expect((res.headers as Record<string, string>).Location).toBe("/contato.html#erro");
     expect(gravarSubmissao).not.toHaveBeenCalled();
+  });
+
+  it("redireciona para #erro quando falta a lista de hostnames", async () => {
+    delete process.env.TURNSTILE_HOSTNAMES;
+    const res = await chamar();
+    expect((res.headers as Record<string, string>).Location).toBe("/contato.html#erro");
+    expect(turnstileValido).not.toHaveBeenCalled();
+  });
+
+  it("passa a ação e os hostnames esperados para a verificação", async () => {
+    await chamar();
+    const cfg = turnstileValido.mock.calls[0][2];
+    expect(cfg.acaoEsperada).toBe("contato");
+    expect(cfg.hostnamesPermitidos).toEqual(["alvesmaia.com", "www.alvesmaia.com"]);
   });
 });

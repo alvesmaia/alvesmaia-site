@@ -5,7 +5,7 @@ import {
   type InvocationContext,
 } from "@azure/functions";
 import { validarFormulario, type DadosContato } from "../validacao";
-import { turnstileValido } from "../turnstile";
+import { turnstileValido, type ConfigTurnstile } from "../turnstile";
 import { gravarSubmissao, marcarEnviado } from "../armazenamento";
 import { enviarEmail, type ConfigGraph } from "../graph";
 
@@ -13,9 +13,12 @@ function redirecionar(ancora: string): HttpResponseInit {
   return { status: 303, headers: { Location: `/contato.html#${ancora}` } };
 }
 
+/** Deve casar com o data-action do widget em contato.html. */
+const ACAO_TURNSTILE = "contato";
+
 interface Config {
   graph: ConfigGraph;
-  turnstileSecret: string;
+  turnstile: ConfigTurnstile;
   conexaoTabelas: string;
 }
 
@@ -29,6 +32,7 @@ function lerConfig(): Config | null {
     GRAPH_CLIENT_ID,
     GRAPH_CLIENT_SECRET,
     TURNSTILE_SECRET_KEY,
+    TURNSTILE_HOSTNAMES,
     TABLES_CONNECTION_STRING,
   } = process.env;
 
@@ -37,6 +41,7 @@ function lerConfig(): Config | null {
     !GRAPH_CLIENT_ID ||
     !GRAPH_CLIENT_SECRET ||
     !TURNSTILE_SECRET_KEY ||
+    !TURNSTILE_HOSTNAMES ||
     !TABLES_CONNECTION_STRING
   ) {
     return null;
@@ -48,7 +53,13 @@ function lerConfig(): Config | null {
       clientId: GRAPH_CLIENT_ID,
       clientSecret: GRAPH_CLIENT_SECRET,
     },
-    turnstileSecret: TURNSTILE_SECRET_KEY,
+    turnstile: {
+      segredo: TURNSTILE_SECRET_KEY,
+      acaoEsperada: ACAO_TURNSTILE,
+      hostnamesPermitidos: TURNSTILE_HOSTNAMES.split(",")
+        .map((h) => h.trim())
+        .filter(Boolean),
+    },
     conexaoTabelas: TABLES_CONNECTION_STRING,
   };
 }
@@ -86,7 +97,7 @@ export async function contato(
 
   const ip = request.headers.get("x-forwarded-for") ?? "";
   const token = String(form.get("cf-turnstile-response") ?? "");
-  if (!(await turnstileValido(token, config.turnstileSecret, ip || null))) {
+  if (!(await turnstileValido(token, ip || null, config.turnstile))) {
     return redirecionar("robo");
   }
 

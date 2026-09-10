@@ -154,6 +154,25 @@ O Graph vence por três motivos: nenhum fornecedor novo (o Microsoft 365 já é 
 **nenhum registro DNS de envio** — o que elimina o risco mais sério do projeto — e
 entrega interna ao tenant, já que remetente e destinatário são do mesmo domínio.
 
+### Verificação canônica do Turnstile
+
+Conferir apenas `success` não basta. A verificação exige as três checagens que a
+Cloudflare documenta como canônicas:
+
+| Checagem | O que impede |
+|---|---|
+| `success === true` | token inválido ou já usado |
+| `action === "contato"` | token resolvido em outro formulário do mesmo widget |
+| `hostname` na lista permitida | token resolvido em outro site registrado no widget |
+
+O `data-action="contato"` no widget e a constante no handler precisam casar. Os
+hostnames vêm de `TURNSTILE_HOSTNAMES`, e **produção nunca inclui `localhost`** —
+para desenvolvimento existem as chaves de teste oficiais da Cloudflare, que funcionam
+em qualquer domínio.
+
+Lista de hostnames vazia é tratada como configuração incompleta e **rejeita**, nunca
+como "aceita qualquer um". A chamada tem timeout de 10 s e falha fechada.
+
 ### Segurança da permissão do Graph
 
 A permissão de aplicativo `Mail.Send` concede, por padrão, envio como **qualquer caixa
@@ -192,7 +211,7 @@ complexo sem contrapartida.
   flattening, suportado pela Cloudflare
 - **Segredos** como Application Settings criptografadas no SWA, nunca no repositório:
   - `GRAPH_TENANT_ID`, `GRAPH_CLIENT_ID`, `GRAPH_CLIENT_SECRET`
-  - `TURNSTILE_SECRET_KEY`
+  - `TURNSTILE_SECRET_KEY`, `TURNSTILE_HOSTNAMES`
   - `TABLES_CONNECTION_STRING`
 
 ### Impacto no DNS

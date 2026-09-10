@@ -30,7 +30,8 @@ Tasks 1 a 4 estão **concluídas e commitadas**. A migração de Cloudflare Page
 - **Contraste:** o ciano da marca `#00A8E8` reprova sobre branco (2,70:1). Para texto e links usar `--am-ciano-700` (`#0077AB`). Ciano puro só em elementos gráficos.
 - **Voz institucional, sem inventar estrutura.** Quem fala é a Alvesmaia. Proibido "nossa equipe de especialistas" e qualquer coisa que sugira uma estrutura que não existe — a página Sobre declara explicitamente que a operação é enxuta.
 - **Tema único, claro.** Nenhum bloco `prefers-color-scheme` no CSS. Navy só em cabeçalho, hero e rodapé.
-- **Segredos nunca no repositório.** `GRAPH_CLIENT_SECRET`, `TURNSTILE_SECRET_KEY` e `TABLES_CONNECTION_STRING` só como Application Settings no SWA.
+- **Segredos nunca no repositório.** `GRAPH_CLIENT_SECRET`, `TURNSTILE_SECRET_KEY` e `TABLES_CONNECTION_STRING` só como Application Settings no SWA. A site key do Turnstile é pública e fica no HTML.
+- **Turnstile: três checagens.** `success`, `action` e `hostname`. Só `success` deixa um token de outro formulário ou de outro site passar.
 - **Não tocar em registros de e-mail.** MX, SPF, DKIM e DMARC de `alvesmaia.com` estão em produção. Só se criam um `TXT` de validação e um `CNAME` para `www`.
 - **Gravar antes de enviar.** A submissão vai para o Table Storage antes da chamada ao Graph. Se o envio falhar, o lead não se perde.
 - **`Mail.Send` restrita.** Sem a Application Access Policy limitando o app a `no-reply@alvesmaia.com`, o projeto não vai ao ar.
@@ -1094,7 +1095,7 @@ app.http("contato", {
 npm run verificar
 ```
 
-Esperado: `tsc` sem erros e 38 testes passando (9 validação + 9 armazenamento + 9 graph + 11 contato).
+Esperado: `tsc` sem erros e 52 testes passando (9 validação + 9 armazenamento + 12 turnstile + 9 graph + 13 contato).
 
 - [ ] **Passo 5: Commit**
 
@@ -1231,6 +1232,7 @@ SWA → Settings → Environment variables → Add, uma por uma:
 | `GRAPH_CLIENT_ID` | Application (client) ID, passo 3 |
 | `GRAPH_CLIENT_SECRET` | Value do client secret, passo 3 |
 | `TURNSTILE_SECRET_KEY` | secret key, passo 1 |
+| `TURNSTILE_HOSTNAMES` | `alvesmaia.com,www.alvesmaia.com` — sem `localhost` |
 | `TABLES_CONNECTION_STRING` | Connection string, passo 5 |
 
 Salvar. O SWA reinicia a Function sozinho.
