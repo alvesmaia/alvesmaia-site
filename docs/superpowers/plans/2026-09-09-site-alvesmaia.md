@@ -251,16 +251,39 @@ tsconfig.json
   "devDependencies": {
     "vitest": "^2.1.8",
     "typescript": "^5.7.2",
-    "@types/node": "^22.10.2",
-    "@azure/functions": "^4.6.0",
-    "@azure/data-tables": "^13.3.0"
+    "@types/node": "^22.10.2"
   }
 }
 ```
 
-As duas dependências do Azure aparecem aqui **também** como devDependencies porque o Vitest, que roda na raiz, precisa resolvê-las para importar os módulos sob teste. Em produção quem vale é o `api/package.json`.
+Os pacotes do Azure **não** entram aqui. Ficam só em `api/package.json`, e o
+`vitest.config.ts` do passo seguinte aponta os testes para essa cópia. Instalar nos
+dois lugares cria duas cópias físicas, e aí `vi.mock` intercepta a da raiz enquanto o
+módulo sob teste carrega a de `api/` — o mock não pega e o teste chama o SDK de verdade.
 
-- [ ] **Passo 7: Acrescentar ao `.gitignore`**
+- [ ] **Passo 7: Criar `vitest.config.ts` na raiz**
+
+```typescript
+import { defineConfig } from "vitest/config";
+import { fileURLToPath } from "node:url";
+
+const naApi = (pacote: string) =>
+  fileURLToPath(new URL(`./api/node_modules/${pacote}`, import.meta.url));
+
+export default defineConfig({
+  resolve: {
+    alias: {
+      "@azure/data-tables": naApi("@azure/data-tables"),
+      "@azure/functions": naApi("@azure/functions"),
+    },
+  },
+});
+```
+
+Sem estes alias os testes das Tasks 7 e 9 falham de um jeito confuso: o mock parece
+correto, mas o SDK real é chamado.
+
+- [ ] **Passo 8: Acrescentar ao `.gitignore`**
 
 ```
 api/node_modules/
@@ -270,7 +293,7 @@ api/local.settings.json
 
 O `local.settings.json` guarda segredos de desenvolvimento local. Nunca versionar.
 
-- [ ] **Passo 8: Instalar e verificar**
+- [ ] **Passo 9: Instalar e verificar**
 
 ```bash
 cd C:/PROJETOS/alvesmaia-site
@@ -281,7 +304,7 @@ npm run verificar
 
 Esperado: `tsc` sem erros e 9 testes passando.
 
-- [ ] **Passo 9: Commit**
+- [ ] **Passo 10: Commit**
 
 ```bash
 git add -A
