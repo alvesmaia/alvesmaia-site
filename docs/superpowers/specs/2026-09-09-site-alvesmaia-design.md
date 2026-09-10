@@ -83,9 +83,11 @@ de interlocutor único.
 ## Base visual
 
 - **Tokens:** reaproveita `brand/tokens.css` (copiado para o repo do site)
-- **Tipografia:** Nunito Sans para texto; IBM Plex Mono para rótulos técnicos,
-  índices e etiquetas de diagrama. O mono é o que dá o caráter de documentação
-  de engenharia sem pesar no corpo do texto
+- **Tipografia:** Nunito Sans, **fonte única**. O redesenho chegou a usar IBM Plex
+  Mono nos rótulos técnicos; foi descartada em 10/09/2026 — mono remete a algo feito
+  sem cuidado, o oposto do que o site precisa transmitir. O papel de rótulo técnico
+  passou a ser resolvido com caixa alta, peso 700 e espaçamento entre letras, pelos
+  tokens `--am-rotulo-peso` e `--am-rotulo-espaco`
 - **Logos:** variantes brancas — cabeçalho e rodapé ficam sobre fundo navy
 - **Favicon:** conjunto completo já existente em `brand/favicon/`
 - **Tema:** único, claro. Decisão de 10/09/2026 — o tema escuro deixava a leitura

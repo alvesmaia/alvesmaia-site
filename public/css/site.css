@@ -27,9 +27,9 @@ a:hover { color: var(--am-link-hover); }
 
 /* ---------- Rótulo técnico (mono) ---------- */
 .rotulo {
-  font-family: var(--am-mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
+  font-size: 11.5px;
+  font-weight: var(--am-rotulo-peso);
+  letter-spacing: var(--am-rotulo-espaco);
   text-transform: uppercase;
   color: var(--am-ciano-700);
 }
@@ -40,9 +40,9 @@ a:hover { color: var(--am-link-hover); }
   display: flex;
   align-items: center;
   gap: 12px;
-  font-family: var(--am-mono);
   font-size: 11.5px;
-  letter-spacing: 0.16em;
+  font-weight: var(--am-rotulo-peso);
+  letter-spacing: var(--am-rotulo-espaco);
   text-transform: uppercase;
   color: var(--am-tinta-2);
 }
@@ -226,13 +226,13 @@ p { text-wrap: pretty; }
   gap: 20px;
   padding: 10px 0;
   border-bottom: 1px solid var(--am-linha);
-  font-family: var(--am-mono);
-  font-size: 11.5px;
-  letter-spacing: 0.12em;
+  font-size: 12px;
+  font-weight: var(--am-rotulo-peso);
+  letter-spacing: var(--am-rotulo-espaco);
   text-transform: uppercase;
   color: var(--am-tinta-2);
 }
-.indice li span { color: var(--am-tinta-3); }
+.indice li span { color: var(--am-tinta-3); font-weight: 600; }
 
 /* ---------- Etapas numeradas ----------
    Numeração só aqui: é a única parte do site que é de fato sequência. */
@@ -252,10 +252,9 @@ p { text-wrap: pretty; }
 }
 .etapa__marca { display: flex; align-items: center; gap: 12px; }
 .etapa__marca b {
-  font-family: var(--am-mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
   color: var(--am-ciano);
 }
 .etapa__marca i { flex-grow: 1; height: 1px; background: var(--am-linha-tenue); }
@@ -322,9 +321,9 @@ p { text-wrap: pretty; }
 .form { width: 620px; flex-shrink: 0; display: flex; flex-direction: column; gap: 24px; }
 .campo { display: flex; flex-direction: column; gap: 8px; }
 .campo label {
-  font-family: var(--am-mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
+  font-size: 11.5px;
+  font-weight: var(--am-rotulo-peso);
+  letter-spacing: var(--am-rotulo-espaco);
   text-transform: uppercase;
   color: var(--am-tinta-2);
 }

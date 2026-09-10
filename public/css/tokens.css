@@ -70,5 +70,8 @@
   --am-aviso-ok-fundo:#EDF7F2;
   --am-aviso-erro-fundo:#FCF0EE;
 
-  --am-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  /* Rótulo técnico não é outra fonte: é a Nunito Sans em caixa alta, com peso
+     e espaçamento próprios. Fonte única, como manda o manual da marca. */
+  --am-rotulo-peso:700;
+  --am-rotulo-espaco:0.14em;
 }
