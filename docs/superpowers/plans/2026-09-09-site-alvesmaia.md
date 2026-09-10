@@ -2,23 +2,37 @@
 
 > **Para executores agênticos:** SUB-SKILL OBRIGATÓRIA: use `superpowers:subagent-driven-development` (recomendado) ou `superpowers:executing-plans` para implementar tarefa a tarefa. Os passos usam checkbox (`- [ ]`) para acompanhamento.
 
-**Objetivo:** Publicar um site institucional de 4 páginas para a Alvesmaia em `alvesmaia.com`, com formulário de contato que entrega e-mail de verdade.
+**Objetivo:** Publicar um site institucional de 4 páginas para a Alvesmaia em `alvesmaia.com`, com formulário de contato que grava toda submissão e entrega e-mail de verdade.
 
-**Arquitetura:** HTML/CSS estático servido pelo Cloudflare Pages, sem build step e sem JavaScript. O formulário faz `POST` clássico para uma Pages Function em TypeScript, que valida os dados, confere o Cloudflare Turnstile e envia o e-mail pela API da Resend usando um subdomínio de envio isolado.
+**Arquitetura:** HTML/CSS estático servido pelo Azure Static Web Apps, sem build step e sem JavaScript próprio. O formulário faz `POST` clássico para uma Azure Function em TypeScript, que valida os dados, confere o Cloudflare Turnstile, grava no Azure Table Storage e envia o e-mail pelo Microsoft Graph usando o tenant do Microsoft 365 já contratado.
 
-**Stack:** HTML5, CSS puro (custom properties), TypeScript (Cloudflare Pages Functions), Vitest (só desenvolvimento), Resend, Cloudflare Turnstile.
+**Tech Stack:** HTML5, CSS puro (custom properties), TypeScript, Azure Functions (Node 20, modelo de programação v4), Azure Table Storage (`@azure/data-tables`), Microsoft Graph, Cloudflare Turnstile, Vitest (só desenvolvimento).
 
 **Spec:** `docs/superpowers/specs/2026-09-09-site-alvesmaia-design.md`
 
+## Estado atual
+
+Tasks 1 a 4 estão **concluídas e commitadas**. A migração de Cloudflare Pages para Azure (10/09/2026) não as afeta — HTML, CSS, tokens e a lógica de validação são independentes de runtime.
+
+| Task | Commit | Situação |
+|---|---|---|
+| 1 Fundação e página inicial | `30b38c9` | concluída |
+| 2 Serviços e Sobre | `7d50f4c` | concluída |
+| 3 Contato com formulário | `339987a` | concluída |
+| 4 Validação (9 testes) | `30d41d5` | concluída, precisa ser **realocada** (Task 5) |
+| ~~5 Pages Function~~ | `75118d6` | **descartada** — reescrita nas Tasks 7 a 9 |
+
 ## Restrições Globais
 
-- **Zero JavaScript no site publicado.** Menu mobile em CSS puro (checkbox + `:checked`). O formulário funciona com JS desabilitado.
-- **Zero build step na publicação.** A Cloudflare serve `public/` direto. Vitest é dependência de desenvolvimento apenas.
+- **Zero JavaScript próprio no site publicado.** Menu mobile em CSS puro (checkbox + `:checked`), avisos de estado por `:target`. O único `<script>` é o widget do Turnstile, só em `contato.html`.
+- **Zero build step para o site.** O Azure serve `public/` direto. A pasta `api/` é compilada à parte.
 - **Idioma:** todo o conteúdo visível em português do Brasil, com acentuação correta.
 - **Contraste:** o ciano da marca `#00A8E8` reprova sobre branco (2,70:1). Para texto e links usar `--am-ciano-700` (`#0077AB`). Ciano puro só em elementos gráficos.
 - **Nunca simular equipe.** O texto fala em primeira pessoa. Proibido "nossa equipe", "nossos especialistas", "somos uma empresa que".
-- **Segredos nunca no repositório.** `RESEND_API_KEY` e `TURNSTILE_SECRET_KEY` só como variáveis de ambiente no Cloudflare Pages.
-- **Não tocar em registros de e-mail.** MX, SPF, DKIM e DMARC de `alvesmaia.com` estão em produção e não podem ser alterados.
+- **Segredos nunca no repositório.** `GRAPH_CLIENT_SECRET`, `TURNSTILE_SECRET_KEY` e `TABLES_CONNECTION_STRING` só como Application Settings no SWA.
+- **Não tocar em registros de e-mail.** MX, SPF, DKIM e DMARC de `alvesmaia.com` estão em produção. Só se criam um `TXT` de validação e um `CNAME` para `www`.
+- **Gravar antes de enviar.** A submissão vai para o Table Storage antes da chamada ao Graph. Se o envio falhar, o lead não se perde.
+- **`Mail.Send` restrita.** Sem a Application Access Policy limitando o app a `no-reply@alvesmaia.com`, o projeto não vai ao ar.
 
 ---
 
@@ -26,29 +40,29 @@
 
 ```
 alvesmaia-site/
-├── functions/
-│   └── api/
-│       └── contato.ts          Pages Function: recebe POST do formulário
-├── src/
-│   └── validacao.ts            Lógica pura de validação (testável isoladamente)
-├── tests/
-│   └── validacao.test.ts       Testes da validação
-│   └── contato.test.ts         Testes do handler com fetch mockado
-├── public/                     Diretório publicado pela Cloudflare
-│   ├── index.html
-│   ├── servicos.html
-│   ├── sobre.html
-│   ├── contato.html
-│   ├── css/
-│   │   ├── tokens.css          Copiado de branding/brand/tokens.css
-│   │   └── site.css            Layout, componentes, tema
+├── api/                          Azure Functions app (compilado à parte)
+│   ├── host.json
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── src/
+│       ├── validacao.ts          Lógica pura de validação (movida da raiz)
+│       ├── armazenamento.ts      Gravação e atualização no Table Storage
+│       ├── graph.ts              Token do Entra + envio pelo Graph
+│       ├── turnstile.ts          Verificação server-side do Turnstile
+│       └── functions/
+│           └── contato.ts        Handler HTTP: orquestra os quatro acima
+├── tests/                        Testes (Vitest, na raiz)
+│   ├── validacao.test.ts
+│   ├── armazenamento.test.ts
+│   ├── graph.test.ts
+│   └── contato.test.ts
+├── public/                       Servido pelo SWA — já pronto
+│   ├── index.html · servicos.html · sobre.html · contato.html
+│   ├── css/tokens.css · css/site.css
 │   └── img/
-│       ├── logo-horizontal.svg
-│       ├── logo-horizontal-escuro.svg
-│       ├── simbolo-escuro.svg
-│       └── favicon/            Conjunto completo de ícones
+├── staticwebapp.config.json      Rotas e cabeçalhos do SWA
 ├── docs/superpowers/
-├── package.json                Só devDependencies
+├── package.json                  Só devDependencies (Vitest, tsc)
 └── .gitignore
 ```
 
@@ -56,629 +70,172 @@ alvesmaia-site/
 
 | Arquivo | Responsabilidade única |
 |---|---|
-| `src/validacao.ts` | Decidir se os dados do formulário são válidos. Sem I/O, sem rede. |
-| `functions/api/contato.ts` | Orquestrar: validar → Turnstile → Resend → redirecionar. |
-| `public/css/tokens.css` | Valores da marca. Não contém layout. |
-| `public/css/site.css` | Layout e componentes. Consome tokens, não define cores cruas. |
+| `api/src/validacao.ts` | Decidir se os dados são válidos. Sem I/O, sem rede. |
+| `api/src/turnstile.ts` | Dizer se o token do Turnstile é válido. |
+| `api/src/armazenamento.ts` | Gravar e atualizar a submissão. Não sabe o que é e-mail. |
+| `api/src/graph.ts` | Obter token e enviar e-mail. Não sabe o que é HTTP request. |
+| `api/src/functions/contato.ts` | Orquestrar os quatro acima e decidir o redirecionamento. |
 
 ---
 
-## Task 1: Fundação e página Início
+## Task 5: Realocar a validação e remover a Pages Function
+
+A lógica de validação e seus 9 testes são aproveitados integralmente. O que muda é onde moram: o SWA compila a pasta `api/` isoladamente, então código importado por ela precisa estar dentro dela.
 
 **Files:**
-- Create: `.gitignore` (já existe, verificar)
-- Create: `public/css/tokens.css` (copiar de `C:/PROJETOS/branding/brand/tokens.css`)
-- Create: `public/css/site.css`
-- Create: `public/img/` (copiar SVGs e favicons de `C:/PROJETOS/branding/brand/`)
-- Create: `public/index.html`
+- Move: `src/validacao.ts` → `api/src/validacao.ts`
+- Delete: `functions/api/contato.ts`, `tests/contato.test.ts`, `tsconfig.json` da raiz
+- Modify: `tests/validacao.test.ts` (caminho do import)
 
 **Interfaces:**
-- Consome: assets de `C:/PROJETOS/branding/brand/`
-- Produz: as classes CSS `.cabecalho`, `.rodape`, `.container`, `.botao`, `.botao-primario`, `.cartao`, e o padrão de menu mobile via `#menu-toggle` — todas as páginas seguintes reutilizam
+- Produz: `api/src/validacao.ts` exportando `DadosContato` e `validarFormulario(d) => string[]`. Todas as tasks seguintes importam daqui.
 
-- [x] **Passo 1: Copiar os assets de marca**
+- [ ] **Passo 1: Mover a validação e apagar o que foi descartado**
 
 ```bash
 cd C:/PROJETOS/alvesmaia-site
-mkdir -p public/css public/img/favicon
-
-cp C:/PROJETOS/branding/brand/tokens.css public/css/tokens.css
-cp C:/PROJETOS/branding/brand/logo/alvesmaia-horizontal.svg public/img/logo-horizontal.svg
-cp C:/PROJETOS/branding/brand/logo/alvesmaia-horizontal-escuro.svg public/img/logo-horizontal-escuro.svg
-cp C:/PROJETOS/branding/brand/logo/alvesmaia-simbolo-escuro.svg public/img/simbolo-escuro.svg
-cp C:/PROJETOS/branding/brand/favicon/favicon.svg public/img/favicon/favicon.svg
-cp C:/PROJETOS/branding/brand/favicon/favicon-32.png public/img/favicon/favicon-32.png
-cp C:/PROJETOS/branding/brand/favicon/apple-touch-icon-180.png public/img/favicon/apple-touch-icon-180.png
+mkdir -p api/src/functions
+git mv src/validacao.ts api/src/validacao.ts
+git rm -r --quiet functions tests/contato.test.ts tsconfig.json
+rmdir src 2>/dev/null || true
 ```
 
-- [x] **Passo 2: Verificar que os arquivos chegaram**
+- [ ] **Passo 2: Corrigir o import no teste**
+
+Em `tests/validacao.test.ts`, trocar a linha do import:
+
+```typescript
+import { validarFormulario } from "../api/src/validacao";
+```
+
+- [ ] **Passo 3: Rodar os testes**
 
 ```bash
-ls -la public/css/ public/img/ public/img/favicon/
+npx vitest run
 ```
 
-Esperado: `tokens.css`, 3 SVGs de logo (o simbolo e o horizontal do cabecalho sao as variantes brancas, porque ambos ficam sobre fundo navy), 3 arquivos de favicon.
+Esperado: 9 testes passando, 1 arquivo. Se acusar `contato.test.ts` faltando, o `git rm` não pegou — confira com `git status`.
 
-- [x] **Passo 3: Acrescentar os tokens de tema escuro ao `tokens.css`**
+- [ ] **Passo 4: Commit**
 
-O `tokens.css` original só tem valores claros. Acrescentar ao final do arquivo:
+```bash
+git add -A
+git commit -m "refactor: move validacao para api/ e remove a Pages Function
 
-```css
+O SWA compila api/ isoladamente, entao codigo importado pela Function
+precisa morar dentro dela. A logica de validacao e seus 9 testes sao
+aproveitados sem alteracao.
 
-/* ---- Tema: superfícies semânticas ---- */
-:root{
-  --am-fundo:#FFFFFF;
-  --am-fundo-alt:var(--am-neutro-50);
-  --am-superficie:#FFFFFF;
-  --am-texto:var(--am-neutro-900);
-  --am-texto-suave:var(--am-neutro-600);
-  --am-borda:var(--am-neutro-200);
-  --am-link:var(--am-ciano-700);
-  --am-cabecalho-fundo:var(--am-navy-800);
-  --am-cabecalho-texto:#FFFFFF;
-}
+A Pages Function foi descartada na migracao para Azure — sera reescrita
+como Azure Function nas tasks seguintes.
 
-@media (prefers-color-scheme: dark){
-  :root{
-    --am-fundo:#08131F;
-    --am-fundo-alt:#0E2233;
-    --am-superficie:#0E2233;
-    --am-texto:#E6EFF6;
-    --am-texto-suave:#9BB1C3;
-    --am-borda:#1B3346;
-    --am-link:#4FC9F8;
-    --am-cabecalho-fundo:#08131F;
-    --am-cabecalho-texto:#FFFFFF;
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
+```
+
+---
+
+## Task 6: Esqueleto da Azure Functions app
+
+**Files:**
+- Create: `api/package.json`, `api/host.json`, `api/tsconfig.json`, `api/.funcignore`
+- Create: `staticwebapp.config.json`
+- Modify: `package.json` (raiz), `.gitignore`
+
+**Interfaces:**
+- Produz: a pasta `api/` reconhecível pelo SWA, com `@azure/functions` v4 e `@azure/data-tables` instalados. As Tasks 7 a 9 escrevem dentro dela.
+
+- [ ] **Passo 1: Criar `api/package.json`**
+
+```json
+{
+  "name": "alvesmaia-api",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/src/functions/*.js",
+  "scripts": {
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "func start"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.6.0",
+    "@azure/data-tables": "^13.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "@types/node": "^22.10.2"
   }
 }
 ```
 
-- [x] **Passo 4: Criar `public/css/site.css`**
+O campo `main` aponta para o JavaScript compilado — é assim que o modelo v4 descobre as funções registradas.
 
-```css
-/* Reset mínimo */
-*,*::before,*::after{box-sizing:border-box}
-body,h1,h2,h3,p,ul,figure{margin:0}
-ul{padding:0;list-style:none}
-img,svg{max-width:100%;display:block}
+- [ ] **Passo 2: Criar `api/host.json`**
 
-body{
-  font-family:var(--am-fonte);
-  background:var(--am-fundo);
-  color:var(--am-texto);
-  line-height:1.65;
-  -webkit-font-smoothing:antialiased;
-}
-
-.container{max-width:1080px;margin:0 auto;padding:0 24px}
-
-/* ---------- Cabeçalho ---------- */
-.cabecalho{background:var(--am-cabecalho-fundo);color:var(--am-cabecalho-texto)}
-.cabecalho .container{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:76px}
-.cabecalho__logo img{height:34px;width:auto}
-.cabecalho__nav ul{display:flex;gap:28px}
-.cabecalho__nav a{
-  color:var(--am-cabecalho-texto);text-decoration:none;font-size:15px;
-  padding:6px 0;border-bottom:2px solid transparent;
-}
-.cabecalho__nav a:hover{border-bottom-color:var(--am-ciano)}
-.cabecalho__nav a[aria-current="page"]{border-bottom-color:var(--am-ciano);font-weight:600}
-
-/* Menu mobile em CSS puro — sem JavaScript */
-#menu-toggle{position:absolute;opacity:0;pointer-events:none}
-.cabecalho__hamburguer{display:none;cursor:pointer;padding:8px;line-height:0}
-.cabecalho__hamburguer span{
-  display:block;width:24px;height:2px;background:var(--am-cabecalho-texto);margin:5px 0;
-}
-
-@media (max-width:760px){
-  .cabecalho__hamburguer{display:block}
-  .cabecalho__nav{
-    display:none;width:100%;order:3;
-    border-top:1px solid rgba(255,255,255,.15);
+```json
+{
+  "version": "2.0",
+  "logging": {
+    "applicationInsights": {
+      "samplingSettings": { "isEnabled": true, "excludedTypes": "Request" }
+    }
+  },
+  "extensionBundle": {
+    "id": "Microsoft.Azure.Functions.ExtensionBundle",
+    "version": "[4.*, 5.0.0)"
   }
-  .cabecalho__nav ul{flex-direction:column;gap:0;padding:8px 0}
-  .cabecalho__nav a{display:block;padding:12px 0;border-bottom:none}
-  #menu-toggle:checked ~ .cabecalho__nav{display:block}
-  .cabecalho .container{flex-wrap:wrap}
 }
+```
 
-/* ---------- Tipografia ---------- */
-h1{font-size:clamp(30px,5vw,46px);line-height:1.12;font-weight:900;letter-spacing:-.02em;text-wrap:balance}
-h2{font-size:clamp(23px,3vw,30px);line-height:1.2;font-weight:800;letter-spacing:-.015em;margin-bottom:12px}
-h3{font-size:19px;font-weight:700;margin-bottom:8px}
-p{max-width:68ch;color:var(--am-texto-suave)}
-a{color:var(--am-link)}
+- [ ] **Passo 3: Criar `api/tsconfig.json`**
 
-/* ---------- Seções ---------- */
-.secao{padding:72px 0}
-.secao--alt{background:var(--am-fundo-alt)}
-.secao__intro{max-width:68ch;margin-bottom:36px}
-
-/* ---------- Hero ---------- */
-.hero{background:var(--am-cabecalho-fundo);color:#fff;padding:88px 0}
-.hero h1{color:#fff}
-.hero p{color:#9CBBD2;font-size:19px;margin-top:18px}
-.hero__acoes{margin-top:32px;display:flex;gap:14px;flex-wrap:wrap}
-
-/* ---------- Botões ---------- */
-.botao{
-  display:inline-block;padding:13px 26px;border-radius:3px;
-  text-decoration:none;font-weight:700;font-size:15.5px;border:2px solid transparent;
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "lib": ["ES2022"],
+    "types": ["node"],
+    "outDir": "dist",
+    "rootDir": ".",
+    "strict": true,
+    "noUnusedLocals": true,
+    "skipLibCheck": true,
+    "sourceMap": true
+  },
+  "include": ["src"]
 }
-.botao-primario{background:var(--am-ciano);color:var(--am-navy-900)}
-.botao-primario:hover{background:#33BCEE}
-.botao-secundario{border-color:rgba(255,255,255,.4);color:#fff}
-.botao-secundario:hover{border-color:#fff}
+```
 
-/* ---------- Cartões ---------- */
-.grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
-.cartao{
-  background:var(--am-superficie);border:1px solid var(--am-borda);
-  padding:26px;border-left:3px solid var(--am-ciano);
+`module: CommonJS` não é preferência — é o que o runtime do Azure Functions espera no modelo v4.
+
+- [ ] **Passo 4: Criar `api/.funcignore`**
+
+```
+*.ts
+tsconfig.json
+.vscode
+```
+
+- [ ] **Passo 5: Criar `staticwebapp.config.json` na raiz**
+
+```json
+{
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/css/*", "/img/*", "/api/*"]
+  },
+  "globalHeaders": {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "strict-origin-when-cross-origin"
+  }
 }
-.cartao p{font-size:14.5px;margin-top:6px}
-
-/* ---------- Rodapé ---------- */
-.rodape{background:var(--am-cabecalho-fundo);color:#9CBBD2;padding:44px 0;margin-top:0}
-.rodape .container{display:flex;justify-content:space-between;gap:32px;flex-wrap:wrap;align-items:flex-start}
-.rodape img{height:38px;width:auto}
-.rodape a{color:#CFE3F0}
-.rodape__legal{font-size:13px;width:100%;border-top:1px solid rgba(255,255,255,.12);padding-top:20px;margin-top:8px}
-
-/* ---------- Formulário ---------- */
-.form{max-width:560px;display:flex;flex-direction:column;gap:18px;margin-top:8px}
-.campo{display:flex;flex-direction:column;gap:6px}
-.campo label{font-size:14px;font-weight:600;color:var(--am-texto)}
-.campo input,.campo select,.campo textarea{
-  font-family:inherit;font-size:15.5px;padding:11px 13px;
-  border:1px solid var(--am-borda);border-radius:3px;
-  background:var(--am-superficie);color:var(--am-texto);
-}
-.campo textarea{min-height:150px;resize:vertical}
-.campo input:focus-visible,.campo select:focus-visible,.campo textarea:focus-visible{
-  outline:2px solid var(--am-ciano-700);outline-offset:1px;border-color:transparent;
-}
-.form button{
-  align-self:flex-start;cursor:pointer;font-family:inherit;
-  padding:13px 30px;border:0;border-radius:3px;
-  background:var(--am-ciano-700);color:#fff;font-weight:700;font-size:15.5px;
-}
-.form button:hover{background:var(--am-ciano-600)}
-
-/* ---------- Avisos de estado ---------- */
-.aviso{padding:14px 18px;border-left:3px solid;margin-bottom:24px;max-width:560px}
-.aviso p{margin:0;color:var(--am-texto);font-size:14.5px}
-.aviso--ok{border-color:var(--am-semantica-sucesso);background:#E8F5EF}
-.aviso--erro{border-color:var(--am-semantica-erro);background:#FBEDEB}
-@media (prefers-color-scheme:dark){
-  .aviso--ok{background:#0D2A20}
-  .aviso--erro{background:#2B1512}
-}
-
-/* ---------- Acessibilidade ---------- */
-.pular-para-conteudo{
-  position:absolute;left:-9999px;top:0;background:var(--am-ciano);
-  color:var(--am-navy-900);padding:12px 20px;z-index:100;font-weight:700;
-}
-.pular-para-conteudo:focus{left:0}
 ```
 
-- [x] **Passo 5: Criar `public/index.html`**
-
-O cabeçalho e o rodapé deste arquivo são o **molde** para as outras 3 páginas. Ao copiar para as próximas, mudar apenas o `aria-current="page"`.
-
-```html
-<!doctype html>
-<html lang="pt-BR">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Alvesmaia — Soluções sob medida para a sua empresa</title>
-<meta name="description" content="Automação, integração de sistemas e desenvolvimento sob medida para pequenas e médias empresas.">
-<link rel="icon" href="/img/favicon/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="/img/favicon/favicon-32.png" sizes="32x32">
-<link rel="apple-touch-icon" href="/img/favicon/apple-touch-icon-180.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;900&display=swap">
-<link rel="stylesheet" href="/css/tokens.css">
-<link rel="stylesheet" href="/css/site.css">
-</head>
-<body>
-
-<a class="pular-para-conteudo" href="#conteudo">Pular para o conteúdo</a>
-
-<header class="cabecalho">
-  <div class="container">
-    <a class="cabecalho__logo" href="/" aria-label="Alvesmaia, página inicial">
-      <img src="/img/logo-horizontal-escuro.svg" alt="Alvesmaia">
-    </a>
-    <input type="checkbox" id="menu-toggle" aria-label="Abrir menu de navegação">
-    <label class="cabecalho__hamburguer" for="menu-toggle" aria-hidden="true">
-      <span></span><span></span><span></span>
-    </label>
-    <nav class="cabecalho__nav" aria-label="Principal">
-      <ul>
-        <li><a href="/" aria-current="page">Início</a></li>
-        <li><a href="/servicos.html">Serviços</a></li>
-        <li><a href="/sobre.html">Sobre</a></li>
-        <li><a href="/contato.html">Contato</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
-
-<main id="conteudo">
-
-  <section class="hero">
-    <div class="container">
-      <h1>Soluções sob medida para a sua empresa</h1>
-      <p>Automação, integração e desenvolvimento para pequenas e médias empresas que precisam de tecnologia funcionando — não de mais um sistema para gerenciar.</p>
-      <div class="hero__acoes">
-        <a class="botao botao-primario" href="/contato.html">Falar sobre seu projeto</a>
-        <a class="botao botao-secundario" href="/servicos.html">Ver serviços</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="secao">
-    <div class="container">
-      <div class="secao__intro">
-        <h2>O que eu faço</h2>
-        <p>Quatro frentes, todas com o mesmo objetivo: tirar trabalho repetitivo do caminho das pessoas.</p>
-      </div>
-      <div class="grade">
-        <article class="cartao">
-          <h3>RPA</h3>
-          <p>Tarefas repetitivas que hoje consomem horas da sua equipe passam a rodar sozinhas.</p>
-        </article>
-        <article class="cartao">
-          <h3>Integrações</h3>
-          <p>Sistemas que não conversam entre si começam a trocar dados automaticamente.</p>
-        </article>
-        <article class="cartao">
-          <h3>Aplicações web</h3>
-          <p>Software sob medida quando o pronto de prateleira não resolve.</p>
-        </article>
-        <article class="cartao">
-          <h3>Power Platform</h3>
-          <p>Automação e aplicativos dentro do Microsoft 365 que sua empresa já paga.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="secao secao--alt">
-    <div class="container">
-      <h2>Você fala com quem resolve</h2>
-      <p>A Alvesmaia é operada por uma pessoa só, e isso é intencional. Quem entende o seu problema é quem escreve o código — nada se perde entre o que você pediu e o que foi entregue.</p>
-      <p style="margin-top:24px"><a class="botao botao-primario" href="/contato.html">Começar uma conversa</a></p>
-    </div>
-  </section>
-
-</main>
-
-<footer class="rodape">
-  <div class="container">
-    <div>
-      <img src="/img/simbolo-escuro.svg" alt="">
-      <p style="color:#9CBBD2;margin-top:14px;font-size:14px">Soluções sob medida para a sua empresa</p>
-    </div>
-    <div>
-      <p style="color:#CFE3F0;font-weight:700;margin-bottom:6px">Contato</p>
-      <p style="font-size:14px"><a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a></p>
-    </div>
-    <div class="rodape__legal">
-      Alvesmaia · Consultoria de TI
-    </div>
-  </div>
-</footer>
-
-</body>
-</html>
-```
-
-- [x] **Passo 6: Abrir no navegador e conferir**
-
-```bash
-cd C:/PROJETOS/alvesmaia-site/public && python -m http.server 8080
-```
-
-Se `python` não estiver disponível, usar `npx serve public` ou abrir o arquivo direto.
-
-Conferir: logo aparece, menu funciona ao estreitar a janela abaixo de 760px, hero legível, 4 cartões alinhados, rodapé com símbolo.
-
-- [x] **Passo 7: Commit**
-
-```bash
-cd C:/PROJETOS/alvesmaia-site
-git add public/ .gitignore
-git commit -m "feat: fundacao do site e pagina inicial
-
-Estrutura publica, tokens de marca com tema claro/escuro, CSS de layout
-e pagina inicial. Menu mobile em CSS puro, sem JavaScript.
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
-```
-
----
-
-## Task 2: Páginas Serviços e Sobre
-
-**Files:**
-- Create: `public/servicos.html`
-- Create: `public/sobre.html`
-
-**Interfaces:**
-- Consome: classes CSS e o molde de cabeçalho/rodapé da Task 1
-- Produz: nada consumido por tarefas seguintes
-
-- [x] **Passo 1: Criar `public/servicos.html`**
-
-Copiar `index.html` inteiro, trocar `<title>`, `<meta name="description">`, mover `aria-current="page"` para o link de Serviços, e substituir todo o `<main>` por:
-
-```html
-<main id="conteudo">
-  <section class="secao">
-    <div class="container">
-      <div class="secao__intro">
-        <h1>Serviços</h1>
-        <p style="margin-top:16px">Cada projeto começa entendendo o processo antes da tecnologia. Se a solução certa for não construir nada, eu digo isso.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="secao secao--alt">
-    <div class="container">
-      <h2>RPA — Automação de processos</h2>
-      <p>Robôs de software que executam tarefas repetitivas do jeito que uma pessoa executaria: abrindo sistemas, preenchendo formulários, conferindo planilhas, movendo arquivos entre pastas e sistemas.</p>
-      <p style="margin-top:14px"><strong style="color:var(--am-texto)">Quando faz sentido:</strong> existe um processo bem definido que alguém repete várias vezes por semana, e alterar o sistema de origem não é viável ou não compensa.</p>
-    </div>
-  </section>
-
-  <section class="secao">
-    <div class="container">
-      <h2>Integrações</h2>
-      <p>Conexão entre sistemas que não foram feitos para conversar — ERP com e-commerce, planilha com banco de dados, sistema legado com serviço em nuvem.</p>
-      <p style="margin-top:14px"><strong style="color:var(--am-texto)">Quando faz sentido:</strong> a mesma informação é digitada em dois lugares, ou alguém exporta de um sistema para importar em outro.</p>
-    </div>
-  </section>
-
-  <section class="secao secao--alt">
-    <div class="container">
-      <h2>Aplicações web</h2>
-      <p>Desenvolvimento de sistemas próprios, do zero, quando nenhuma solução de mercado atende ao processo da empresa.</p>
-      <p style="margin-top:14px"><strong style="color:var(--am-texto)">Quando faz sentido:</strong> o processo é a vantagem competitiva do negócio, e forçá-lo a caber num software genérico custa mais do que construir o certo.</p>
-    </div>
-  </section>
-
-  <section class="secao">
-    <div class="container">
-      <h2>Power Platform</h2>
-      <p>Automação e aplicativos construídos dentro do Microsoft 365 — Power Automate, Power Apps, SharePoint — aproveitando as licenças que a empresa já paga.</p>
-      <p style="margin-top:14px"><strong style="color:var(--am-texto)">Quando faz sentido:</strong> a empresa já usa Microsoft 365 e o processo pode ser resolvido sem contratar software adicional.</p>
-    </div>
-  </section>
-
-  <section class="secao secao--alt">
-    <div class="container">
-      <h2>Não sabe qual se aplica?</h2>
-      <p>Me descreva o processo que está incomodando. Costuma ficar claro em uma conversa.</p>
-      <p style="margin-top:24px"><a class="botao botao-primario" href="/contato.html">Descrever meu caso</a></p>
-    </div>
-  </section>
-</main>
-```
-
-`<title>`: `Serviços — Alvesmaia`
-`<meta name="description">`: `RPA, integrações, aplicações web e Power Platform para pequenas e médias empresas.`
-
-- [x] **Passo 2: Criar `public/sobre.html`**
-
-Mesmo molde, `aria-current="page"` no link Sobre, e `<main>`:
-
-```html
-<main id="conteudo">
-  <section class="secao">
-    <div class="container">
-      <div class="secao__intro">
-        <h1>Sobre</h1>
-      </div>
-      <p style="font-size:18px">Meu nome é Uemerson Maia. Sou desenvolvedor e trabalho com automação e integração de sistemas.</p>
-      <p style="margin-top:18px">A Alvesmaia é a empresa pela qual eu atendo — e sou eu quem atende. Não há camada de atendimento, não há transferência de chamado, não há equipe genérica de especialistas. Você fala com quem escreve o código.</p>
-      <p style="margin-top:18px">Isso tem uma vantagem e um limite, e prefiro ser claro sobre os dois.</p>
-    </div>
-  </section>
-
-  <section class="secao secao--alt">
-    <div class="container">
-      <h2>A vantagem</h2>
-      <p>A conversa é direta. Quem entende o problema é a mesma pessoa que constrói a solução — nada se perde no caminho entre o que você pediu e o que foi feito. Sem telefone sem fio, sem escopo que muda de sentido ao passar de mão em mão.</p>
-    </div>
-  </section>
-
-  <section class="secao">
-    <div class="container">
-      <h2>O limite</h2>
-      <p>Eu não sou uma consultoria de vinte pessoas. Se o seu projeto exige uma equipe grande trabalhando em paralelo, com prazo curto, provavelmente não sou a escolha certa — e vou te dizer isso antes de você perder tempo.</p>
-    </div>
-  </section>
-
-  <section class="secao secao--alt">
-    <div class="container">
-      <h2>Como eu trabalho</h2>
-      <p>Atendo pequenas e médias empresas. Começo entendendo o processo, não a tecnologia. Meu trabalho dá certo quando a tecnologia some do caminho e o processo simplesmente funciona.</p>
-      <p style="margin-top:24px"><a class="botao botao-primario" href="/contato.html">Falar comigo</a></p>
-    </div>
-  </section>
-</main>
-```
-
-`<title>`: `Sobre — Alvesmaia`
-`<meta name="description">`: `Quem está por trás da Alvesmaia, como eu trabalho, e o que eu não faço.`
-
-- [x] **Passo 3: Conferir a navegação**
-
-Abrir as 3 páginas no servidor local. Verificar que o link da página atual está destacado em cada uma, e que o menu mobile abre nas três.
-
-- [x] **Passo 4: Commit**
-
-```bash
-git add public/servicos.html public/sobre.html
-git commit -m "feat: paginas de servicos e sobre
-
-Quatro servicos com o angulo do problema que resolvem. Pagina Sobre em
-primeira pessoa, declarando explicitamente o limite de ser uma operacao
-individual.
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
-```
-
----
-
-## Task 3: Página de Contato com formulário
-
-**Files:**
-- Create: `public/contato.html`
-
-**Interfaces:**
-- Produz: o formulário que faz `POST /api/contato` com os campos `nome`, `email`, `assunto`, `mensagem`, `cf-turnstile-response`. A Function da Task 5 depende exatamente desses nomes.
-- Produz: os estados de query string `?estado=ok`, `?estado=erro`, `?estado=robo` que a Function usa ao redirecionar.
-
-**Nota:** os avisos de sucesso/erro aparecem via CSS a partir da query string, sem JavaScript. A técnica: os três avisos existem no HTML, ficam ocultos por padrão, e o CSS `:target` não serve aqui — então usamos uma solução server-side simples. Como não há server-side rendering, o caminho sem JS é o formulário apontar para âncoras diferentes. **Decisão:** a Function redireciona para `/contato.html#enviado`, `#erro` ou `#robo`, e o CSS usa `:target` para revelar o aviso correspondente.
-
-- [x] **Passo 1: Acrescentar o CSS dos avisos por `:target` ao `site.css`**
-
-```css
-/* Avisos revelados por âncora — funciona sem JavaScript */
-.aviso[id]{display:none}
-.aviso[id]:target{display:block}
-/* Sem isto o navegador rola ate a ancora e o visitante cai numa tela sem
-   cabecalho nem titulo, com o aviso colado no topo. A margem folgada faz a
-   rolagem parar no inicio da pagina. */
-.aviso[id]{scroll-margin-top:100vh}
-```
-
-- [x] **Passo 2: Criar `public/contato.html`**
-
-Mesmo molde de cabeçalho/rodapé, `aria-current="page"` em Contato, e `<main>`:
-
-```html
-<main id="conteudo">
-  <section class="secao">
-    <div class="container">
-      <div class="secao__intro">
-        <h1>Contato</h1>
-        <p style="margin-top:16px">Me conte o que você precisa resolver. Respondo em até um dia útil.</p>
-      </div>
-
-      <div class="aviso aviso--ok" id="enviado" role="status">
-        <p><strong>Mensagem enviada.</strong> Recebi seu contato e respondo em até um dia útil.</p>
-      </div>
-
-      <div class="aviso aviso--erro" id="erro" role="alert">
-        <p><strong>Não consegui enviar.</strong> Tente de novo em alguns instantes, ou escreva direto para <a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a>.</p>
-      </div>
-
-      <div class="aviso aviso--erro" id="robo" role="alert">
-        <p><strong>Verificação não concluída.</strong> Marque a caixa de verificação antes de enviar.</p>
-      </div>
-
-      <form class="form" method="POST" action="/api/contato">
-        <div class="campo">
-          <label for="nome">Nome</label>
-          <input type="text" id="nome" name="nome" required minlength="2" autocomplete="name">
-        </div>
-
-        <div class="campo">
-          <label for="email">E-mail</label>
-          <input type="email" id="email" name="email" required autocomplete="email">
-        </div>
-
-        <div class="campo">
-          <label for="assunto">Assunto</label>
-          <select id="assunto" name="assunto" required>
-            <option value="Orçamento">Orçamento</option>
-            <option value="Dúvida técnica">Dúvida técnica</option>
-            <option value="Suporte">Suporte</option>
-            <option value="Outro">Outro</option>
-          </select>
-        </div>
-
-        <div class="campo">
-          <label for="mensagem">Mensagem</label>
-          <textarea id="mensagem" name="mensagem" required minlength="10" maxlength="5000"></textarea>
-        </div>
-
-        <div class="cf-turnstile" data-sitekey="COLAR_SITE_KEY_AQUI"></div>
-
-        <button type="submit">Enviar mensagem</button>
-      </form>
-    </div>
-  </section>
-
-  <section class="secao secao--alt">
-    <div class="container">
-      <h2>Ou escreva direto</h2>
-      <p>Se preferir usar seu próprio e-mail:</p>
-      <ul style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
-        <li><a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a> — assuntos gerais</li>
-        <li><a href="mailto:suporte@alvesmaia.com">suporte@alvesmaia.com</a> — clientes com contrato</li>
-        <li><a href="mailto:financeiro@alvesmaia.com">financeiro@alvesmaia.com</a> — notas e pagamentos</li>
-      </ul>
-    </div>
-  </section>
-</main>
-```
-
-Antes do `</body>`, acrescentar o script do Turnstile — **é o único JavaScript da página, e é externo, do widget da Cloudflare**:
-
-```html
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-```
-
-`<title>`: `Contato — Alvesmaia`
-`<meta name="description">`: `Fale sobre seu projeto de automação, integração ou desenvolvimento.`
-
-- [x] **Passo 3: Conferir os três estados manualmente**
-
-Abrir no navegador local:
-- `/contato.html` — nenhum aviso visível
-- `/contato.html#enviado` — aviso verde de sucesso
-- `/contato.html#erro` — aviso vermelho
-- `/contato.html#robo` — aviso vermelho de verificação
-
-- [x] **Passo 4: Commit**
-
-```bash
-git add public/contato.html public/css/site.css
-git commit -m "feat: pagina de contato com formulario
-
-Formulario HTML classico (POST, sem fetch). Avisos de estado revelados
-por :target, funcionando sem JavaScript proprio. Site key do Turnstile
-ainda placeholder — preenchida na Task 6.
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
-```
-
----
-
-## Task 4: Lógica de validação (TDD)
-
-**Files:**
-- Create: `package.json`
-- Create: `src/validacao.ts`
-- Test: `tests/validacao.test.ts`
-
-**Interfaces:**
-- Produz: `interface DadosContato { nome: string; email: string; assunto: string; mensagem: string }`
-- Produz: `function validarFormulario(d: DadosContato): string[]` — retorna array vazio quando válido, ou lista de códigos de erro (`"nome"`, `"email"`, `"mensagem_curta"`, `"mensagem_longa"`). A Task 5 consome exatamente esta assinatura.
-
-- [x] **Passo 1: Criar `package.json`**
+- [ ] **Passo 6: Substituir o `package.json` da raiz**
 
 ```json
 {
@@ -687,131 +244,52 @@ Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
   "type": "module",
   "scripts": {
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "tipos": "tsc --noEmit -p api/tsconfig.json",
+    "verificar": "npm run tipos && npm test"
   },
   "devDependencies": {
     "vitest": "^2.1.8",
     "typescript": "^5.7.2",
-    "@cloudflare/workers-types": "^4.20241218.0"
+    "@types/node": "^22.10.2",
+    "@azure/functions": "^4.6.0",
+    "@azure/data-tables": "^13.3.0"
   }
 }
 ```
 
-- [x] **Passo 2: Instalar**
+As duas dependências do Azure aparecem aqui **também** como devDependencies porque o Vitest, que roda na raiz, precisa resolvê-las para importar os módulos sob teste. Em produção quem vale é o `api/package.json`.
+
+- [ ] **Passo 7: Acrescentar ao `.gitignore`**
+
+```
+api/node_modules/
+api/dist/
+api/local.settings.json
+```
+
+O `local.settings.json` guarda segredos de desenvolvimento local. Nunca versionar.
+
+- [ ] **Passo 8: Instalar e verificar**
 
 ```bash
-cd C:/PROJETOS/alvesmaia-site && npm install
+cd C:/PROJETOS/alvesmaia-site
+npm install
+cd api && npm install && cd ..
+npm run verificar
 ```
 
-- [x] **Passo 3: Escrever o teste que falha**
+Esperado: `tsc` sem erros e 9 testes passando.
 
-Criar `tests/validacao.test.ts`:
-
-```typescript
-import { describe, it, expect } from "vitest";
-import { validarFormulario } from "../src/validacao";
-
-const valido = {
-  nome: "Maria Silva",
-  email: "maria@empresa.com.br",
-  assunto: "Orçamento",
-  mensagem: "Gostaria de automatizar a conferência de notas fiscais.",
-};
-
-describe("validarFormulario", () => {
-  it("aceita dados completos e corretos", () => {
-    expect(validarFormulario(valido)).toEqual([]);
-  });
-
-  it("rejeita nome com menos de 2 caracteres", () => {
-    expect(validarFormulario({ ...valido, nome: "M" })).toContain("nome");
-  });
-
-  it("rejeita nome só com espaços", () => {
-    expect(validarFormulario({ ...valido, nome: "   " })).toContain("nome");
-  });
-
-  it("rejeita e-mail sem arroba", () => {
-    expect(validarFormulario({ ...valido, email: "mariaempresa.com" })).toContain("email");
-  });
-
-  it("rejeita e-mail sem domínio", () => {
-    expect(validarFormulario({ ...valido, email: "maria@" })).toContain("email");
-  });
-
-  it("aceita e-mail com subdomínio e TLD composto", () => {
-    expect(validarFormulario({ ...valido, email: "m@mail.empresa.com.br" })).toEqual([]);
-  });
-
-  it("rejeita mensagem curta demais", () => {
-    expect(validarFormulario({ ...valido, mensagem: "oi" })).toContain("mensagem_curta");
-  });
-
-  it("rejeita mensagem acima de 5000 caracteres", () => {
-    expect(validarFormulario({ ...valido, mensagem: "a".repeat(5001) })).toContain("mensagem_longa");
-  });
-
-  it("acumula múltiplos erros de uma vez", () => {
-    const erros = validarFormulario({ nome: "", email: "x", assunto: "", mensagem: "" });
-    expect(erros).toContain("nome");
-    expect(erros).toContain("email");
-    expect(erros).toContain("mensagem_curta");
-  });
-});
-```
-
-- [x] **Passo 4: Rodar e confirmar que falha**
+- [ ] **Passo 9: Commit**
 
 ```bash
-npm test
-```
+git add -A
+git commit -m "feat: esqueleto da Azure Functions app
 
-Esperado: FALHA com erro de módulo não encontrado (`../src/validacao`).
-
-- [x] **Passo 5: Implementar o mínimo para passar**
-
-Criar `src/validacao.ts`:
-
-```typescript
-export interface DadosContato {
-  nome: string;
-  email: string;
-  assunto: string;
-  mensagem: string;
-}
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-export function validarFormulario(d: DadosContato): string[] {
-  const erros: string[] = [];
-
-  if (d.nome.trim().length < 2) erros.push("nome");
-  if (!EMAIL_RE.test(d.email.trim())) erros.push("email");
-
-  const msg = d.mensagem.trim();
-  if (msg.length < 10) erros.push("mensagem_curta");
-  if (msg.length > 5000) erros.push("mensagem_longa");
-
-  return erros;
-}
-```
-
-- [x] **Passo 6: Rodar e confirmar que passa**
-
-```bash
-npm test
-```
-
-Esperado: 9 testes passando.
-
-- [x] **Passo 7: Commit**
-
-```bash
-git add package.json package-lock.json src/validacao.ts tests/validacao.test.ts
-git commit -m "feat: validacao do formulario de contato
-
-Logica pura, sem I/O, testada isoladamente. Acumula todos os erros em vez
-de parar no primeiro.
+Modelo de programacao v4, TypeScript compilado para CommonJS — o runtime
+do Functions exige. staticwebapp.config.json com cabecalhos de seguranca
+e fallback de navegacao.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
@@ -819,155 +297,426 @@ Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
 
 ---
 
-## Task 5: Pages Function `/api/contato`
+## Task 7: Persistência no Table Storage (TDD)
 
 **Files:**
-- Create: `functions/api/contato.ts`
-- Test: `tests/contato.test.ts`
+- Create: `api/src/armazenamento.ts`
+- Test: `tests/armazenamento.test.ts`
 
 **Interfaces:**
-- Consome: `validarFormulario` e `DadosContato` da Task 4
-- Consome: nomes de campo do formulário da Task 3
-- Produz: respostas HTTP 303 para `/contato.html#enviado`, `#erro`, `#robo`
+- Consome: `DadosContato` de `api/src/validacao.ts`
+- Produz:
+  - `interface Submissao extends DadosContato { ip: string }`
+  - `gravarSubmissao(s: Submissao, conexao: string) => Promise<string | null>` — devolve o `rowKey` gravado, ou `null` se falhou
+  - `marcarEnviado(rowKey: string, conexao: string) => Promise<void>` — nunca lança
 
-- [x] **Passo 1: Escrever os testes que falham**
+- [ ] **Passo 1: Escrever os testes que falham**
 
-Criar `tests/contato.test.ts`:
+Criar `tests/armazenamento.test.ts`:
 
 ```typescript
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { onRequestPost } from "../functions/api/contato";
 
-const env = { RESEND_API_KEY: "chave-fake", TURNSTILE_SECRET_KEY: "segredo-fake" };
+const criarEntidade = vi.fn();
+const atualizarEntidade = vi.fn();
+const criarTabela = vi.fn();
 
-function requisicao(campos: Record<string, string>) {
-  const form = new FormData();
-  for (const [k, v] of Object.entries(campos)) form.append(k, v);
-  return new Request("https://alvesmaia.com/api/contato", { method: "POST", body: form });
-}
+vi.mock("@azure/data-tables", () => ({
+  TableClient: {
+    fromConnectionString: () => ({
+      createTable: criarTabela,
+      createEntity: criarEntidade,
+      updateEntity: atualizarEntidade,
+    }),
+  },
+}));
 
-const camposValidos = {
+const { gravarSubmissao, marcarEnviado } = await import("../api/src/armazenamento");
+
+const submissao = {
   nome: "Maria Silva",
   email: "maria@empresa.com.br",
   assunto: "Orçamento",
   mensagem: "Gostaria de automatizar a conferência de notas fiscais.",
-  "cf-turnstile-response": "token-valido",
+  ip: "203.0.113.7",
 };
 
 beforeEach(() => {
-  vi.restoreAllMocks();
+  vi.clearAllMocks();
+  criarEntidade.mockResolvedValue({});
+  atualizarEntidade.mockResolvedValue({});
+  criarTabela.mockResolvedValue({});
 });
 
-function mockFetch(turnstileOk: boolean, resendOk = true) {
-  return vi.spyOn(globalThis, "fetch").mockImplementation(async (url) => {
-    const u = String(url);
-    if (u.includes("siteverify")) {
-      return new Response(JSON.stringify({ success: turnstileOk }), { status: 200 });
-    }
-    if (u.includes("resend.com")) {
-      return new Response("{}", { status: resendOk ? 200 : 500 });
-    }
-    throw new Error("URL inesperada: " + u);
-  });
-}
-
-describe("onRequestPost", () => {
-  it("redireciona para #enviado quando tudo está correto", async () => {
-    mockFetch(true);
-    const res = await onRequestPost({ request: requisicao(camposValidos), env } as never);
-    expect(res.status).toBe(303);
-    expect(res.headers.get("Location")).toBe("/contato.html#enviado");
+describe("gravarSubmissao", () => {
+  it("devolve o rowKey da linha gravada", async () => {
+    const rowKey = await gravarSubmissao(submissao, "conexao-fake");
+    expect(rowKey).toBeTruthy();
+    expect(criarEntidade).toHaveBeenCalledOnce();
   });
 
-  it("redireciona para #erro quando a validação falha", async () => {
-    mockFetch(true);
-    const res = await onRequestPost({
-      request: requisicao({ ...camposValidos, email: "invalido" }),
-      env,
-    } as never);
-    expect(res.headers.get("Location")).toBe("/contato.html#erro");
+  it("particiona por ano-mês", async () => {
+    await gravarSubmissao(submissao, "conexao-fake");
+    const entidade = criarEntidade.mock.calls[0][0];
+    expect(entidade.partitionKey).toMatch(/^\d{4}-\d{2}$/);
   });
 
-  it("não chama a Resend quando a validação falha", async () => {
-    const spy = mockFetch(true);
-    await onRequestPost({ request: requisicao({ ...camposValidos, nome: "" }), env } as never);
-    const chamadasResend = spy.mock.calls.filter((c) => String(c[0]).includes("resend.com"));
-    expect(chamadasResend).toHaveLength(0);
+  it("grava enviado como false", async () => {
+    await gravarSubmissao(submissao, "conexao-fake");
+    expect(criarEntidade.mock.calls[0][0].enviado).toBe(false);
   });
 
-  it("redireciona para #robo quando o Turnstile reprova", async () => {
-    mockFetch(false);
-    const res = await onRequestPost({ request: requisicao(camposValidos), env } as never);
-    expect(res.headers.get("Location")).toBe("/contato.html#robo");
+  it("grava todos os campos do formulário mais o IP", async () => {
+    await gravarSubmissao(submissao, "conexao-fake");
+    const e = criarEntidade.mock.calls[0][0];
+    expect(e.nome).toBe("Maria Silva");
+    expect(e.email).toBe("maria@empresa.com.br");
+    expect(e.assunto).toBe("Orçamento");
+    expect(e.mensagem).toContain("notas fiscais");
+    expect(e.ip).toBe("203.0.113.7");
   });
 
-  it("redireciona para #erro quando a Resend falha", async () => {
-    mockFetch(true, false);
-    const res = await onRequestPost({ request: requisicao(camposValidos), env } as never);
-    expect(res.headers.get("Location")).toBe("/contato.html#erro");
+  it("gera rowKeys distintos para submissões simultâneas", async () => {
+    const a = await gravarSubmissao(submissao, "conexao-fake");
+    const b = await gravarSubmissao(submissao, "conexao-fake");
+    expect(a).not.toBe(b);
   });
 
-  it("envia o e-mail do visitante como reply_to", async () => {
-    const spy = mockFetch(true);
-    await onRequestPost({ request: requisicao(camposValidos), env } as never);
-    const chamada = spy.mock.calls.find((c) => String(c[0]).includes("resend.com"));
-    const corpo = JSON.parse(String((chamada![1] as RequestInit).body));
-    expect(corpo.reply_to).toBe("maria@empresa.com.br");
-    expect(corpo.to).toContain("contato@alvesmaia.com");
+  it("devolve null quando a gravação falha", async () => {
+    criarEntidade.mockRejectedValue(new Error("storage fora do ar"));
+    expect(await gravarSubmissao(submissao, "conexao-fake")).toBeNull();
+  });
+});
+
+describe("marcarEnviado", () => {
+  it("atualiza a linha com enviado true", async () => {
+    await marcarEnviado("2026-09-10T12:00:00.000Z-abc", "conexao-fake");
+    const entidade = atualizarEntidade.mock.calls[0][0];
+    expect(entidade.enviado).toBe(true);
+  });
+
+  it("não lança quando a atualização falha", async () => {
+    atualizarEntidade.mockRejectedValue(new Error("conflito"));
+    await expect(
+      marcarEnviado("2026-09-10T12:00:00.000Z-abc", "conexao-fake"),
+    ).resolves.toBeUndefined();
   });
 });
 ```
 
-- [x] **Passo 2: Rodar e confirmar que falha**
+- [ ] **Passo 2: Rodar e confirmar que falha**
 
 ```bash
-npm test
+npx vitest run tests/armazenamento.test.ts
 ```
 
-Esperado: FALHA, módulo `../functions/api/contato` não existe.
+Esperado: FALHA, módulo `../api/src/armazenamento` não existe.
 
-- [x] **Passo 3: Implementar a Function**
+- [ ] **Passo 3: Implementar**
 
-Criar `functions/api/contato.ts`:
+Criar `api/src/armazenamento.ts`:
 
 ```typescript
-import { validarFormulario, type DadosContato } from "../../src/validacao";
+import { TableClient } from "@azure/data-tables";
+import type { DadosContato } from "./validacao";
 
-interface Env {
-  RESEND_API_KEY: string;
-  TURNSTILE_SECRET_KEY: string;
+const TABELA = "submissoes";
+
+export interface Submissao extends DadosContato {
+  ip: string;
 }
 
-const DESTINO = "contato@alvesmaia.com";
-const REMETENTE = "Site Alvesmaia <formulario@mail.alvesmaia.com>";
-
-function redirecionar(ancora: string): Response {
-  return new Response(null, {
-    status: 303,
-    headers: { Location: `/contato.html#${ancora}` },
-  });
+function cliente(conexao: string): TableClient {
+  return TableClient.fromConnectionString(conexao, TABELA);
 }
 
-async function turnstileValido(
+/** Chave de partição: ano-mês, para consultas por período ficarem baratas. */
+function particao(agora: Date): string {
+  return `${agora.getUTCFullYear()}-${String(agora.getUTCMonth() + 1).padStart(2, "0")}`;
+}
+
+/**
+ * O timestamp sozinho colide quando duas submissões caem no mesmo
+ * milissegundo, e a colisão descartaria uma delas silenciosamente.
+ */
+function chaveLinha(agora: Date): string {
+  const sufixo = Math.random().toString(36).slice(2, 10);
+  return `${agora.toISOString()}-${sufixo}`;
+}
+
+export async function gravarSubmissao(
+  s: Submissao,
+  conexao: string,
+): Promise<string | null> {
+  const agora = new Date();
+  const rowKey = chaveLinha(agora);
+
+  try {
+    const tabela = cliente(conexao);
+    // Idempotente: se a tabela já existe, o SDK ignora.
+    await tabela.createTable();
+    await tabela.createEntity({
+      partitionKey: particao(agora),
+      rowKey,
+      nome: s.nome.trim(),
+      email: s.email.trim(),
+      assunto: s.assunto,
+      mensagem: s.mensagem.trim(),
+      ip: s.ip,
+      enviado: false,
+    });
+    return rowKey;
+  } catch (e) {
+    console.error("Falha ao gravar a submissao:", e);
+    return null;
+  }
+}
+
+/**
+ * Best-effort: a mensagem já foi entregue quando isto roda, então falhar
+ * aqui não pode derrubar a requisição. Pior caso, a linha fica com
+ * enviado:false e parece um falso negativo no relatório.
+ *
+ * A partição sai dos 7 primeiros caracteres do rowKey (AAAA-MM do ISO),
+ * que é exatamente como chaveLinha() a monta.
+ */
+export async function marcarEnviado(rowKey: string, conexao: string): Promise<void> {
+  try {
+    await cliente(conexao).updateEntity(
+      { partitionKey: rowKey.slice(0, 7), rowKey, enviado: true },
+      "Merge",
+    );
+  } catch (e) {
+    console.error("Falha ao marcar a submissao como enviada:", e);
+  }
+}
+```
+
+- [ ] **Passo 4: Rodar e confirmar que passa**
+
+```bash
+npx vitest run tests/armazenamento.test.ts
+```
+
+Esperado: 8 testes passando.
+
+- [ ] **Passo 5: Commit**
+
+```bash
+git add api/src/armazenamento.ts tests/armazenamento.test.ts
+git commit -m "feat: persistencia das submissoes no Table Storage
+
+Grava antes de tentar enviar, para que uma falha no envio nao custe o lead.
+rowKey combina timestamp e sufixo aleatorio: o timestamp sozinho colide
+quando duas submissoes caem no mesmo milissegundo.
+
+marcarEnviado nunca lanca — roda depois do e-mail ja ter saido.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
+```
+
+---
+
+## Task 8: Turnstile e Microsoft Graph (TDD)
+
+**Files:**
+- Create: `api/src/turnstile.ts`, `api/src/graph.ts`
+- Test: `tests/graph.test.ts`
+
+**Interfaces:**
+- Produz: `turnstileValido(token: string, segredo: string, ip: string | null) => Promise<boolean>`
+- Produz: `interface ConfigGraph { tenantId: string; clientId: string; clientSecret: string }`
+- Produz: `enviarEmail(d: DadosContato, cfg: ConfigGraph) => Promise<boolean>`
+
+- [ ] **Passo 1: Criar `api/src/turnstile.ts`**
+
+Sem teste próprio — é uma chamada HTTP de sete linhas, coberta indiretamente pelos testes do handler na Task 9.
+
+```typescript
+const VERIFICAR = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+
+export async function turnstileValido(
   token: string,
   segredo: string,
   ip: string | null,
 ): Promise<boolean> {
   if (!token) return false;
+
   const corpo = new FormData();
   corpo.append("secret", segredo);
   corpo.append("response", token);
   if (ip) corpo.append("remoteip", ip);
 
   try {
-    const r = await fetch(
-      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-      { method: "POST", body: corpo },
-    );
+    const r = await fetch(VERIFICAR, { method: "POST", body: corpo });
     const json = (await r.json()) as { success?: boolean };
     return json.success === true;
-  } catch {
+  } catch (e) {
+    console.error("Falha ao verificar o Turnstile:", e);
     return false;
+  }
+}
+```
+
+- [ ] **Passo 2: Escrever os testes do Graph**
+
+Criar `tests/graph.test.ts`:
+
+```typescript
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { enviarEmail } from "../api/src/graph";
+
+const cfg = {
+  tenantId: "tenant-fake",
+  clientId: "client-fake",
+  clientSecret: "segredo-fake",
+};
+
+const dados = {
+  nome: "Maria Silva",
+  email: "maria@empresa.com.br",
+  assunto: "Orçamento",
+  mensagem: "Gostaria de automatizar a conferência de notas fiscais.",
+};
+
+beforeEach(() => vi.restoreAllMocks());
+
+function mockFetch({ tokenOk = true, envioOk = true } = {}) {
+  return vi.spyOn(globalThis, "fetch").mockImplementation(async (url) => {
+    const u = String(url);
+    if (u.includes("login.microsoftonline.com")) {
+      return tokenOk
+        ? new Response(JSON.stringify({ access_token: "token-abc" }), { status: 200 })
+        : new Response(JSON.stringify({ error: "invalid_client" }), { status: 401 });
+    }
+    if (u.includes("graph.microsoft.com")) {
+      return new Response("", { status: envioOk ? 202 : 403 });
+    }
+    throw new Error("URL inesperada: " + u);
+  });
+}
+
+function corpoDaChamadaGraph(spy: ReturnType<typeof mockFetch>) {
+  const chamada = spy.mock.calls.find((c) => String(c[0]).includes("graph.microsoft.com"));
+  return JSON.parse(String((chamada![1] as RequestInit).body));
+}
+
+describe("enviarEmail", () => {
+  it("devolve true quando o Graph aceita", async () => {
+    mockFetch();
+    expect(await enviarEmail(dados, cfg)).toBe(true);
+  });
+
+  it("pede o token com client_credentials e o escopo do Graph", async () => {
+    const spy = mockFetch();
+    await enviarEmail(dados, cfg);
+    const chamada = spy.mock.calls.find((c) => String(c[0]).includes("microsoftonline"));
+    const corpo = String((chamada![1] as RequestInit).body);
+    expect(corpo).toContain("grant_type=client_credentials");
+    expect(corpo).toContain("scope=https%3A%2F%2Fgraph.microsoft.com%2F.default");
+  });
+
+  it("envia como no-reply e entrega em contato", async () => {
+    const spy = mockFetch();
+    await enviarEmail(dados, cfg);
+    const url = String(spy.mock.calls.find((c) => String(c[0]).includes("graph.microsoft.com"))![0]);
+    expect(url).toContain("no-reply%40alvesmaia.com");
+    expect(corpoDaChamadaGraph(spy).message.toRecipients[0].emailAddress.address)
+      .toBe("contato@alvesmaia.com");
+  });
+
+  it("põe o e-mail do visitante em replyTo", async () => {
+    const spy = mockFetch();
+    await enviarEmail(dados, cfg);
+    expect(corpoDaChamadaGraph(spy).message.replyTo[0].emailAddress.address)
+      .toBe("maria@empresa.com.br");
+  });
+
+  it("não guarda em Itens Enviados", async () => {
+    const spy = mockFetch();
+    await enviarEmail(dados, cfg);
+    expect(corpoDaChamadaGraph(spy).saveToSentItems).toBe(false);
+  });
+
+  it("escapa HTML vindo do visitante", async () => {
+    const spy = mockFetch();
+    await enviarEmail({ ...dados, nome: "<script>alert(1)</script>" }, cfg);
+    const html = corpoDaChamadaGraph(spy).message.body.content;
+    expect(html).not.toContain("<script>");
+    expect(html).toContain("&lt;script&gt;");
+  });
+
+  it("devolve false quando o token é recusado", async () => {
+    mockFetch({ tokenOk: false });
+    expect(await enviarEmail(dados, cfg)).toBe(false);
+  });
+
+  it("não chama o Graph quando o token falhou", async () => {
+    const spy = mockFetch({ tokenOk: false });
+    await enviarEmail(dados, cfg);
+    expect(spy.mock.calls.filter((c) => String(c[0]).includes("graph.microsoft.com")))
+      .toHaveLength(0);
+  });
+
+  it("devolve false quando o Graph recusa o envio", async () => {
+    mockFetch({ envioOk: false });
+    expect(await enviarEmail(dados, cfg)).toBe(false);
+  });
+});
+```
+
+- [ ] **Passo 3: Rodar e confirmar que falha**
+
+```bash
+npx vitest run tests/graph.test.ts
+```
+
+Esperado: FALHA, módulo `../api/src/graph` não existe.
+
+- [ ] **Passo 4: Implementar**
+
+Criar `api/src/graph.ts`:
+
+```typescript
+import type { DadosContato } from "./validacao";
+
+const REMETENTE = "no-reply@alvesmaia.com";
+const DESTINO = "contato@alvesmaia.com";
+
+export interface ConfigGraph {
+  tenantId: string;
+  clientId: string;
+  clientSecret: string;
+}
+
+async function obterToken(cfg: ConfigGraph): Promise<string | null> {
+  const corpo = new URLSearchParams({
+    client_id: cfg.clientId,
+    client_secret: cfg.clientSecret,
+    scope: "https://graph.microsoft.com/.default",
+    grant_type: "client_credentials",
+  });
+
+  try {
+    const r = await fetch(
+      `https://login.microsoftonline.com/${cfg.tenantId}/oauth2/v2.0/token`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: corpo.toString(),
+      },
+    );
+    if (!r.ok) {
+      // Quase sempre client secret expirado. Sem este log, some em silencio.
+      console.error("Entra recusou o token:", r.status, await r.text());
+      return null;
+    }
+    const json = (await r.json()) as { access_token?: string };
+    return json.access_token ?? null;
+  } catch (e) {
+    console.error("Falha de rede ao obter o token do Entra:", e);
+    return null;
   }
 }
 
@@ -978,50 +727,302 @@ function escapar(texto: string): string {
     .replace(/>/g, "&gt;");
 }
 
-async function enviarEmail(d: DadosContato, chave: string): Promise<boolean> {
-  const corpo = {
-    from: REMETENTE,
-    to: [DESTINO],
-    reply_to: d.email.trim(),
-    subject: `[Site] ${d.assunto} — ${d.nome.trim()}`,
-    html:
-      `<p><strong>Nome:</strong> ${escapar(d.nome.trim())}</p>` +
-      `<p><strong>E-mail:</strong> ${escapar(d.email.trim())}</p>` +
-      `<p><strong>Assunto:</strong> ${escapar(d.assunto)}</p>` +
-      `<hr>` +
-      `<p>${escapar(d.mensagem.trim()).replace(/\n/g, "<br>")}</p>`,
+function montarHtml(d: DadosContato): string {
+  return (
+    `<p><strong>Nome:</strong> ${escapar(d.nome.trim())}</p>` +
+    `<p><strong>E-mail:</strong> ${escapar(d.email.trim())}</p>` +
+    `<p><strong>Assunto:</strong> ${escapar(d.assunto)}</p>` +
+    `<hr>` +
+    `<p>${escapar(d.mensagem.trim()).replace(/\n/g, "<br>")}</p>`
+  );
+}
+
+export async function enviarEmail(d: DadosContato, cfg: ConfigGraph): Promise<boolean> {
+  const token = await obterToken(cfg);
+  if (!token) return false;
+
+  const mensagem = {
+    message: {
+      subject: `[Site] ${d.assunto} — ${d.nome.trim()}`,
+      body: { contentType: "HTML", content: montarHtml(d) },
+      toRecipients: [{ emailAddress: { address: DESTINO } }],
+      // Responder no Outlook vai direto para o visitante.
+      replyTo: [{ emailAddress: { address: d.email.trim() } }],
+    },
+    saveToSentItems: false,
   };
 
   try {
-    const r = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${chave}`,
-        "Content-Type": "application/json",
+    const r = await fetch(
+      `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(REMETENTE)}/sendMail`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(mensagem),
       },
-      body: JSON.stringify(corpo),
-    });
+    );
     if (!r.ok) {
-      // Visível no log da Cloudflare — sem isso, uma chave expirada some em silêncio
-      console.error("Resend recusou o envio:", r.status, await r.text());
+      // 403 aqui costuma ser a Application Access Policy barrando a caixa.
+      console.error("Graph recusou o envio:", r.status, await r.text());
     }
     return r.ok;
   } catch (e) {
-    console.error("Falha de rede ao chamar a Resend:", e);
+    console.error("Falha de rede ao chamar o Graph:", e);
     return false;
   }
 }
+```
 
-export const onRequestPost = async (contexto: {
-  request: Request;
-  env: Env;
-}): Promise<Response> => {
-  const { request, env } = contexto;
+- [ ] **Passo 5: Rodar e confirmar que passa**
+
+```bash
+npx vitest run tests/graph.test.ts
+```
+
+Esperado: 9 testes passando.
+
+- [ ] **Passo 6: Commit**
+
+```bash
+git add api/src/turnstile.ts api/src/graph.ts tests/graph.test.ts
+git commit -m "feat: verificacao do Turnstile e envio pelo Microsoft Graph
+
+Client credentials contra o Entra, depois sendMail como no-reply@. O
+e-mail do visitante vai em replyTo, para responder direto pelo Outlook.
+Conteudo escapado antes de virar HTML.
+
+Cada falha registra status e corpo: token recusado quase sempre e secret
+expirado, e 403 no envio costuma ser a Application Access Policy.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
+```
+
+---
+
+## Task 9: Handler HTTP `/api/contato` (TDD)
+
+**Files:**
+- Create: `api/src/functions/contato.ts`
+- Test: `tests/contato.test.ts`
+
+**Interfaces:**
+- Consome: `validarFormulario`, `turnstileValido`, `gravarSubmissao`, `marcarEnviado`, `enviarEmail`
+- Consome: nomes de campo do formulário em `public/contato.html` — `nome`, `email`, `assunto`, `mensagem`, `cf-turnstile-response`
+- Produz: respostas 303 para `/contato.html#enviado`, `#erro`, `#robo`
+
+- [ ] **Passo 1: Escrever os testes que falham**
+
+Criar `tests/contato.test.ts`:
+
+```typescript
+import { describe, it, expect, vi, beforeEach } from "vitest";
+
+const turnstileValido = vi.fn();
+const gravarSubmissao = vi.fn();
+const marcarEnviado = vi.fn();
+const enviarEmail = vi.fn();
+
+vi.mock("../api/src/turnstile", () => ({ turnstileValido }));
+vi.mock("../api/src/armazenamento", () => ({ gravarSubmissao, marcarEnviado }));
+vi.mock("../api/src/graph", () => ({ enviarEmail }));
+vi.mock("@azure/functions", () => ({ app: { http: vi.fn() } }));
+
+const { contato } = await import("../api/src/functions/contato");
+
+const camposValidos = {
+  nome: "Maria Silva",
+  email: "maria@empresa.com.br",
+  assunto: "Orçamento",
+  mensagem: "Gostaria de automatizar a conferência de notas fiscais.",
+  "cf-turnstile-response": "token-valido",
+};
+
+const ROW_KEY = "2026-09-10T12:00:00.000Z-abc";
+
+function requisicao(campos: Record<string, string>) {
+  const form = new FormData();
+  for (const [k, v] of Object.entries(campos)) form.append(k, v);
+  return {
+    formData: async () => form,
+    headers: new Headers({ "x-forwarded-for": "203.0.113.7" }),
+  };
+}
+
+const contexto = { error: vi.fn(), log: vi.fn() };
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  process.env.GRAPH_TENANT_ID = "tenant";
+  process.env.GRAPH_CLIENT_ID = "client";
+  process.env.GRAPH_CLIENT_SECRET = "segredo";
+  process.env.TURNSTILE_SECRET_KEY = "turnstile";
+  process.env.TABLES_CONNECTION_STRING = "conexao";
+  turnstileValido.mockResolvedValue(true);
+  gravarSubmissao.mockResolvedValue(ROW_KEY);
+  enviarEmail.mockResolvedValue(true);
+  marcarEnviado.mockResolvedValue(undefined);
+});
+
+async function chamar(campos = camposValidos) {
+  return contato(requisicao(campos) as never, contexto as never);
+}
+
+describe("contato", () => {
+  it("redireciona para #enviado no caminho feliz", async () => {
+    const res = await chamar();
+    expect(res.status).toBe(303);
+    expect(res.headers?.Location).toBe("/contato.html#enviado");
+  });
+
+  it("redireciona para #erro quando a validação falha", async () => {
+    const res = await chamar({ ...camposValidos, email: "invalido" });
+    expect(res.headers?.Location).toBe("/contato.html#erro");
+  });
+
+  it("não grava nem envia quando a validação falha", async () => {
+    await chamar({ ...camposValidos, nome: "" });
+    expect(gravarSubmissao).not.toHaveBeenCalled();
+    expect(enviarEmail).not.toHaveBeenCalled();
+  });
+
+  it("redireciona para #robo quando o Turnstile reprova", async () => {
+    turnstileValido.mockResolvedValue(false);
+    const res = await chamar();
+    expect(res.headers?.Location).toBe("/contato.html#robo");
+  });
+
+  it("não grava quando o Turnstile reprova", async () => {
+    turnstileValido.mockResolvedValue(false);
+    await chamar();
+    expect(gravarSubmissao).not.toHaveBeenCalled();
+  });
+
+  it("grava antes de enviar", async () => {
+    await chamar();
+    expect(gravarSubmissao.mock.invocationCallOrder[0])
+      .toBeLessThan(enviarEmail.mock.invocationCallOrder[0]);
+  });
+
+  it("passa o IP de origem para a gravação", async () => {
+    await chamar();
+    expect(gravarSubmissao.mock.calls[0][0].ip).toBe("203.0.113.7");
+  });
+
+  it("não tenta enviar quando a gravação falha", async () => {
+    gravarSubmissao.mockResolvedValue(null);
+    const res = await chamar();
+    expect(enviarEmail).not.toHaveBeenCalled();
+    expect(res.headers?.Location).toBe("/contato.html#erro");
+  });
+
+  it("marca como enviado quando o Graph aceita", async () => {
+    await chamar();
+    expect(marcarEnviado).toHaveBeenCalledWith(ROW_KEY, "conexao");
+  });
+
+  it("redireciona para #erro e não marca quando o Graph recusa", async () => {
+    enviarEmail.mockResolvedValue(false);
+    const res = await chamar();
+    expect(marcarEnviado).not.toHaveBeenCalled();
+    expect(res.headers?.Location).toBe("/contato.html#erro");
+  });
+
+  it("redireciona para #erro quando falta configuração", async () => {
+    delete process.env.GRAPH_CLIENT_SECRET;
+    const res = await chamar();
+    expect(res.headers?.Location).toBe("/contato.html#erro");
+    expect(gravarSubmissao).not.toHaveBeenCalled();
+  });
+});
+```
+
+- [ ] **Passo 2: Rodar e confirmar que falha**
+
+```bash
+npx vitest run tests/contato.test.ts
+```
+
+Esperado: FALHA, módulo `../api/src/functions/contato` não existe.
+
+- [ ] **Passo 3: Implementar**
+
+Criar `api/src/functions/contato.ts`:
+
+```typescript
+import {
+  app,
+  type HttpRequest,
+  type HttpResponseInit,
+  type InvocationContext,
+} from "@azure/functions";
+import { validarFormulario, type DadosContato } from "../validacao";
+import { turnstileValido } from "../turnstile";
+import { gravarSubmissao, marcarEnviado } from "../armazenamento";
+import { enviarEmail, type ConfigGraph } from "../graph";
+
+function redirecionar(ancora: string): HttpResponseInit {
+  return { status: 303, headers: { Location: `/contato.html#${ancora}` } };
+}
+
+interface Config {
+  graph: ConfigGraph;
+  turnstileSecret: string;
+  conexaoTabelas: string;
+}
+
+/**
+ * Falta de configuração é erro de operação, não do visitante. Detectar antes
+ * de gravar evita uma linha órfã que nunca teria como ser enviada.
+ */
+function lerConfig(): Config | null {
+  const {
+    GRAPH_TENANT_ID,
+    GRAPH_CLIENT_ID,
+    GRAPH_CLIENT_SECRET,
+    TURNSTILE_SECRET_KEY,
+    TABLES_CONNECTION_STRING,
+  } = process.env;
+
+  if (
+    !GRAPH_TENANT_ID ||
+    !GRAPH_CLIENT_ID ||
+    !GRAPH_CLIENT_SECRET ||
+    !TURNSTILE_SECRET_KEY ||
+    !TABLES_CONNECTION_STRING
+  ) {
+    return null;
+  }
+
+  return {
+    graph: {
+      tenantId: GRAPH_TENANT_ID,
+      clientId: GRAPH_CLIENT_ID,
+      clientSecret: GRAPH_CLIENT_SECRET,
+    },
+    turnstileSecret: TURNSTILE_SECRET_KEY,
+    conexaoTabelas: TABLES_CONNECTION_STRING,
+  };
+}
+
+export async function contato(
+  request: HttpRequest,
+  context: InvocationContext,
+): Promise<HttpResponseInit> {
+  const config = lerConfig();
+  if (!config) {
+    context.error("Application Settings incompletas — o formulario nao pode operar");
+    return redirecionar("erro");
+  }
 
   let form: FormData;
   try {
     form = await request.formData();
-  } catch {
+  } catch (e) {
+    context.error("Corpo do formulario ilegivel:", e);
     return redirecionar("erro");
   }
 
@@ -1032,36 +1033,56 @@ export const onRequestPost = async (contexto: {
     mensagem: String(form.get("mensagem") ?? ""),
   };
 
-  if (validarFormulario(dados).length > 0) return redirecionar("erro");
+  const erros = validarFormulario(dados);
+  if (erros.length > 0) {
+    context.error("Formulario invalido:", erros.join(", "));
+    return redirecionar("erro");
+  }
 
+  const ip = request.headers.get("x-forwarded-for") ?? "";
   const token = String(form.get("cf-turnstile-response") ?? "");
-  const ip = request.headers.get("CF-Connecting-IP");
-  if (!(await turnstileValido(token, env.TURNSTILE_SECRET_KEY, ip))) {
+  if (!(await turnstileValido(token, config.turnstileSecret, ip || null))) {
     return redirecionar("robo");
   }
 
-  const enviado = await enviarEmail(dados, env.RESEND_API_KEY);
-  return redirecionar(enviado ? "enviado" : "erro");
-};
+  // Grava antes de enviar: se o Graph falhar, o lead continua recuperavel.
+  const rowKey = await gravarSubmissao({ ...dados, ip }, config.conexaoTabelas);
+  if (!rowKey) return redirecionar("erro");
+
+  const enviado = await enviarEmail(dados, config.graph);
+  if (!enviado) return redirecionar("erro");
+
+  await marcarEnviado(rowKey, config.conexaoTabelas);
+  return redirecionar("enviado");
+}
+
+app.http("contato", {
+  methods: ["POST"],
+  authLevel: "anonymous",
+  route: "contato",
+  handler: contato,
+});
 ```
 
-- [x] **Passo 4: Rodar e confirmar que passa**
+- [ ] **Passo 4: Rodar a verificação completa**
 
 ```bash
-npm test
+npm run verificar
 ```
 
-Esperado: 15 testes passando (9 de validação + 6 do handler).
+Esperado: `tsc` sem erros e 37 testes passando (9 validação + 8 armazenamento + 9 graph + 11 contato).
 
-- [x] **Passo 5: Commit**
+- [ ] **Passo 5: Commit**
 
 ```bash
-git add functions/ tests/contato.test.ts
-git commit -m "feat: function do formulario de contato
+git add api/src/functions/contato.ts tests/contato.test.ts
+git commit -m "feat: handler HTTP do formulario de contato
 
-Valida, confere Turnstile server-side, envia pela Resend e redireciona
-com ancora de estado. E-mail do visitante vai como reply_to para permitir
-resposta direta pelo Outlook. Conteudo escapado antes de virar HTML.
+Orquestra validacao, Turnstile, gravacao e envio. Grava antes de enviar,
+e so marca como enviado depois do Graph confirmar.
+
+Configuracao incompleta e detectada antes de gravar: sem isso ficaria uma
+linha orfa que nunca teria como ser enviada.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
@@ -1069,45 +1090,19 @@ Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
 
 ---
 
-## Task 6: Publicação e configuração de serviços
+## Task 10: Provisionar o Azure e publicar
 
-Esta tarefa mistura passos que exigem contas e cartão — o executor **não** deve criar contas nem inserir chaves. Os passos marcados **[USUÁRIO]** são do Uemerson.
+Passos marcados **[USUÁRIO]** exigem contas, cartão ou consentimento de administrador. O executor não os faz.
 
 **Files:**
-- Modify: `public/contato.html` (trocar a site key do Turnstile)
+- Modify: `public/contato.html` (site key do Turnstile)
 
-- [x] **Passo 1: Criar o repositório no GitHub**
+- [ ] **Passo 1: [USUÁRIO] Criar o widget do Turnstile**
 
-```bash
-cd C:/PROJETOS/alvesmaia-site
-gh repo create alvesmaia-site --public --source=. --remote=origin --description "Site institucional da Alvesmaia"
-git push -u origin main
-```
+Painel da Cloudflare → Turnstile → Add site. Domínio `alvesmaia.com`, modo **Managed**.
+Copiar a **site key** (pública) e a **secret key** (privada).
 
-- [ ] **Passo 2: [USUÁRIO] Criar conta na Resend e verificar o subdomínio**
-
-1. Criar conta em resend.com (plano gratuito, 3.000 e-mails/mês)
-2. Adicionar o domínio **`mail.alvesmaia.com`** — não a raiz
-3. A Resend mostra registros de DNS (TXT de DKIM e possivelmente MX de bounce)
-4. Adicionar esses registros na Cloudflare, **todos sob `mail.alvesmaia.com`**
-5. Gerar uma API key e guardá-la
-
-**Verificação obrigatória antes de seguir:** confirmar que a raiz não foi tocada.
-
-```bash
-nslookup -type=MX alvesmaia.com
-nslookup -type=TXT alvesmaia.com
-```
-
-Esperado: MX ainda apontando para `alvesmaia-com.mail.protection.outlook.com`, e o TXT de SPF do Microsoft 365 intacto.
-
-- [ ] **Passo 3: [USUÁRIO] Criar o widget do Turnstile**
-
-1. Cloudflare → Turnstile → adicionar site
-2. Domínio: `alvesmaia.com`
-3. Copiar a **site key** (pública) e a **secret key** (privada)
-
-- [ ] **Passo 4: Colar a site key no HTML**
+- [ ] **Passo 2: Colar a site key no HTML**
 
 Em `public/contato.html`, trocar `COLAR_SITE_KEY_AQUI` pela site key real. Ela é pública, pode ir para o repositório.
 
@@ -1120,68 +1115,139 @@ Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
 git push
 ```
 
-- [ ] **Passo 5: Criar o projeto no Cloudflare Pages**
+- [ ] **Passo 3: [USUÁRIO] Registrar o app no Entra**
 
-Cloudflare → Workers & Pages → Create → Pages → conectar ao repositório `alvesmaia/alvesmaia-site`.
+Portal do Azure → Microsoft Entra ID → App registrations → New registration.
 
-Configuração de build:
-- Framework preset: **None**
-- Build command: **(vazio)**
-- Build output directory: **`public`**
-
-- [ ] **Passo 6: [USUÁRIO] Cadastrar os segredos**
-
-No projeto Pages → Settings → Environment variables, como **Secret** (criptografado):
-
-| Nome | Valor |
+| Campo | Valor |
 |---|---|
-| `RESEND_API_KEY` | chave gerada no Passo 2 |
-| `TURNSTILE_SECRET_KEY` | secret key do Passo 3 |
+| Nome | `alvesmaia-site-formulario` |
+| Tipos de conta | Somente este diretório organizacional |
+| Redirect URI | deixar vazio |
 
-- [ ] **Passo 7: Apontar o domínio**
+Depois de criar, anotar **Application (client) ID** e **Directory (tenant) ID**.
 
-Pages → Custom domains → adicionar `alvesmaia.com` e `www.alvesmaia.com`.
+Em **API permissions** → Add a permission → Microsoft Graph → **Application permissions** → `Mail.Send` → Add. Em seguida **Grant admin consent**.
 
-- [ ] **Passo 8: Verificação de regressão do e-mail**
+Em **Certificates & secrets** → New client secret → validade 24 meses. Copiar o **Value** na hora; ele não é exibido de novo. **Colocar a data de expiração no calendário agora.**
 
-Este é o passo mais importante da tarefa.
+- [ ] **Passo 4: [USUÁRIO] Restringir a permissão a uma única caixa**
+
+Sem isto, o app pode enviar como qualquer pessoa do tenant. Não é opcional.
+
+```powershell
+Install-Module -Name ExchangeOnlineManagement -Scope CurrentUser
+Connect-ExchangeOnline -UserPrincipalName uemerson@alvesmaia.com
+
+New-ApplicationAccessPolicy `
+  -AppId "<Application (client) ID do passo 3>" `
+  -PolicyScopeGroupId "no-reply@alvesmaia.com" `
+  -AccessRight RestrictAccess `
+  -Description "Formulario do site: so pode enviar como no-reply"
+```
+
+Conferir que ficou restrito:
+
+```powershell
+Test-ApplicationAccessPolicy -Identity no-reply@alvesmaia.com -AppId "<client id>"
+Test-ApplicationAccessPolicy -Identity uemerson@alvesmaia.com -AppId "<client id>"
+```
+
+Esperado: `AccessCheckResult: Granted` no primeiro, **`Denied` no segundo**. Se o segundo vier `Granted`, a política não aplicou — não prosseguir.
+
+- [ ] **Passo 5: [USUÁRIO] Criar a Storage Account**
+
+Portal do Azure → Storage accounts → Create.
+
+| Campo | Valor |
+|---|---|
+| Resource group | `rg-alvesmaia-site` (criar) |
+| Nome | `stalvesmaiasite` |
+| Região | Brazil South |
+| Performance | Standard |
+| Redundância | LRS |
+
+Depois: Security + networking → Access keys → copiar a **Connection string** da key1.
+
+- [ ] **Passo 6: [USUÁRIO] Criar o Static Web App**
+
+Portal do Azure → Static Web Apps → Create.
+
+| Campo | Valor |
+|---|---|
+| Resource group | `rg-alvesmaia-site` |
+| Nome | `swa-alvesmaia-site` |
+| Plano | **Free** |
+| Origem | GitHub → `alvesmaia/alvesmaia-site`, branch `main` |
+| Build preset | Custom |
+| App location | `public` |
+| Api location | `api` |
+| Output location | *(vazio)* |
+
+O Azure cria o GitHub Action e dispara o primeiro deploy sozinho.
+
+- [ ] **Passo 7: Conferir o workflow criado**
 
 ```bash
-nslookup -type=MX alvesmaia.com
-nslookup -type=TXT alvesmaia.com
-nslookup -type=TXT _dmarc.alvesmaia.com
-nslookup -type=CNAME selector1._domainkey.alvesmaia.com
+cd C:/PROJETOS/alvesmaia-site
+git pull
+cat .github/workflows/azure-static-web-apps-*.yml | grep -A3 'app_location'
+gh run list --limit 3
+```
+
+Confirmar que `app_location` é `public` e `api_location` é `api`.
+
+- [ ] **Passo 8: [USUÁRIO] Cadastrar as Application Settings**
+
+SWA → Settings → Environment variables → Add, uma por uma:
+
+| Nome | Origem |
+|---|---|
+| `GRAPH_TENANT_ID` | Directory (tenant) ID, passo 3 |
+| `GRAPH_CLIENT_ID` | Application (client) ID, passo 3 |
+| `GRAPH_CLIENT_SECRET` | Value do client secret, passo 3 |
+| `TURNSTILE_SECRET_KEY` | secret key, passo 1 |
+| `TABLES_CONNECTION_STRING` | Connection string, passo 5 |
+
+Salvar. O SWA reinicia a Function sozinho.
+
+- [ ] **Passo 9: [USUÁRIO] Criar o alerta de orçamento**
+
+Portal do Azure → Cost Management → Budgets → Add. Escopo `rg-alvesmaia-site`, valor **US$ 1**, alerta em 100%, e-mail `uemerson@alvesmaia.com`.
+
+- [ ] **Passo 10: Apontar o domínio**
+
+SWA → Custom domains → Add. Primeiro `www.alvesmaia.com` (CNAME), depois `alvesmaia.com` (apex, validação por TXT).
+
+Na Cloudflare, criar os registros que o Azure indicar. **Proxy desligado (nuvem cinza)** — o proxy da Cloudflare na frente do SWA quebra a validação do certificado.
+
+Atenção ao adicionar o TXT no apex: é um TXT **a mais**, ao lado do SPF existente. Não substituir nada.
+
+- [ ] **Passo 11: Verificação de regressão do e-mail**
+
+O passo mais importante desta task.
+
+```bash
+nslookup -type=MX alvesmaia.com 173.245.58.108
+nslookup -type=TXT alvesmaia.com 173.245.58.108
+nslookup -type=TXT _dmarc.alvesmaia.com 173.245.58.108
+nslookup -type=CNAME selector1._domainkey.alvesmaia.com 173.245.58.108
 ```
 
 Esperado, sem nenhuma alteração:
 - MX → `alvesmaia-com.mail.protection.outlook.com`
-- TXT → `v=spf1 include:spf.protection.outlook.com ~all`
+- TXT → `v=spf1 include:spf.protection.outlook.com ~all` (mais o TXT de validação do Azure, que é esperado)
 - `_dmarc` → `v=DMARC1; p=none; rua=mailto:...@dmarc-reports.cloudflare.net`
 - `selector1._domainkey` → `...dkim.mail.microsoft`
 
-Se qualquer um desses tiver mudado, **parar e reverter o domínio customizado** antes de continuar.
+Se qualquer um tiver mudado, **parar e reverter o domínio customizado** antes de continuar.
 
-- [ ] **Passo 9: Checklist de verificação manual**
+- [ ] **Passo 12: Checklist de verificação manual**
 
-Executar o checklist da spec, seção "Verificação":
+Executar os 11 itens da seção "Verificação" da spec. Os dois que não podem ser pulados:
 
-1. As 4 páginas renderizam em desktop e mobile
-2. Navegação funciona nas duas larguras
-3. Tema claro e escuro conferidos
-4. Formulário enviado de verdade → chega em `contato@alvesmaia.com`
-5. Responder no Outlook vai para o e-mail do visitante
-6. Turnstile aparece e bloqueia envio sem interação
-7. Com JavaScript desabilitado: menu abre e formulário envia
-8. `alvesmaia.com` e `www.alvesmaia.com` ambos servem o site
-9. E-mail intacto (Passo 8 acima)
-
-- [ ] **Passo 10: Commit final**
-
-```bash
-git add -A
-git commit -m "docs: registro da configuracao de publicacao"
-git push
-```
+- **Item 10:** confirmar pelo `Test-ApplicationAccessPolicy` que o app **não** envia como `uemerson@alvesmaia.com`
+- **Item 11:** o passo 11 acima
 
 ---
 
@@ -1197,4 +1263,6 @@ Esperado: `1` em cada um dos 4 arquivos.
 
 **Sobre o JavaScript:** o único `<script>` do site é o widget do Turnstile, carregado da Cloudflare, apenas em `contato.html`. Nenhum JavaScript próprio. Se surgir vontade de adicionar, revisar a spec antes.
 
-**Sobre a chave da Resend:** se aparecer em qualquer arquivo commitado, é incidente de segurança — revogar na Resend imediatamente e gerar outra.
+**Sobre CommonJS na pasta `api/`:** o `package.json` da raiz é `"type": "module"`, mas o `api/tsconfig.json` compila para CommonJS. Não é inconsistência — é o que o runtime do Azure Functions v4 espera. Não "corrigir".
+
+**Sobre o client secret:** se aparecer em qualquer arquivo commitado, é incidente de segurança — revogar no Entra imediatamente e gerar outro.
