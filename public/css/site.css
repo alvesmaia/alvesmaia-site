@@ -221,22 +221,6 @@ p { text-wrap: pretty; }
 .criterio p { font-size: 15.5px; line-height: 1.6; color: var(--am-tinta); }
 .criterio .rotulo { display: block; margin-bottom: 7px; }
 
-/* ---------- Índice mono ---------- */
-.indice { display: flex; flex-direction: column; }
-.indice li {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--am-linha);
-  font-size: 12px;
-  font-weight: var(--am-rotulo-peso);
-  letter-spacing: var(--am-rotulo-espaco);
-  text-transform: uppercase;
-  color: var(--am-tinta-2);
-}
-.indice li span { color: var(--am-tinta-3); font-weight: 600; }
-
 /* ---------- Etapas numeradas ----------
    Numeração só aqui: é a única parte do site que é de fato sequência. */
 .etapas {
@@ -292,20 +276,6 @@ p { text-wrap: pretty; }
 
 .perfil { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
 
-/* Ficha: pares rótulo/valor */
-.ficha { width: 300px; }
-.ficha__linha {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 12px 22px;
-  border-bottom: 1px solid var(--am-linha-tenue);
-  font-size: 13.5px;
-}
-.ficha__linha:last-child { border-bottom: 0; }
-.ficha__linha dt { color: var(--am-tinta-3); }
-.ficha__linha dd { margin: 0; font-weight: 600; }
-.ficha__linha dd.destaque { color: var(--am-ciano-700); }
 
 /* ---------- Bloco de chamada ----------
    Claro, e não navy: o rodapé já é navy, e dois blocos escuros empilhados
@@ -331,7 +301,6 @@ p { text-wrap: pretty; }
 .chamada-bloco .botao { white-space: nowrap; }
 
 /* ---------- Formulário ---------- */
-.contato-grade { display: flex; gap: 80px; align-items: flex-start; }
 .form { width: 620px; flex-shrink: 0; display: flex; flex-direction: column; gap: 24px; }
 .campo { display: flex; flex-direction: column; gap: 8px; }
 .campo label {
@@ -372,11 +341,6 @@ p { text-wrap: pretty; }
 }
 .form button { align-self: flex-start; margin-top: 4px; padding: 16px 34px; }
 
-.canais { flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 30px; }
-.nota { border: 1px solid var(--am-linha-forte); background: var(--am-papel-alt); border-radius: var(--am-raio); padding: 20px 22px; }
-.nota p { font-size: 14.5px; line-height: 1.62; color: var(--am-tinta-2); margin-top: 9px; }
-.nota__cabeca { display: flex; align-items: center; gap: 10px; }
-.nota__cabeca .rotulo { color: var(--am-tinta); }
 
 /* ---------- Avisos de estado ----------
    Revelados por âncora: a Function redireciona para #enviado, #erro ou #robo. */
@@ -446,7 +410,6 @@ p { text-wrap: pretty; }
   .hero .container { gap: 48px; }
   .hero__texto { width: 480px; }
   .servico { gap: 48px; }
-  .contato-grade { gap: 48px; }
   .form { width: 520px; }
   .atuacao { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
@@ -454,11 +417,10 @@ p { text-wrap: pretty; }
 @media (max-width: 900px) {
   .secao { padding: 56px 0; }
   .hero { padding: 56px 0 64px; }
-  .hero .container, .duas, .servico, .contato-grade { flex-direction: column; gap: 36px; }
+  .hero .container, .duas, .servico { flex-direction: column; gap: 36px; }
   .hero__texto, .duas__enunciado, .servico__rail, .form { width: 100%; }
   .hero__figura { justify-content: flex-start; width: 100%; }
   .hero__figura svg, .duas__corpo svg { width: 100%; height: auto; }
-  .ficha { width: 100%; }
   .etapas { grid-template-columns: 1fr; }
   .perfil { grid-template-columns: 1fr; gap: 20px; }
   .secao__topo { flex-direction: column; gap: 14px; margin-bottom: 32px; }
