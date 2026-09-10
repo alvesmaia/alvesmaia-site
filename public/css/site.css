@@ -410,6 +410,14 @@ p { text-wrap: pretty; }
 .rodape__coluna .rotulo { color: var(--am-sobre-navy-fraco); }
 .rodape__coluna a { font-size: 14px; color: var(--am-sobre-navy-forte); }
 .rodape__coluna a:hover { color: #FFFFFF; }
+/* Dentro do rodapé, separado só por uma hairline — não uma barra própria,
+   que leria como um segundo rodapé. */
+.rodape__copyright {
+  border-top: 1px solid var(--am-linha-navy);
+  padding: 20px 0 26px;
+  font-size: 13px;
+  color: var(--am-sobre-navy-fraco);
+}
 
 /* ---------- Acessibilidade ---------- */
 .pular-para-conteudo {
