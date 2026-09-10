@@ -45,7 +45,7 @@ alvesmaia-site/
 │   └── img/
 │       ├── logo-horizontal.svg
 │       ├── logo-horizontal-escuro.svg
-│       ├── simbolo.svg
+│       ├── simbolo-escuro.svg
 │       └── favicon/            Conjunto completo de ícones
 ├── docs/superpowers/
 ├── package.json                Só devDependencies
@@ -85,7 +85,7 @@ mkdir -p public/css public/img/favicon
 cp C:/PROJETOS/branding/brand/tokens.css public/css/tokens.css
 cp C:/PROJETOS/branding/brand/logo/alvesmaia-horizontal.svg public/img/logo-horizontal.svg
 cp C:/PROJETOS/branding/brand/logo/alvesmaia-horizontal-escuro.svg public/img/logo-horizontal-escuro.svg
-cp C:/PROJETOS/branding/brand/logo/alvesmaia-simbolo.svg public/img/simbolo.svg
+cp C:/PROJETOS/branding/brand/logo/alvesmaia-simbolo-escuro.svg public/img/simbolo-escuro.svg
 cp C:/PROJETOS/branding/brand/favicon/favicon.svg public/img/favicon/favicon.svg
 cp C:/PROJETOS/branding/brand/favicon/favicon-32.png public/img/favicon/favicon-32.png
 cp C:/PROJETOS/branding/brand/favicon/apple-touch-icon-180.png public/img/favicon/apple-touch-icon-180.png
@@ -97,7 +97,7 @@ cp C:/PROJETOS/branding/brand/favicon/apple-touch-icon-180.png public/img/favico
 ls -la public/css/ public/img/ public/img/favicon/
 ```
 
-Esperado: `tokens.css`, 3 SVGs de logo, 3 arquivos de favicon.
+Esperado: `tokens.css`, 3 SVGs de logo (o simbolo e o horizontal do cabecalho sao as variantes brancas, porque ambos ficam sobre fundo navy), 3 arquivos de favicon.
 
 - [ ] **Passo 3: Acrescentar os tokens de tema escuro ao `tokens.css`**
 
@@ -362,7 +362,7 @@ O cabeçalho e o rodapé deste arquivo são o **molde** para as outras 3 página
 <footer class="rodape">
   <div class="container">
     <div>
-      <img src="/img/simbolo.svg" alt="">
+      <img src="/img/simbolo-escuro.svg" alt="">
       <p style="color:#9CBBD2;margin-top:14px;font-size:14px">Soluções sob medida para a sua empresa</p>
     </div>
     <div>

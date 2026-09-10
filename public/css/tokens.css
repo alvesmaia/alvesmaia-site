@@ -1,0 +1,58 @@
+:root{
+  /* Marca */
+  --am-navy:#102A43;
+  --am-ciano:#00A8E8;
+
+  /* Ciano da marca reprova como texto sobre branco (2,70:1).
+     Para texto e link use --am-ciano-700 (4,97:1, AA). */
+  --am-navy-500:#2E5A80;
+  --am-navy-700:#1B3D5C;
+  --am-navy-800:#102A43;
+  --am-navy-900:#0A1B2B;
+  --am-ciano-100:#E2F3FC;
+  --am-ciano-500:#00A8E8;
+  --am-ciano-600:#0089C4;
+  --am-ciano-700:#0077AB;
+  --am-neutro-50:#F6F9FC;
+  --am-neutro-100:#EAF1F7;
+  --am-neutro-200:#D7E2EC;
+  --am-neutro-300:#B9C8D6;
+  --am-neutro-500:#6C8298;
+  --am-neutro-600:#5A7189;
+  --am-neutro-700:#3A5163;
+  --am-neutro-900:#0F1E2B;
+  --am-semantica-sucesso:#0E7A54;
+  --am-semantica-atencao:#96600B;
+  --am-semantica-erro:#B02E21;
+  --am-semantica-info:#0077AB;
+
+  /* Tipografia */
+  --am-fonte:"Nunito Sans","Segoe UI",Helvetica,Arial,sans-serif;
+}
+
+/* ---- Tema: superfícies semânticas ---- */
+:root{
+  --am-fundo:#FFFFFF;
+  --am-fundo-alt:var(--am-neutro-50);
+  --am-superficie:#FFFFFF;
+  --am-texto:var(--am-neutro-900);
+  --am-texto-suave:var(--am-neutro-600);
+  --am-borda:var(--am-neutro-200);
+  --am-link:var(--am-ciano-700);
+  --am-cabecalho-fundo:var(--am-navy-800);
+  --am-cabecalho-texto:#FFFFFF;
+}
+
+@media (prefers-color-scheme: dark){
+  :root{
+    --am-fundo:#08131F;
+    --am-fundo-alt:#0E2233;
+    --am-superficie:#0E2233;
+    --am-texto:#E6EFF6;
+    --am-texto-suave:#9BB1C3;
+    --am-borda:#1B3346;
+    --am-link:#4FC9F8;
+    --am-cabecalho-fundo:#08131F;
+    --am-cabecalho-texto:#FFFFFF;
+  }
+}
