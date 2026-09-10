@@ -1,0 +1,14 @@
+{
+  "name": "alvesmaia-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^2.1.8",
+    "typescript": "^5.7.2",
+    "@cloudflare/workers-types": "^4.20241218.0"
+  }
+}
