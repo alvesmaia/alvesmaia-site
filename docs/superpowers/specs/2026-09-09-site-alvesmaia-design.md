@@ -145,8 +145,12 @@ via query string ou migrar para envio por `fetch`.
 
 ## Verificação
 
-Não há suíte de testes automatizados — para um site institucional de 4 páginas seria
-mais custo que benefício. A verificação é um checklist manual, executado após a publicação:
+As 4 páginas estáticas não têm testes automatizados — para HTML sem lógica seria mais
+custo que benefício. A **Pages Function do formulário, sim**: ela tem ramificação real
+(validação, Turnstile, Resend) e falha em silêncio significa lead perdido. Testes em
+Vitest, dependência de desenvolvimento apenas — a publicação continua sem build step.
+
+Além dos testes da Function, um checklist manual executado após a publicação:
 
 1. As 4 páginas renderizam corretamente em desktop e mobile
 2. Navegação funciona entre todas as páginas, em ambas as larguras
