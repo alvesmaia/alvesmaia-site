@@ -4,7 +4,9 @@
   "type": "module",
   "scripts": {
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "tipos": "tsc --noEmit",
+    "verificar": "npm run tipos && npm test"
   },
   "devDependencies": {
     "vitest": "^2.1.8",
