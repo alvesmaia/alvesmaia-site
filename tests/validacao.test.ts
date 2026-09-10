@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { validarFormulario } from "../src/validacao";
+import { validarFormulario } from "../api/src/validacao";
 
 const valido = {
   nome: "Maria Silva",
