@@ -1,453 +1,686 @@
 /* ============================================================
-   Alvesmaia — folha principal
-   Direção "Esquemático": papel claro, hairlines e diagramas no
-   lugar de cartões. Navy é acento estrutural, não fundo de página.
+   Alvesmaia — folha principal (handoff v2)
+   Página única com seções ancoradas.
    ============================================================ */
 
-/* ---------- Reset mínimo ---------- */
 *, *::before, *::after { box-sizing: border-box; }
-body, h1, h2, h3, p, ul, figure { margin: 0; }
-ul { padding: 0; list-style: none; }
+body, h1, h2, h3, p, ul, ol, figure, dl, dd { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
 img, svg { max-width: 100%; display: block; }
 
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
 body {
-  font-family: var(--am-fonte);
-  background: var(--am-papel);
-  color: var(--am-tinta);
+  font-family: var(--fonte);
+  background: var(--bg);
+  color: var(--text);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
-a { color: var(--am-link); text-decoration: none; }
-a:hover { color: var(--am-link-hover); }
+a { color: var(--link); text-decoration: none; }
+:focus-visible { outline: 2px solid var(--cta); outline-offset: 2px; }
 
-:focus-visible { outline: 2px solid var(--am-ciano-700); outline-offset: 2px; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.container--estreito { max-width: 860px; }
 
-.container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
-
-/* ---------- Rótulo técnico (mono) ---------- */
-.rotulo {
-  font-size: 11.5px;
-  font-weight: var(--am-rotulo-peso);
-  letter-spacing: var(--am-rotulo-espaco);
-  text-transform: uppercase;
-  color: var(--am-ciano-700);
+/* ---------- Tipografia ---------- */
+h1 {
+  font-size: clamp(38px, 5.2vw, 60px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+  text-wrap: balance;
+  color: var(--ink);
 }
-.rotulo--neutro { color: var(--am-tinta-2); }
+h2 {
+  font-size: clamp(28px, 3.4vw, 38px);
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  line-height: 1.14;
+  text-wrap: balance;
+  color: var(--ink);
+}
+h3 { font-size: 18px; font-weight: 800; letter-spacing: -0.01em; color: var(--ink); }
 
-/* Rótulo precedido de um traço ciano — abre as seções principais */
+.lead { font-size: 17px; line-height: 1.65; max-width: 64ch; color: var(--muted); }
+.lead--hero { font-size: 18.5px; max-width: 56ch; }
+
+/* Rótulo em caixa alta: Nunito Sans com entreletra larga, nunca monoespaçada. */
 .eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 11.5px;
-  font-weight: var(--am-rotulo-peso);
-  letter-spacing: var(--am-rotulo-espaco);
+  font-size: 11px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--am-tinta-2);
+  color: var(--link);
 }
-.eyebrow::before {
-  content: "";
-  width: 28px;
-  height: 1px;
-  background: var(--am-ciano);
-  flex-shrink: 0;
-}
+.micro { font-size: 13px; color: var(--faint); }
 
 /* ---------- Cabeçalho ---------- */
 .cabecalho {
   position: sticky;
   top: 0;
-  z-index: 20;
-  background: var(--am-papel);
-  border-bottom: 1px solid var(--am-linha-suave);
-  /* Linha suavizada: a sombra curta dissolve para baixo, separando sem cortar */
-  box-shadow: 0 6px 14px -10px rgba(16, 42, 67, 0.28);
+  z-index: 50;
+  background: var(--header);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rule);
 }
-.cabecalho .container {
-  min-height: 84px;
+.cabecalho__interno {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  min-height: 64px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 24px;
+  gap: 28px;
 }
-.cabecalho__logo { display: flex; align-items: center; gap: 12px; color: var(--am-tinta); }
-.cabecalho__logo svg { width: 58px; height: 28px; }
-.cabecalho__logo span { font-size: 21px; font-weight: 600; letter-spacing: -0.01em; }
+.cabecalho__logo img { height: 26px; width: auto; }
 
-.cabecalho__nav ul { display: flex; align-items: center; gap: 34px; }
-.cabecalho__nav a {
-  color: var(--am-tinta-2);
-  font-size: 14.5px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.cabecalho__nav a:hover { color: var(--am-tinta); }
-.cabecalho__nav a[aria-current="page"] { color: var(--am-tinta); }
-/* O marcador de página atual é um quadrado ciano, não um sublinhado */
-.cabecalho__nav a[aria-current="page"]::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--am-ciano);
-}
+/* O checkbox comanda o menu no mobile e nunca é visto em largura nenhuma. */
+.nav-toggle { position: absolute; opacity: 0; pointer-events: none; }
+.nav { flex: 1; display: flex; gap: 22px; flex-wrap: wrap; }
+.nav a { font-size: 14.5px; font-weight: 600; color: var(--muted); }
+.nav a:hover { color: var(--ink); }
 
-/* Menu mobile em CSS puro — sem JavaScript */
-#menu-toggle { position: absolute; opacity: 0; pointer-events: none; }
-.cabecalho__hamburguer { display: none; cursor: pointer; padding: 8px; line-height: 0; }
-.cabecalho__hamburguer span {
-  display: block; width: 24px; height: 1.5px;
-  background: var(--am-tinta); margin: 5px 0;
+.tema-btn {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
 }
-#menu-toggle:focus-visible + .cabecalho__hamburguer {
-  outline: 2px solid var(--am-ciano-700); outline-offset: 2px;
-}
+.tema-btn:hover { color: var(--ink); border-color: var(--rule-2); }
+.tema-btn svg { width: 17px; height: 17px; }
+/* Um ícone por tema, alternado por CSS — sem trocar src por script. */
+.tema-btn [data-icone="escuro"] { display: none; }
+[data-tema="escuro"] .tema-btn [data-icone="escuro"] { display: block; }
+[data-tema="escuro"] .tema-btn [data-icone="claro"] { display: none; }
 
-/* ---------- Tipografia ---------- */
-h1 {
-  font-size: clamp(34px, 4.6vw, 62px);
-  line-height: 1.05;
-  font-weight: 900;
-  letter-spacing: -0.028em;
-  text-wrap: balance;
-}
-h2 {
-  font-size: clamp(25px, 2.6vw, 34px);
-  line-height: 1.15;
-  font-weight: 900;
-  letter-spacing: -0.022em;
-  text-wrap: balance;
-}
-h3 { font-size: 18px; font-weight: 700; line-height: 1.3; }
-p { text-wrap: pretty; }
-
-.chamada { font-size: clamp(17px, 1.5vw, 19px); line-height: 1.6; color: var(--am-tinta-2); }
-.corpo { font-size: 16.5px; line-height: 1.65; color: var(--am-tinta-2); }
-
-/* ---------- Seções ---------- */
-.secao { padding: 72px 0; border-bottom: 1px solid var(--am-linha); }
-/* O cabeçalho é fixo: sem esta folga a âncora para atrás dele. */
-.secao[id] { scroll-margin-top: 96px; }
-.secao--branca { background: var(--am-branco); }
-.secao--papel { background: var(--am-papel); }
-/* Grade de blueprint: só nas aberturas, e discreta */
-.secao--grade {
-  background-color: var(--am-papel);
-  background-image:
-    linear-gradient(var(--am-grade) 1px, transparent 1px),
-    linear-gradient(90deg, var(--am-grade) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-
-/* Duas colunas: enunciado à esquerda, desenvolvimento à direita */
-.duas { display: flex; gap: 80px; align-items: flex-start; }
-.duas__enunciado { width: 430px; flex-shrink: 0; display: flex; flex-direction: column; gap: 18px; }
-.duas__corpo { flex-grow: 1; min-width: 0; }
-.duas--centro { align-items: center; }
-
-/* ---------- Hero ---------- */
-.hero { padding: 76px 0 84px; }
-.hero .container { display: flex; gap: 72px; align-items: center; }
-.hero__texto { width: 570px; flex-shrink: 0; display: flex; flex-direction: column; gap: 26px; }
-.hero__figura { flex-grow: 1; display: flex; justify-content: flex-end; min-width: 0; }
-.hero h1 { font-size: clamp(36px, 4.8vw, 62px); }
+/* Logo por tema: os dois no HTML, alternados por CSS — evita 404 e flash. */
+img[data-logo="escuro"] { display: none; }
+[data-tema="escuro"] img[data-logo="escuro"] { display: block; }
+[data-tema="escuro"] img[data-logo="claro"] { display: none; }
 
 /* ---------- Botões ---------- */
-.acoes { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
 .botao {
   display: inline-block;
-  font-size: 15px;
-  font-weight: 700;
-  padding: 15px 28px;
+  font-weight: 800;
   border: 1px solid transparent;
-  border-radius: var(--am-raio);
+  border-radius: 6px;
   cursor: pointer;
   font-family: inherit;
   text-align: center;
 }
-.botao--primario { background: var(--am-tinta); color: #FFFFFF; }
-.botao--primario:hover { background: var(--am-navy-900); color: #FFFFFF; }
-.botao--linha { border-color: var(--am-linha-forte); color: var(--am-tinta); }
-.botao--linha:hover { border-color: var(--am-tinta); color: var(--am-tinta); }
-.botao--ciano { background: var(--am-ciano); color: var(--am-navy-900); }
-.botao--ciano:hover { background: var(--am-ciano-claro); color: var(--am-navy-900); }
+.botao--primario { background: var(--cta); color: var(--cta-ink); }
+.botao--primario:hover { background: var(--cta-hover); color: var(--cta-ink); }
+.botao--secundario { border-color: var(--rule-2); color: var(--text); }
+.botao--secundario:hover { border-color: var(--muted); color: var(--ink); }
+.botao--cabecalho { font-size: 14px; padding: 9px 16px; }
+.botao--grande { font-size: 15.5px; font-weight: 700; padding: 14px 24px; border-radius: 7px; }
+.botao--bloco { display: block; width: 100%; padding: 12px; border-radius: 7px; margin-top: 24px; font-size: 15px; }
+.botao--bloco.botao--primario { padding: 13px; }
 
-/* ---------- Grade de atuação ----------
-   As divisórias são os próprios vãos de 1px sobre o fundo de linha.
-   Isso mantém as divisórias corretas em qualquer número de colunas,
-   sem regras de :nth-child por breakpoint. */
-.atuacao {
+/* ---------- Seções ---------- */
+.secao { padding: 84px 0; border-bottom: 1px solid var(--rule); }
+.secao--alt { background: var(--bg-alt); }
+.secao--sem-borda { border-bottom: 0; }
+/* Cabeçalho fixo de 64px: sem a folga a âncora para atrás dele. */
+.secao[id], .aviso[id] { scroll-margin-top: 80px; }
+.secao__cabeca { display: flex; flex-direction: column; gap: 12px; }
+
+/* ---------- Herói ---------- */
+.hero {
+  background: var(--hero);
+  padding: 76px 0 68px;
+  border-bottom: 1px solid var(--rule);
+}
+.hero__grade {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--am-linha);
-  border-top: 1px solid var(--am-linha-secao);
-}
-.atuacao__item {
-  background: var(--am-branco);
-  padding: 34px 28px 44px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.atuacao__item svg { width: 34px; height: 34px; }
-.atuacao__item p { font-size: 14.5px; line-height: 1.6; color: var(--am-tinta-2); }
-
-.secao__topo {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 40px;
-  margin-bottom: 44px;
-}
-.secao__topo p { font-size: 15.5px; color: var(--am-tinta-2); max-width: 34em; text-align: right; }
-
-/* ---------- Serviço (linha) ---------- */
-.servico { display: flex; gap: 72px; align-items: flex-start; }
-.servico__rail { width: 250px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
-.servico__corpo { flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 18px; }
-.servico__corpo p { max-width: 42em; }
-
-/* Critério de aplicabilidade */
-.criterio {
-  border-left: 1px solid var(--am-ciano);
-  padding: 4px 0 4px 18px;
-  margin-top: 6px;
-  max-width: 42em;
-}
-.criterio p { font-size: 15.5px; line-height: 1.6; color: var(--am-tinta); }
-.criterio .rotulo { display: block; margin-bottom: 7px; }
-
-/* ---------- Etapas numeradas ----------
-   Numeração só aqui: é a única parte do site que é de fato sequência. */
-.etapas {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--am-linha);
-  border-top: 1px solid var(--am-linha-secao);
-}
-.etapa {
-  background: var(--am-branco);
-  padding: 30px 32px 34px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.etapa__marca { display: flex; align-items: center; gap: 12px; }
-.etapa__marca b {
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  color: var(--am-ciano);
-}
-.etapa__marca i { flex-grow: 1; height: 1px; background: var(--am-linha-tenue); }
-.etapa h3 { font-size: 19px; }
-.etapa p { font-size: 15px; line-height: 1.62; color: var(--am-tinta-2); }
-
-/* ---------- Painel (ficha, listas de perfil) ---------- */
-.painel { border: 1px solid var(--am-linha-forte); background: var(--am-branco); border-radius: var(--am-raio); }
-.painel--fraco { border-color: var(--am-linha); background: var(--am-papel-alt); }
-.painel__cabeca {
-  border-bottom: 1px solid var(--am-linha);
-  padding: 15px 22px;
-  display: flex;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 52px;
   align-items: center;
-  gap: 10px;
 }
-.painel--fraco .painel__cabeca { border-bottom-color: var(--am-linha-tenue); }
-.painel__cabeca .rotulo { color: var(--am-tinta); }
-.painel--fraco .painel__cabeca .rotulo { color: var(--am-tinta-3); }
-.marcador { width: 8px; height: 8px; border-radius: 50%; background: var(--am-ciano); flex-shrink: 0; }
-.marcador--vazio { background: transparent; border: 1px solid var(--am-tinta-3); }
-.painel__lista { padding: 8px 22px 20px; }
-.painel__lista li {
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--am-tinta-2);
-  padding: 13px 0;
-  border-bottom: 1px solid var(--am-linha-tenue);
-}
-.painel__lista li:last-child { border-bottom: 0; }
-.painel--fraco .painel__lista li { color: var(--am-tinta-3); }
-
-.perfil { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
-
-
-/* ---------- Bloco de chamada ----------
-   Claro, e não navy: o rodapé já é navy, e dois blocos escuros empilhados
-   se fundem num rodapé só. A grade de blueprint fecha a página com o mesmo
-   motivo que a abre, e a régua navy no topo separa da seção anterior. */
-.chamada-bloco {
-  background-color: var(--am-papel);
-  background-image:
-    linear-gradient(var(--am-grade) 1px, transparent 1px),
-    linear-gradient(90deg, var(--am-grade) 1px, transparent 1px);
-  background-size: 32px 32px;
-  border-top: 1px solid var(--am-linha-secao);
-  padding: 68px 0;
-}
-.chamada-bloco .container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 60px;
-}
-.chamada-bloco h2 { max-width: 22em; }
-.chamada-bloco p { font-size: 16.5px; color: var(--am-tinta-2); margin-top: 12px; }
-.chamada-bloco .botao { white-space: nowrap; }
-
-/* ---------- Formulário ---------- */
-.form { width: 620px; flex-shrink: 0; display: flex; flex-direction: column; gap: 24px; }
-.campo { display: flex; flex-direction: column; gap: 8px; }
-.campo label {
-  font-size: 11.5px;
-  font-weight: var(--am-rotulo-peso);
-  letter-spacing: var(--am-rotulo-espaco);
+.pill {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--am-tinta-2);
+  color: var(--link);
+  border: 1px solid var(--rule-2);
+  background: var(--chip);
+  padding: 6px 11px;
+  border-radius: 100px;
 }
-.campo input, .campo select, .campo textarea {
-  font-family: inherit;
-  font-size: 16px;
-  color: var(--am-tinta);
-  background: var(--am-branco);
-  border: 1px solid var(--am-linha-forte);
-  border-radius: var(--am-raio);
-  padding: 13px 15px;
-}
-.campo input, .campo select { height: 50px; }
-/* Marca o campo como dispensável sem gritar — o visitante decide rápido. */
-.campo__opcional {
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  text-transform: none;
-  color: var(--am-tinta-4);
-}
-/* Dois campos curtos na mesma linha; empilham no mobile pela regra abaixo. */
-.campo--par { display: flex; flex-direction: row; gap: 18px; }
-.campo--par > .campo { flex: 1; min-width: 0; }
-/* Campo curto sozinho na linha: sem isto ele estica e desequilibra a coluna. */
-.campo--meio { max-width: calc(50% - 9px); }
-.campo textarea { min-height: 168px; resize: vertical; line-height: 1.6; }
-.campo input::placeholder, .campo textarea::placeholder { color: var(--am-tinta-4); }
-.campo input:focus-visible, .campo select:focus-visible, .campo textarea:focus-visible {
-  border-color: var(--am-tinta);
-  outline: 1px solid var(--am-tinta);
-  outline-offset: -2px;
-}
-.form button { align-self: flex-start; margin-top: 4px; padding: 16px 34px; }
+.hero h1 { margin: 18px 0 16px; }
+.hero__acoes { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
 
-
-/* ---------- Avisos de estado ----------
-   Revelados por âncora: a Function redireciona para #enviado, #erro ou #robo. */
-.aviso {
-  border: 1px solid;
-  border-left-width: 3px;
-  border-radius: var(--am-raio);
-  padding: 16px 20px;
-  margin-bottom: 26px;
-  max-width: 620px;
-  display: none;
-  /* Sem isto o navegador rola até a âncora e o visitante cai numa tela sem
-     cabeçalho nem título, com o aviso colado no topo. */
-  scroll-margin-top: 100vh;
+/* ---------- Faixa de tecnologias ---------- */
+.stack {
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--rule);
+  padding: 26px 24px;
 }
-.aviso:target { display: block; }
-.aviso p { font-size: 15px; color: var(--am-tinta); }
-.aviso--ok { border-color: var(--am-semantica-sucesso); background: var(--am-aviso-ok-fundo); }
-.aviso--erro { border-color: var(--am-semantica-erro); background: var(--am-aviso-erro-fundo); }
-
-/* ---------- Rodapé ---------- */
-.rodape { background: var(--am-tinta); color: var(--am-sobre-navy); }
-.rodape__topo {
-  padding: 58px 0 30px;
+.stack__interno {
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
   justify-content: space-between;
-  gap: 60px;
+  align-items: center;
+  gap: 32px;
   flex-wrap: wrap;
 }
-.rodape__marca { max-width: 300px; display: flex; flex-direction: column; gap: 16px; }
-.rodape__marca svg { width: 52px; height: 25px; }
-.rodape__marca p { font-size: 14px; line-height: 1.6; }
-.rodape__colunas { display: flex; gap: 56px; flex-wrap: wrap; }
-.rodape__coluna { display: flex; flex-direction: column; gap: 10px; }
-.rodape__coluna .rotulo { color: var(--am-sobre-navy-fraco); }
-.rodape__coluna a { font-size: 14px; color: var(--am-sobre-navy-forte); }
-.rodape__coluna a:hover { color: #FFFFFF; }
-/* Dentro do rodapé, separado só por uma hairline — não uma barra própria,
-   que leria como um segundo rodapé. */
-.rodape__copyright {
-  border-top: 1px solid var(--am-linha-navy);
-  padding: 20px 0 26px;
+.stack__rotulo {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.stack__chips { display: flex; gap: 12px; flex-wrap: wrap; }
+.stack__chips li {
+  font-size: 14px;
+  font-weight: 700;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  border-radius: 6px;
+  padding: 8px 14px;
+  color: var(--text);
+}
+
+/* ---------- Grades de cartão ---------- */
+.grade-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 38px;
+}
+.card {
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--card);
+  padding: 24px;
+}
+.card:hover { border-color: var(--rule-2); }
+.card__num {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--chip);
+  border: 1px solid var(--rule);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--link);
+}
+.card h3 { margin: 16px 0 8px; }
+.card p { font-size: 14.5px; line-height: 1.6; color: var(--muted); }
+
+/* Grade "colada": os vãos de 1px sobre o fundo de linha viram os divisores,
+   o que mantém as divisórias corretas em qualquer número de colunas. */
+.grade-colada {
+  display: grid;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 38px;
+}
+.grade-colada--4 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.grade-colada--etapas { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.grade-colada--compromissos { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); margin-top: 0; }
+.celula { background: var(--card); padding: 24px; }
+.grade-colada--etapas .celula { padding: 26px; }
+.celula h3 { font-size: 16.5px; }
+.celula p { font-size: 14.5px; line-height: 1.6; color: var(--muted); margin-top: 8px; }
+
+.etapa__num { font-size: 11px; letter-spacing: 0.14em; color: var(--link); }
+.grade-colada--etapas h3 { font-size: 17px; margin: 12px 0 8px; }
+
+/* ---------- Planos ---------- */
+.planos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 18px;
+  align-items: start;
+  margin-top: 38px;
+}
+.plano {
+  position: relative;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--card);
+  padding: 28px;
+}
+.plano--destaque {
+  border-color: var(--cta);
+  background: var(--card-2);
+  box-shadow: var(--shadow);
+}
+.plano__badge {
+  position: absolute;
+  top: -11px;
+  left: 28px;
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  background: var(--cta);
+  color: var(--cta-ink);
+  padding: 5px 9px;
+  border-radius: 100px;
+  font-weight: 700;
+}
+.plano h3 { font-size: 19px; }
+.plano__desc { font-size: 14px; color: var(--muted); margin-top: 8px; }
+.plano__preco {
+  margin-top: 20px;
+  padding: 16px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+.plano__itens { margin-top: 18px; display: flex; flex-direction: column; gap: 10px; }
+.plano__itens li { display: flex; gap: 10px; font-size: 14.5px; line-height: 1.5; color: var(--text); }
+.plano__itens li::before { content: "✓"; color: var(--ok); font-weight: 800; flex: none; }
+
+/* ---------- Sobre ---------- */
+.duas-colunas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 48px;
+  align-items: center;
+}
+.compromisso strong { display: block; font-size: 26px; font-weight: 900; letter-spacing: -0.03em; color: var(--ink); }
+.compromisso span { display: block; font-size: 14px; color: var(--muted); margin-top: 6px; }
+
+/* ---------- FAQ ---------- */
+.faq details { border-top: 1px solid var(--rule); padding: 18px 0; }
+.faq details:last-of-type { border-bottom: 1px solid var(--rule); }
+.faq summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 16.5px;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary:hover { color: var(--ink); }
+.faq summary::after { content: "+"; color: var(--link); flex: none; }
+.faq details[open] summary::after { content: "−"; }
+.faq p { font-size: 15px; line-height: 1.65; color: var(--muted); margin-top: 12px; max-width: 70ch; }
+
+/* ---------- Contato ---------- */
+.contato-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 48px;
+  align-items: start;
+}
+.contato h2 { font-size: clamp(28px, 3.4vw, 40px); letter-spacing: -0.03em; }
+.form {
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--card);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: var(--shadow);
+}
+.form__linha { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+.campo { display: flex; flex-direction: column; gap: 7px; }
+.campo > span {
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.campo input, .campo textarea {
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 7px;
+  padding: 11px 13px;
+  outline: none;
+}
+.campo textarea { resize: vertical; min-height: 104px; line-height: 1.6; }
+.campo input:focus, .campo textarea:focus { border-color: var(--cta); }
+.campo input::placeholder, .campo textarea::placeholder { color: var(--muted); opacity: 0.75; }
+.form button { padding: 14px; font-size: 15.5px; border-radius: 7px; }
+.form__legal { font-size: 11px; line-height: 1.6; color: var(--faint); }
+
+/* Avisos de estado, revelados por âncora — funcionam sem JavaScript. */
+.aviso {
+  display: none;
+  border: 1px solid;
+  border-radius: 8px;
+  padding: 12px 14px;
   font-size: 13px;
-  color: var(--am-sobre-navy-fraco);
+}
+.aviso:target { display: block; }
+.aviso--ok { border-color: var(--ok); color: var(--ok); }
+.aviso--erro { border-color: var(--danger); color: var(--danger); }
+
+/* ---------- Rodapé ---------- */
+.rodape { border-top: 1px solid var(--rule); background: var(--bg-alt); }
+.rodape__grade {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 40px;
+  padding: 56px 24px 28px;
+}
+.rodape__marca img { height: 24px; width: auto; }
+.rodape__marca p { font-size: 14px; color: var(--faint); max-width: 34ch; margin-top: 14px; }
+.rodape__coluna { display: flex; flex-direction: column; gap: 10px; }
+.rodape__coluna h3 {
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+  font-weight: 400;
+  margin-bottom: 2px;
+}
+.rodape__coluna a, .rodape__coluna span { font-size: 14px; color: var(--text); }
+.rodape__coluna a:hover { color: var(--link); }
+.rodape__barra {
+  border-top: 1px solid var(--rule);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 24px 40px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 11.5px;
+  color: var(--faint);
 }
 
 /* ---------- Acessibilidade ---------- */
-.pular-para-conteudo {
+.pular {
   position: absolute;
   left: -9999px;
   top: 0;
   z-index: 100;
-  background: var(--am-ciano);
-  color: var(--am-navy-900);
+  background: var(--cta);
+  color: var(--cta-ink);
   padding: 12px 20px;
   font-weight: 700;
 }
-.pular-para-conteudo:focus { left: 0; }
+.pular:focus { left: 0; }
+
+/* ============================================================
+   Cartão de fluxos — carrossel do herói
+   Toda a animação é dirigida por CSS a partir de data-etapa/data-ativo
+   no cartão; o script só avança os dois números.
+   ============================================================ */
+
+.fluxos {
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+.fluxos__barra {
+  display: flex;
+  gap: 6px;
+  padding: 11px 14px;
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--rule);
+  border-radius: 12px 12px 0 0;
+}
+.fluxos__barra i { width: 9px; height: 9px; border-radius: 50%; background: var(--rule-2); }
+
+/* Sem overflow aqui: o selo e o spinner ficam fora da borda. */
+.fluxos__caixa {
+  position: relative;
+  margin: 24px 22px 20px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.fluxos__legenda {
+  position: absolute;
+  top: -9px;
+  left: 14px;
+  background: var(--card);
+  padding: 0 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--muted);
+  display: none;
+}
+.fluxos__palco { overflow: hidden; }
+
+.fluxo { display: none; flex-direction: column; }
+.fluxo__passo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  border: 1px solid var(--rule);
+  background: var(--bg-alt);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--text);
+  opacity: 0.2;
+  transition: opacity 0.4s ease;
+}
+.fluxo__passo--destaque { background: var(--card-2); border-color: var(--rule-2); }
+.fluxo__passo svg { width: 17px; height: 17px; flex: none; color: var(--muted); }
+.fluxo__passo--inicio svg { color: var(--link); }
+.fluxo__passo--fim svg { color: var(--ok); }
+
+.conector { margin-left: 31px; opacity: 0.2; transition: opacity 0.4s ease; }
+
+/* Contorno tracejado correndo na etapa em execução. border não anima dash,
+   então cada passo carrega um SVG sobreposto. */
+.contorno {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+@keyframes girar { to { stroke-dashoffset: -28; } }
+.contorno rect { animation: girar 1.2s linear infinite; }
+@keyframes fluir { to { stroke-dashoffset: -16; } }
+
+/* Spinner e selo ocupam o mesmo canto, em etapas diferentes. */
+.fluxos__load, .fluxos__check { position: absolute; display: grid; place-items: center; }
+.fluxos__load {
+  top: -13px; right: -13px;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+@keyframes rodar { to { transform: rotate(360deg); } }
+.fluxos__load svg { width: 16px; height: 16px; animation: rodar 0.9s linear infinite; }
+.fluxos__check {
+  top: -16px; right: -16px;
+  width: 38px; height: 38px;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.2, 1.4, 0.5, 1);
+}
+@keyframes raiar {
+  0% { opacity: 0; transform: scale(0.55); }
+  55% { opacity: 1; }
+  100% { opacity: 0.55; transform: scale(1); }
+}
+.fluxos__check [data-raios] { transform-origin: 12px 12px; opacity: 0; }
+
+.fluxos__rodape {
+  border-top: 1px solid var(--rule);
+  padding: 12px 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+}
+.fluxos__seta {
+  width: 26px; height: 26px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.fluxos__seta:hover { color: var(--ink); border-color: var(--rule-2); }
+.fluxos__seta svg { width: 14px; height: 14px; }
+.fluxos__progresso { width: 26px; height: 4px; background: var(--rule); border-radius: 100px; overflow: hidden; }
+.fluxos__progresso i { display: block; height: 100%; background: var(--cta); width: 4%; transition: width 1.4s linear; }
+
+/* ---- Estados dirigidos por data-ativo / data-etapa ---- */
+.fluxos[data-ativo="0"] .fluxo[data-fluxo="0"],
+.fluxos[data-ativo="1"] .fluxo[data-fluxo="1"],
+.fluxos[data-ativo="2"] .fluxo[data-fluxo="2"],
+.fluxos[data-ativo="3"] .fluxo[data-fluxo="3"],
+.fluxos[data-ativo="4"] .fluxo[data-fluxo="4"] { display: flex; }
+
+.fluxos[data-ativo="0"] .fluxos__legenda[data-rotulo="0"],
+.fluxos[data-ativo="1"] .fluxos__legenda[data-rotulo="1"],
+.fluxos[data-ativo="2"] .fluxos__legenda[data-rotulo="2"],
+.fluxos[data-ativo="3"] .fluxos__legenda[data-rotulo="3"],
+.fluxos[data-ativo="4"] .fluxos__legenda[data-rotulo="4"] { display: block; }
+
+/* Revelação progressiva: até a etapa corrente, tudo opaco. */
+.fluxos[data-etapa="1"] [data-passo="1"],
+.fluxos[data-etapa="2"] [data-passo="1"], .fluxos[data-etapa="2"] [data-passo="2"],
+.fluxos[data-etapa="3"] [data-passo="1"], .fluxos[data-etapa="3"] [data-passo="2"], .fluxos[data-etapa="3"] [data-passo="3"],
+.fluxos[data-etapa="4"] [data-passo], .fluxos[data-etapa="5"] [data-passo], .fluxos[data-etapa="6"] [data-passo] { opacity: 1; }
+
+.fluxos[data-etapa="1"] .fluxo__passo[data-passo="1"] .contorno,
+.fluxos[data-etapa="2"] .fluxo__passo[data-passo="2"] .contorno,
+.fluxos[data-etapa="3"] .fluxo__passo[data-passo="3"] .contorno,
+.fluxos[data-etapa="4"] .fluxo__passo[data-passo="4"] .contorno { opacity: 1; }
+
+/* Conector já percorrido fica sólido; o da etapa corrente corre. */
+.fluxos[data-etapa="2"] .conector[data-passo="2"] line,
+.fluxos[data-etapa="3"] .conector[data-passo="3"] line,
+.fluxos[data-etapa="4"] .conector[data-passo="4"] line { animation: fluir 1s linear infinite; }
+.fluxos[data-etapa="3"] .conector[data-passo="2"] line,
+.fluxos[data-etapa="4"] .conector[data-passo="2"] line,
+.fluxos[data-etapa="4"] .conector[data-passo="3"] line,
+.fluxos[data-etapa="5"] .conector line,
+.fluxos[data-etapa="6"] .conector line { stroke-dasharray: none; }
+
+@keyframes entrar {
+  from { transform: translateX(22%); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.fluxo { transition: transform 0.45s ease, opacity 0.45s ease; }
+.fluxos[data-etapa="0"] .fluxo, .fluxos[data-etapa="1"] .fluxo { animation: entrar 0.5s ease both; }
+.fluxos[data-etapa="6"] .fluxo { transform: translateX(-22%); opacity: 0; }
+
+.fluxos[data-etapa="1"] .fluxos__load,
+.fluxos[data-etapa="2"] .fluxos__load,
+.fluxos[data-etapa="3"] .fluxos__load,
+.fluxos[data-etapa="4"] .fluxos__load { opacity: 1; }
+
+.fluxos[data-etapa="5"] .fluxos__check,
+.fluxos[data-etapa="6"] .fluxos__check { opacity: 1; transform: scale(1); }
+.fluxos[data-etapa="5"] [data-raios],
+.fluxos[data-etapa="6"] [data-raios] { animation: raiar 0.5s ease-out 0.1s both; }
+
+.fluxos[data-etapa="5"] .fluxos__caixa,
+.fluxos[data-etapa="6"] .fluxos__caixa {
+  border-color: var(--ok);
+  box-shadow: 0 0 0 3px rgba(14, 122, 84, 0.10);
+}
+
+.fluxos[data-etapa="0"] .fluxos__progresso i { width: 4%; transition: width 0.22s ease; }
+.fluxos[data-etapa="1"] .fluxos__progresso i { width: 18%; }
+.fluxos[data-etapa="2"] .fluxos__progresso i { width: 42%; }
+.fluxos[data-etapa="3"] .fluxos__progresso i { width: 66%; }
+.fluxos[data-etapa="4"] .fluxos__progresso i { width: 86%; }
+.fluxos[data-etapa="5"] .fluxos__progresso i,
+.fluxos[data-etapa="6"] .fluxos__progresso i { width: 100%; }
+
+/* Sem animação para quem pediu movimento reduzido: o cartão mostra o
+   fluxo completo e parado, em vez de piscar. */
+@media (prefers-reduced-motion: reduce) {
+  .fluxo__passo, .conector { opacity: 1 !important; }
+  .contorno, .fluxos__load { display: none; }
+  .fluxo { animation: none !important; transform: none !important; opacity: 1 !important; }
+  .fluxos__check { opacity: 1; transform: scale(1); }
+  .fluxos__check [data-raios] { opacity: 0.55; animation: none; }
+}
 
 /* ============================================================
    Responsivo
    ============================================================ */
 
-@media (max-width: 1080px) {
-  .duas { gap: 48px; }
-  .duas__enunciado { width: 360px; }
-  .hero .container { gap: 48px; }
-  .hero__texto { width: 480px; }
-  .servico { gap: 48px; }
-  .form { width: 520px; }
-  .atuacao { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
 @media (max-width: 900px) {
   .secao { padding: 56px 0; }
-  .hero { padding: 56px 0 64px; }
-  .hero .container, .duas, .servico { flex-direction: column; gap: 36px; }
-  .hero__texto, .duas__enunciado, .servico__rail, .form { width: 100%; }
-  .hero__figura { justify-content: flex-start; width: 100%; }
-  .hero__figura svg, .duas__corpo svg { width: 100%; height: auto; }
-  .etapas { grid-template-columns: 1fr; }
-  .perfil { grid-template-columns: 1fr; gap: 20px; }
-  .secao__topo { flex-direction: column; gap: 14px; margin-bottom: 32px; }
-  .secao__topo p { text-align: left; }
-  .chamada-bloco .container { flex-direction: column; align-items: flex-start; gap: 28px; }
+  .hero { padding: 56px 0 48px; }
+  .hero__grade { gap: 36px; }
+  .duas-colunas, .contato-grade { gap: 32px; }
 }
 
-@media (max-width: 760px) {
-  .cabecalho__hamburguer { display: block; }
-  .cabecalho .container { flex-wrap: wrap; }
-  .cabecalho__nav {
-    display: none;
-    width: 100%;
-    order: 3;
-    border-top: 1px solid var(--am-linha-suave);
+@media (max-width: 860px) {
+  /* A nav quebraria em duas linhas: vira menu, aberto por checkbox. */
+  .nav-hamburguer {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    color: var(--muted);
+    cursor: pointer;
+    flex: none;
   }
-  .cabecalho__nav ul { flex-direction: column; align-items: stretch; gap: 0; padding: 6px 0; }
-  .cabecalho__nav a { padding: 12px 0; }
-  #menu-toggle:checked ~ .cabecalho__nav { display: block; }
+  .nav-hamburguer i {
+    display: block;
+    width: 16px;
+    height: 1.5px;
+    background: currentColor;
+    box-shadow: 0 -5px 0 currentColor, 0 5px 0 currentColor;
+  }
+  .cabecalho__interno { flex-wrap: wrap; gap: 14px; padding-top: 12px; padding-bottom: 12px; }
+  .cabecalho__logo { flex: 1; }
+  .nav {
+    display: none;
+    order: 5;
+    width: 100%;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    padding-top: 6px;
+  }
+  .nav a { padding: 10px 0; }
+  .nav-toggle:checked ~ .nav { display: flex; }
+  .botao--cabecalho { order: 4; }
+}
 
-  .atuacao { grid-template-columns: 1fr; }
-  .campo--par { flex-direction: column; gap: 24px; }
-  .campo--meio { max-width: none; }
-  .rodape__colunas { gap: 40px; }
+@media (min-width: 861px) {
+  .nav-hamburguer { display: none; }
 }
 
 @media (max-width: 520px) {
-  .acoes { flex-direction: column; align-items: stretch; }
-  .form button { align-self: stretch; }
+  .hero__acoes .botao { width: 100%; }
+  .stack__interno { gap: 16px; }
 }

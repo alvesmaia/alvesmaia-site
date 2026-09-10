@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Alvesmaia">
-  <rect width="512" height="512" rx="0" fill="#102A43"/>
-  <g transform="translate(8.378 145.946) scale(1.965)"><path d="M 27,103 L 58,103 L 98,42 L 136,103 L 167,103 L 115,18 C 111,11 105,8 98,8 C 91,8 86,12 82,18 Z" fill="#FFFFFF"/><path d="M 160,33 C 165,28 173,27 179,30 C 183,32 185,35 187,39 L 225,104 L 195,104 L 171,62 L 157,82 L 143,58 Z" fill="#00A8E8"/><circle cx="98.5" cy="92" r="12" fill="#00A8E8"/></g>
-</svg>

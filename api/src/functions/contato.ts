@@ -14,8 +14,12 @@ import { turnstileValido, type ConfigTurnstile } from "../turnstile";
 import { gravarSubmissao, marcarEnviado } from "../armazenamento";
 import { enviarEmail, type ConfigGraph } from "../graph";
 
+/**
+ * O site virou pagina unica: a ancora de estado vive na raiz, dentro da
+ * secao #contato. O CSS revela o aviso por :target.
+ */
 function redirecionar(ancora: string): HttpResponseInit {
-  return { status: 303, headers: { Location: `/contato.html#${ancora}` } };
+  return { status: 303, headers: { Location: `/#${ancora}` } };
 }
 
 /** Deve casar com o data-action do widget em contato.html. */

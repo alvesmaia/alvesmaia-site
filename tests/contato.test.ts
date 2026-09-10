@@ -57,13 +57,13 @@ describe("contato", () => {
     const res = await chamar();
     expect(res.status).toBe(303);
     expect((res.headers as Record<string, string>).Location).toBe(
-      "/contato.html#enviado",
+      "/#enviado",
     );
   });
 
   it("redireciona para #erro quando a validação falha", async () => {
     const res = await chamar({ ...camposValidos, email: "invalido" });
-    expect((res.headers as Record<string, string>).Location).toBe("/contato.html#erro");
+    expect((res.headers as Record<string, string>).Location).toBe("/#erro");
   });
 
   it("não grava nem envia quando a validação falha", async () => {
@@ -75,7 +75,7 @@ describe("contato", () => {
   it("redireciona para #robo quando o Turnstile reprova", async () => {
     turnstileValido.mockResolvedValue(false);
     const res = await chamar();
-    expect((res.headers as Record<string, string>).Location).toBe("/contato.html#robo");
+    expect((res.headers as Record<string, string>).Location).toBe("/#robo");
   });
 
   it("não grava quando o Turnstile reprova", async () => {
@@ -100,7 +100,7 @@ describe("contato", () => {
     gravarSubmissao.mockResolvedValue(null);
     const res = await chamar();
     expect(enviarEmail).not.toHaveBeenCalled();
-    expect((res.headers as Record<string, string>).Location).toBe("/contato.html#erro");
+    expect((res.headers as Record<string, string>).Location).toBe("/#erro");
   });
 
   it("marca como enviado quando o Graph aceita", async () => {
@@ -112,20 +112,20 @@ describe("contato", () => {
     enviarEmail.mockResolvedValue(false);
     const res = await chamar();
     expect(marcarEnviado).not.toHaveBeenCalled();
-    expect((res.headers as Record<string, string>).Location).toBe("/contato.html#erro");
+    expect((res.headers as Record<string, string>).Location).toBe("/#erro");
   });
 
   it("redireciona para #erro quando falta configuração", async () => {
     delete process.env.GRAPH_CLIENT_SECRET;
     const res = await chamar();
-    expect((res.headers as Record<string, string>).Location).toBe("/contato.html#erro");
+    expect((res.headers as Record<string, string>).Location).toBe("/#erro");
     expect(gravarSubmissao).not.toHaveBeenCalled();
   });
 
   it("redireciona para #erro quando falta a lista de hostnames", async () => {
     delete process.env.TURNSTILE_HOSTNAMES;
     const res = await chamar();
-    expect((res.headers as Record<string, string>).Location).toBe("/contato.html#erro");
+    expect((res.headers as Record<string, string>).Location).toBe("/#erro");
     expect(turnstileValido).not.toHaveBeenCalled();
   });
 
@@ -143,7 +143,7 @@ describe("contato", () => {
 
   it("aceita o envio com o contexto todo em branco", async () => {
     const res = await chamar();
-    expect((res.headers as Record<string, string>).Location).toBe("/contato.html#enviado");
+    expect((res.headers as Record<string, string>).Location).toBe("/#enviado");
     expect(enviarEmail.mock.calls[0][1]).toEqual({ empresa: "", segmento: "", funcionarios: "" });
   });
 

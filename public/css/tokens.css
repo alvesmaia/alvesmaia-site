@@ -1,82 +1,86 @@
-:root{
-  /* Marca */
-  --am-navy:#102A43;
-  --am-ciano:#00A8E8;
+/* ============================================================
+   Alvesmaia — tokens (handoff v2)
 
-  /* Ciano da marca reprova como texto sobre branco (2,70:1).
-     Para texto e link use --am-ciano-700 (4,97:1, AA). */
-  --am-navy-500:#2E5A80;
-  --am-navy-700:#1B3D5C;
-  --am-navy-800:#102A43;
-  --am-navy-900:#0A1B2B;
-  --am-ciano-100:#E2F3FC;
-  --am-ciano-500:#00A8E8;
-  --am-ciano-600:#0089C4;
-  --am-ciano-700:#0077AB;
-  --am-neutro-50:#F6F9FC;
-  --am-neutro-100:#EAF1F7;
-  --am-neutro-200:#D7E2EC;
-  --am-neutro-300:#B9C8D6;
-  --am-neutro-500:#6C8298;
-  --am-neutro-600:#5A7189;
-  --am-neutro-700:#3A5163;
-  --am-neutro-900:#0F1E2B;
-  --am-semantica-sucesso:#0E7A54;
-  --am-semantica-atencao:#96600B;
-  --am-semantica-erro:#B02E21;
-  --am-semantica-info:#0077AB;
+   Dois eixos independentes:
+   - tema:   claro (padrão) e escuro, via data-tema no <html>
+   - acento: índigo #4F6BFF, escrito direto nas variáveis base para a
+             página pintar índigo já no primeiro frame
 
-  /* Tipografia */
-  --am-fonte:"Nunito Sans","Segoe UI",Helvetica,Arial,sans-serif;
+   As cores de marca de origem (navy, neutros, semânticas) vêm de
+   brand/tokens.css da identidade. O ciano #00A8E8 foi substituído por
+   índigo como acento — os demais arquivos da marca ainda precisam ser
+   regerados (favicon e símbolo deste repositório já estão).
+   ============================================================ */
+
+:root,
+[data-tema="claro"] {
+  /* superfícies */
+  --bg: #FFFFFF;
+  --bg-alt: #F6F9FC;
+  --card: #FFFFFF;
+  --card-2: #F1F7FC;
+
+  /* linhas */
+  --rule: #D7E2EC;
+  --rule-2: #B9C8D6;
+  --rule-3: #EAF1F7;
+
+  /* tinta */
+  --ink: #102A43;
+  --text: #0F1E2B;
+  --muted: #5A7189;
+  --faint: #4E6478;
+
+  /* acento índigo */
+  --link: #3A4FD8;
+  --cta: #3A4FD8;
+  --cta-hover: #2E3FB8;
+  --cta-ink: #FFFFFF;
+  --acento: #4F6BFF;
+  --chip: #EEF1FF;
+
+  /* semânticas */
+  --ok: #0E7A54;
+  --warn: #96600B;
+  --danger: #B02E21;
+
+  /* compostos */
+  --header: rgba(255, 255, 255, 0.86);
+  --hero: radial-gradient(900px 420px at 18% -10%, #E7ECFF 0%, #FFFFFF 62%);
+  --shadow: 0 18px 44px rgba(16, 42, 67, 0.10);
+
+  /* tipografia */
+  --fonte: "Nunito Sans", "Segoe UI", Helvetica, Arial, sans-serif;
 }
 
-/* ---- Tema: superfícies semânticas ----
-   Tema único, claro. Navy e ciano sobre papel claro é a leitura
-   institucional da marca; navy fica como acento estrutural (faixa, rodapé,
-   blocos de chamada), não como fundo de página inteira.
+/* Cinza-grafite, não azul-marinho: o escuro anterior pesava demais. */
+[data-tema="escuro"] {
+  --bg: #191919;
+  --bg-alt: #1E1E1E;
+  --card: #202020;
+  --card-2: #272727;
 
-   A escala de linhas existe porque o desenho separa por hairline em vez de
-   cartão: cada peso tem um papel e trocá-los achata a hierarquia. */
-:root{
-  --am-papel:#F4F7F9;
-  --am-branco:#FFFFFF;
-  --am-papel-alt:#F8FAFC;
+  --rule: #2F2F2F;
+  --rule-2: #3D3D3D;
+  --rule-3: #252525;
 
-  --am-tinta:#102A43;
-  --am-tinta-2:#40566B;
-  --am-tinta-3:#7A8FA3;
-  --am-tinta-4:#A8B7C4;
+  --ink: #FFFFFF;
+  --text: #EDEDED;
+  --muted: #A5A5A5;
+  --faint: #9A9A9A;
 
-  /* linha-secao delimita blocos; linha divide dentro deles;
-     linha-tenue separa itens de lista; linha-suave é só o cabeçalho */
-  --am-linha-secao:#102A43;
-  --am-linha-forte:#B7C6D2;
-  --am-linha:#D5DEE6;
-  --am-linha-tenue:#E4EBF1;
-  --am-linha-suave:#E7EDF2;
-  --am-grade:#E4EBF1;
+  --link: #8FA3FF;
+  --cta: #8FA3FF;
+  --cta-hover: #AEBCFF;
+  --cta-ink: #08122E;
+  --acento: #4F6BFF;
+  --chip: #232733;
 
-  --am-link:var(--am-ciano-700);
-  --am-link-hover:#005E88;
+  --ok: #4FC79A;
+  --warn: #E0A661;
+  --danger: #F08B7C;
 
-  /* sobre navy */
-  --am-sobre-navy:#A8C4D8;
-  --am-sobre-navy-forte:#DCE9F2;
-  --am-sobre-navy-fraco:#6F92AD;
-  --am-linha-navy:#1E3E5A;
-
-  --am-faixa-texto:#7FA6C2;
-  --am-ciano-claro:#33BCEE;
-  --am-aviso-ok-fundo:#EDF7F2;
-  --am-aviso-erro-fundo:#FCF0EE;
-
-  /* Rótulo técnico não é outra fonte: é a Nunito Sans em caixa alta, com peso
-     e espaçamento próprios. Fonte única, como manda o manual da marca. */
-  /* Raio suave: tira a dureza do desenho esquemático sem virar cartão.
-     O -svg é menor porque os elementos dos diagramas são pequenos. */
-  --am-raio:4px;
-  --am-raio-svg:3;
-
-  --am-rotulo-peso:700;
-  --am-rotulo-espaco:0.14em;
+  --header: rgba(25, 25, 25, 0.86);
+  --hero: radial-gradient(900px 420px at 18% -10%, #23283D 0%, #191919 62%);
+  --shadow: 0 18px 44px rgba(0, 0, 0, 0.44);
 }

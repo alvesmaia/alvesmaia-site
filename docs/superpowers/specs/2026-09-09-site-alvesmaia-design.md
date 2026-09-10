@@ -1,5 +1,25 @@
 # Site institucional Alvesmaia — Design
 
+> **SUPERSEDIDO em 10/09/2026 pelo handoff v2** (`docs/design/handoff-v2.md`), que o
+> cliente encomendou ao Claude Design e mandou implementar. O que mudou:
+>
+> | | Esta spec (v1) | Handoff v2 — implementado |
+> |---|---|---|
+> | Estrutura | 4 páginas | página única com âncoras |
+> | Acento | ciano `#00A8E8` | índigo `#4F6BFF` |
+> | Tema | claro único | claro (padrão) + escuro, com alternador |
+> | JavaScript próprio | nenhum | carrossel do herói e alternador de tema |
+> | Direção visual | "Esquemático" | cartões, carrossel animado, planos, FAQ |
+> | Formulário | nome, e-mail, empresa, segmento, funcionários, mensagem | nome, empresa, e-mail, descrição |
+>
+> O que **sobreviveu** da v1 e segue valendo: a Function do formulário e seus 64 testes,
+> o Turnstile com verificação canônica, a gravação no Table Storage antes do envio, o
+> envio pelo Microsoft Graph e todo o plano de implantação no Azure.
+>
+> As seções abaixo ficam como registro das decisões da v1 — várias explicam **por que**
+> algo foi escolhido, e essa memória continua útil.
+
+
 **Data:** 9 de setembro de 2026
 **Revisado:** 10 de setembro de 2026 — publicação migrada para Azure, e-mail via Microsoft Graph
 **Status:** Aprovado, em implementação

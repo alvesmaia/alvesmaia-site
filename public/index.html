@@ -1,255 +1,392 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-tema="claro">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Alvesmaia — Soluções sob medida para a sua empresa</title>
-<meta name="description" content="Automação, integração de sistemas e desenvolvimento sob medida para a sua empresa.">
-<link rel="icon" href="/img/favicon/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="/img/favicon/favicon-32.png" sizes="32x32">
-<link rel="apple-touch-icon" href="/img/favicon/apple-touch-icon-180.png">
+<meta name="description" content="Automação de processos, integrações entre sistemas e Power Platform para tirar o trabalho repetitivo das mãos das pessoas.">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;900&display=swap">
 <link rel="stylesheet" href="/css/tokens.css">
 <link rel="stylesheet" href="/css/site.css">
+<script>
+  // Aplica o tema antes da primeira pintura: sem isto, quem escolheu escuro
+  // vê um lampejo claro a cada carregamento.
+  (function () {
+    try {
+      var t = localStorage.getItem("alvesmaia-tema");
+      if (!t) t = matchMedia("(prefers-color-scheme: dark)").matches ? "escuro" : "claro";
+      document.documentElement.dataset.tema = t;
+    } catch (e) {}
+  })();
+</script>
 </head>
 <body>
 
-<a class="pular-para-conteudo" href="#conteudo">Pular para o conteúdo</a>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
 
 <header class="cabecalho">
-  <div class="container">
-    <a class="cabecalho__logo" href="/" aria-label="Alvesmaia, página inicial">
-      <svg viewBox="0 0 198 96" aria-hidden="true" focusable="false">
-        <g transform="translate(-27 -8)">
-          <path d="M 27,103 L 58,103 L 98,42 L 136,103 L 167,103 L 115,18 C 111,11 105,8 98,8 C 91,8 86,12 82,18 Z" fill="#102A43"></path>
-          <path d="M 160,33 C 165,28 173,27 179,30 C 183,32 185,35 187,39 L 225,104 L 195,104 L 171,62 L 157,82 L 143,58 Z" fill="#00A8E8"></path>
-          <circle cx="98.5" cy="92" r="12" fill="#00A8E8"></circle>
-        </g>
-      </svg>
-      <span>Alvesmaia</span>
+  <div class="cabecalho__interno">
+    <a class="cabecalho__logo" href="#topo" aria-label="Alvesmaia, início">
+      <img data-logo="claro" src="/img/logo-claro.svg" alt="Alvesmaia" width="180" height="26">
+      <img data-logo="escuro" src="/img/logo-escuro.svg" alt="Alvesmaia" width="180" height="26">
     </a>
-    <input type="checkbox" id="menu-toggle" aria-label="Abrir menu de navegação">
-    <label class="cabecalho__hamburguer" for="menu-toggle" aria-hidden="true">
-      <span></span><span></span><span></span>
-    </label>
-    <nav class="cabecalho__nav" aria-label="Principal">
-      <ul>
-        <li><a href="/" aria-current="page">Início</a></li>
-        <li><a href="/servicos.html">Serviços</a></li>
-        <li><a href="/sobre.html">Sobre</a></li>
-        <li><a href="/contato.html">Contato</a></li>
-      </ul>
+    <input class="nav-toggle" type="checkbox" id="nav-toggle" aria-label="Abrir menu de navegação">
+    <label class="nav-hamburguer" for="nav-toggle" aria-hidden="true"><i></i></label>
+    <nav class="nav" aria-label="Principal">
+      <a href="#servicos">Serviços</a>
+      <a href="#casos">Soluções</a>
+      <a href="#modelos">Planos</a>
+      <a href="#metodo">Metodologia</a>
+      <a href="#sobre">Sobre</a>
+      <a href="#faq">FAQ</a>
     </nav>
+    <button class="tema-btn" type="button" id="tema" aria-label="Alternar tema claro e escuro">
+      <span data-icone="claro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></span>
+      <span data-icone="escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg></span>
+    </button>
+    <a class="botao botao--primario botao--cabecalho" href="#contato">Falar com um especialista</a>
   </div>
 </header>
 
 <main id="conteudo">
 
-  <section class="secao secao--grade hero">
-    <div class="container">
-      <div class="hero__texto">
-        <p class="eyebrow">Automação · Integração · Desenvolvimento</p>
+  <section class="hero" id="topo">
+    <div class="container hero__grade">
+      <div>
+        <span class="pill">Transformação digital</span>
         <h1>Soluções sob medida para a sua empresa</h1>
-        <p class="chamada">Automação, integração e desenvolvimento para empresas que precisam de tecnologia funcionando — não de mais um sistema para gerenciar.</p>
-        <div class="acoes">
-          <a class="botao botao--primario" href="/contato.html">Falar sobre seu projeto</a>
-          <a class="botao botao--linha" href="/servicos.html">Ver serviços</a>
+        <p class="lead lead--hero">Automatizamos o trabalho repetitivo que hoje mora em planilha, e-mail e copiar-colar entre sistemas. Robôs, integrações e aplicações internas construídos sobre o que a sua empresa já paga.</p>
+        <div class="hero__acoes">
+          <a class="botao botao--primario botao--grande" href="#contato">Mapear um processo</a>
+          <a class="botao botao--secundario botao--grande" href="#servicos">Ver o que fazemos</a>
         </div>
       </div>
 
-      <div class="hero__figura">
-        <svg viewBox="0 0 480 380" width="470" height="372" role="img" aria-label="Esquema: ERP, e-commerce, planilhas e notas fiscais conectados por um núcleo de integração">
-          <g fill="none" stroke="#B7C6D2" stroke-width="1">
-            <polyline points="140,46 180,46 180,170"></polyline>
-            <polyline points="340,46 300,46 300,170"></polyline>
-            <polyline points="140,326 180,326 180,210"></polyline>
-            <polyline points="340,326 300,326 300,210"></polyline>
-          </g>
-          <g fill="#00A8E8">
-            <circle cx="180" cy="46" r="4"></circle>
-            <circle cx="300" cy="46" r="4"></circle>
-            <circle cx="180" cy="326" r="4"></circle>
-            <circle cx="300" cy="326" r="4"></circle>
-          </g>
-          <g fill="#FFFFFF" stroke="#B7C6D2" stroke-width="1">
-            <rect x="10" y="20" width="130" height="52" rx="3"></rect>
-            <rect x="340" y="20" width="130" height="52" rx="3"></rect>
-            <rect x="10" y="300" width="130" height="52" rx="3"></rect>
-            <rect x="340" y="300" width="130" height="52" rx="3"></rect>
-          </g>
-          <g font-family="Nunito Sans, sans-serif" font-weight="700" font-size="11" fill="#40566B" letter-spacing="0.08em">
-            <text x="75" y="50" text-anchor="middle">ERP</text>
-            <text x="405" y="50" text-anchor="middle">E-COMMERCE</text>
-            <text x="75" y="330" text-anchor="middle">PLANILHAS</text>
-            <text x="405" y="330" text-anchor="middle">NOTAS FISCAIS</text>
-          </g>
-          <rect x="180" y="150" width="120" height="80" fill="#102A43" rx="3"></rect>
-          <svg x="205" y="172" width="70" height="34" viewBox="0 0 198 96">
-            <g transform="translate(-27 -8)">
-              <path d="M 27,103 L 58,103 L 98,42 L 136,103 L 167,103 L 115,18 C 111,11 105,8 98,8 C 91,8 86,12 82,18 Z" fill="#FFFFFF"></path>
-              <path d="M 160,33 C 165,28 173,27 179,30 C 183,32 185,35 187,39 L 225,104 L 195,104 L 171,62 L 157,82 L 143,58 Z" fill="#00A8E8"></path>
-              <circle cx="98.5" cy="92" r="12" fill="#00A8E8"></circle>
-            </g>
-          </svg>
-        </svg>
+      <div class="fluxos" data-ativo="0" data-etapa="0" role="img" aria-label="Exemplos de fluxos automatizados, em rotação">
+        <div class="fluxos__barra" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="fluxos__caixa">
+      <span class="fluxos__legenda" data-rotulo="0">Fiscal — Conciliação de notas</span>
+      <span class="fluxos__legenda" data-rotulo="1">Jurídico — Ciclo de contratos</span>
+      <span class="fluxos__legenda" data-rotulo="2">RH — Admissão de colaborador</span>
+      <span class="fluxos__legenda" data-rotulo="3">Financeiro — Contas a pagar</span>
+      <span class="fluxos__legenda" data-rotulo="4">Operações — Pedido do marketplace</span>
+          <div class="fluxos__palco">
+      <div class="fluxo" data-fluxo="0">
+        <div class="fluxo__passo fluxo__passo--destaque fluxo__passo--inicio" data-passo="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg><span>Nota fiscal chega no e-mail</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+<svg class="conector" data-passo="2" width="2" height="18" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="18" stroke="var(--rule-2)" stroke-width="2" stroke-dasharray="4 4"></line></svg>
+        <div class="fluxo__passo" data-passo="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M8 13h5"></path><path d="M8 17h8"></path></svg><span>Lê o XML e confere CNPJ, valor e pedido</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+<svg class="conector" data-passo="3" width="2" height="18" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="18" stroke="var(--rule-2)" stroke-width="2" stroke-dasharray="4 4"></line></svg>
+        <div class="fluxo__passo" data-passo="3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14a9 3 0 0 0 18 0V5"></path><path d="M3 12a9 3 0 0 0 18 0"></path></svg><span>Registra no ERP e arquiva no SharePoint</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+<svg class="conector" data-passo="4" width="2" height="18" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="18" stroke="var(--rule-2)" stroke-width="2" stroke-dasharray="4 4"></line></svg>
+        <div class="fluxo__passo fluxo__passo--destaque fluxo__passo--fim" data-passo="4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg><span>Divergência vira card no Teams</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+      </div>
+      <div class="fluxo" data-fluxo="1">
+        <div class="fluxo__passo fluxo__passo--destaque fluxo__passo--inicio" data-passo="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg><span>Área solicita o contrato pelo formulário</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+<svg class="conector" data-passo="2" width="2" height="18" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="18" stroke="var(--rule-2)" stroke-width="2" stroke-dasharray="4 4"></line></svg>
+        <div class="fluxo__passo" data-passo="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="m9 15 2 2 4-4"></path></svg><span>Minuta gerada do modelo aprovado</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+<svg class="conector" data-passo="3" width="2" height="18" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="18" stroke="var(--rule-2)" stroke-width="2" stroke-dasharray="4 4"></line></svg>
+        <div class="fluxo__passo" data-passo="3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg><span>Vai para assinatura eletrônica</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+<svg class="conector" data-passo="4" width="2" height="18" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="18" stroke="var(--rule-2)" stroke-width="2" stroke-dasharray="4 4"></line></svg>
+        <div class="fluxo__passo fluxo__passo--destaque fluxo__passo--fim" data-passo="4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="m9 16 2 2 4-4"></path></svg><span>Prazos e renovação entram na agenda</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+      </div>
+      <div class="fluxo" data-fluxo="2">
+        <div class="fluxo__passo fluxo__passo--destaque fluxo__passo--inicio" data-passo="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg><span>RH preenche o formulário de admissão</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+<svg class="conector" data-passo="2" width="2" height="18" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="18" stroke="var(--rule-2)" stroke-width="2" stroke-dasharray="4 4"></line></svg>
+        <div class="fluxo__passo" data-passo="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="m9 15 2 2 4-4"></path></svg><span>Confere documentos e aponta pendências</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+<svg class="conector" data-passo="3" width="2" height="18" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="18" stroke="var(--rule-2)" stroke-width="2" stroke-dasharray="4 4"></line></svg>
+        <div class="fluxo__passo" data-passo="3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M19 8v6"></path><path d="M22 11h-6"></path></svg><span>Cria usuário, e-mail e acessos</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+<svg class="conector" data-passo="4" width="2" height="18" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="18" stroke="var(--rule-2)" stroke-width="2" stroke-dasharray="4 4"></line></svg>
+        <div class="fluxo__passo fluxo__passo--destaque fluxo__passo--fim" data-passo="4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg><span>Kit de boas-vindas enviado ao gestor</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+      </div>
+      <div class="fluxo" data-fluxo="3">
+        <div class="fluxo__passo fluxo__passo--destaque fluxo__passo--inicio" data-passo="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg><span>Boleto do fornecedor chega no e-mail</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+<svg class="conector" data-passo="2" width="2" height="18" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="18" stroke="var(--rule-2)" stroke-width="2" stroke-dasharray="4 4"></line></svg>
+        <div class="fluxo__passo" data-passo="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="m9 15 2 2 4-4"></path></svg><span>Confere pedido, valor e centro de custo</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+<svg class="conector" data-passo="3" width="2" height="18" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="18" stroke="var(--rule-2)" stroke-width="2" stroke-dasharray="4 4"></line></svg>
+        <div class="fluxo__passo" data-passo="3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="12" x="2" y="6" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg><span>Agenda o pagamento no ERP</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+<svg class="conector" data-passo="4" width="2" height="18" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="18" stroke="var(--rule-2)" stroke-width="2" stroke-dasharray="4 4"></line></svg>
+        <div class="fluxo__passo fluxo__passo--destaque fluxo__passo--fim" data-passo="4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg><span>Comprovante volta para o fornecedor</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+      </div>
+      <div class="fluxo" data-fluxo="4">
+        <div class="fluxo__passo fluxo__passo--destaque fluxo__passo--inicio" data-passo="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg><span>Pedido novo entra no marketplace</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+<svg class="conector" data-passo="2" width="2" height="18" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="18" stroke="var(--rule-2)" stroke-width="2" stroke-dasharray="4 4"></line></svg>
+        <div class="fluxo__passo" data-passo="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg><span>Sincroniza cliente e itens com o ERP</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+<svg class="conector" data-passo="3" width="2" height="18" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="18" stroke="var(--rule-2)" stroke-width="2" stroke-dasharray="4 4"></line></svg>
+        <div class="fluxo__passo" data-passo="3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg><span>Baixa estoque e gera a separação</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+<svg class="conector" data-passo="4" width="2" height="18" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="18" stroke="var(--rule-2)" stroke-width="2" stroke-dasharray="4 4"></line></svg>
+        <div class="fluxo__passo fluxo__passo--destaque fluxo__passo--fim" data-passo="4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg><span>Painel de vendas atualiza sozinho</span><svg class="contorno" width="100%" height="100%" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" fill="none" stroke="var(--acento)" stroke-width="1.5" stroke-dasharray="8 6"></rect></svg></div>
+      </div>
+          </div>
+          <div class="fluxos__load" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="var(--rule)" stroke-width="2.5"></circle><path d="M12 3a9 9 0 0 1 9 9" stroke="var(--acento)" stroke-width="2.5" stroke-linecap="round"></path></svg>
+          </div>
+          <div class="fluxos__check" aria-hidden="true">
+            <svg viewBox="-3 -3 30 30" fill="none">
+              <path d="M12 3.8Q16.95 1.73 18.41 6.89Q23.11 9.46 19.99 13.82Q20.91 19.11 15.56 19.39Q12 23.4 8.44 19.39Q3.09 19.11 4.01 13.82Q0.89 9.46 5.59 6.89Q7.05 1.73 12 3.8Z" fill="var(--ok)"></path>
+              <path d="M8.4 12.2l2.5 2.5 4.7-5" stroke="var(--card)" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path>
+              <g data-raios stroke="var(--ok)" stroke-width="1.5" stroke-linecap="round"><line x1="17.2" y1="-0.56" x2="18.28" y2="-3.15"></line><line x1="24.56" y1="6.8" x2="27.15" y2="5.72"></line><line x1="24.56" y1="17.2" x2="27.15" y2="18.28"></line><line x1="17.2" y1="24.56" x2="18.28" y2="27.15"></line><line x1="6.8" y1="24.56" x2="5.72" y2="27.15"></line><line x1="-0.56" y1="17.2" x2="-3.15" y2="18.28"></line><line x1="-0.56" y1="6.8" x2="-3.15" y2="5.72"></line><line x1="6.8" y1="-0.56" x2="5.72" y2="-3.15"></line></g>
+            </svg>
+          </div>
+        </div>
+        <div class="fluxos__rodape">
+          <button class="fluxos__seta" type="button" data-passo-fluxo="-1" aria-label="Fluxo anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+          <div class="fluxos__progresso" aria-hidden="true"><i></i></div>
+          <button class="fluxos__seta" type="button" data-passo-fluxo="1" aria-label="Próximo fluxo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="secao secao--branca" style="padding-bottom: 0;">
-    <div class="container">
-      <div class="secao__topo">
-        <h2>Áreas de atuação</h2>
-        <p>Quatro frentes com o mesmo objetivo: tirar o trabalho repetitivo do caminho das pessoas.</p>
-      </div>
+  <div class="stack" id="stack">
+    <div class="stack__interno">
+      <span class="stack__rotulo">Construímos sobre</span>
+      <ul class="stack__chips"><li>Power Automate</li><li>Power Apps</li><li>Power BI</li><li>Dataverse</li><li>Microsoft 365</li><li>Python</li><li>APIs REST</li><li>SQL</li></ul>
     </div>
+  </div>
+
+  <section class="secao" id="servicos">
     <div class="container">
-      <div class="atuacao">
-
-        <article class="atuacao__item">
-          <span class="rotulo">RPA</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="#102A43" stroke-width="1.25" aria-hidden="true">
-            <rect x="3.5" y="3.5" width="7" height="7" rx="1"></rect>
-            <rect x="13.5" y="13.5" width="7" height="7" rx="1"></rect>
-            <path d="M10.5 7h6a1 1 0 0 1 1 1v5.5"></path>
-            <path d="M13.5 17h-6a1 1 0 0 1-1-1v-5.5"></path>
-          </svg>
-          <h3>Automação de processos</h3>
-          <p>Tarefas repetitivas que hoje consomem horas da sua equipe passam a rodar sozinhas.</p>
+      <div class="secao__cabeca">
+        <span class="eyebrow">01 · Serviços</span>
+        <h2>Tirar processo repetitivo das mãos das pessoas</h2>
+        <p class="lead">Cada entrega parte de um processo real da sua operação — não de uma licença que precisamos vender. Se dá para resolver com o que você já tem, é o que fazemos.</p>
+      </div>
+      <div class="grade-cards">
+        <article class="card">
+          <div class="card__num">01</div>
+          <h3>Automação de processos (RPA)</h3>
+          <p>Robôs que executam a rotina do jeito que a pessoa executa hoje: abrir sistema legado sem API, baixar relatório, conferir, lançar, arquivar. Com log de cada execução e tratamento de exceção — o que o robô não souber decidir volta para um humano.</p>
         </article>
-
-        <article class="atuacao__item">
-          <span class="rotulo">Integrações</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="#102A43" stroke-width="1.25" aria-hidden="true">
-            <circle cx="6" cy="6" r="2.5"></circle>
-            <circle cx="18" cy="18" r="2.5"></circle>
-            <path d="M6 8.5v6a3 3 0 0 0 3 3h6.5"></path>
-            <path d="M15.5 15.5 18 18l-2.5 2.5"></path>
-          </svg>
-          <h3>Sistemas conversando</h3>
-          <p>Sistemas que não foram feitos para conversar começam a trocar dados automaticamente.</p>
+        <article class="card">
+          <div class="card__num">02</div>
+          <h3>Integrações entre sistemas</h3>
+          <p>ERP, CRM, e-commerce, banco, planilha e API de terceiro conversando sem alguém no meio digitando duas vezes. Com fila, reprocessamento e alerta de falha — integração que quebra em silêncio é pior que não ter.</p>
         </article>
-
-        <article class="atuacao__item">
-          <span class="rotulo">Sistemas sob medida</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="#102A43" stroke-width="1.25" aria-hidden="true">
-            <rect x="3" y="4.5" width="18" height="15" rx="2"></rect>
-            <path d="M3 9h18"></path>
-            <path d="M8.5 13 10.5 15l-2 2"></path>
-            <path d="M12.5 17h4"></path>
-          </svg>
-          <h3>Feito para o seu processo</h3>
-          <p>Desenvolvimento do zero quando nenhuma solução de mercado atende ao que a empresa faz.</p>
+        <article class="card">
+          <div class="card__num">03</div>
+          <h3>Power Platform</h3>
+          <p>Power Apps para o formulário que hoje é planilha compartilhada, Power Automate para o fluxo de aprovação, Power BI para parar de montar relatório na mão. Dentro do Microsoft 365 que a empresa já assina.</p>
         </article>
-
-        <article class="atuacao__item">
-          <span class="rotulo">Power Platform</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="#102A43" stroke-width="1.25" aria-hidden="true">
-            <path d="M13 3 5 13.5h6L10 21l8-10.5h-6z"></path>
-          </svg>
-          <h3>Dentro do Microsoft 365</h3>
-          <p>Automação e aplicativos aproveitando as licenças que a empresa já paga.</p>
+        <article class="card">
+          <div class="card__num">04</div>
+          <h3>Plataformas internas</h3>
+          <p>Portal, painel operacional ou sistema sob medida, com login corporativo e perfis de acesso — para quando o processo já não cabe em app de baixo código.</p>
         </article>
-
+        <article class="card">
+          <div class="card__num">05</div>
+          <h3>Dados e relatórios</h3>
+          <p>Consolidação das bases que hoje estão espalhadas, modelo de dados e painel que abre atualizado — em vez de um PDF que alguém monta toda segunda-feira.</p>
+        </article>
+        <article class="card">
+          <div class="card__num">06</div>
+          <h3>Discovery de processo</h3>
+          <p>Antes de automatizar: mapear, medir e cortar o que não deveria existir. Automatizar processo ruim só faz o erro acontecer mais rápido.</p>
+        </article>
       </div>
     </div>
   </section>
 
-  <section class="secao secao--papel">
-    <div class="container duas duas--centro">
-      <div class="duas__enunciado">
-        <p class="eyebrow">Método</p>
-        <h2>Proximidade como método</h2>
-        <p class="corpo">Na Alvesmaia, quem entende o problema é quem desenvolve a solução. Sem camadas de intermediação e sem escopo que se perde na passagem entre equipes — do primeiro diagnóstico à entrega, o interlocutor é o mesmo.</p>
-        <div class="acoes">
-          <a class="botao botao--primario" href="/contato.html">Iniciar uma conversa</a>
+  <section class="secao secao--alt" id="casos">
+    <div class="container">
+      <div class="secao__cabeca">
+        <span class="eyebrow">02 · Soluções</span>
+        <h2>Se alguma destas é a sua rotina, dá para automatizar</h2>
+      </div>
+      <div class="grade-colada grade-colada--4">
+        <div class="celula"><h3>Financeiro e fiscal</h3><p>Conciliação bancária, captura de notas, lançamento em ERP, régua de cobrança.</p></div>
+        <div class="celula"><h3>Backoffice e RH</h3><p>Admissão, checklist de documentos, aprovação de despesa, geração de contrato.</p></div>
+        <div class="celula"><h3>Comercial</h3><p>Proposta gerada do CRM, follow-up automático, pipeline sem planilha paralela.</p></div>
+        <div class="celula"><h3>Operação e logística</h3><p>Sincronizar pedido entre marketplace e ERP, atualizar estoque, avisar exceção.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao" id="modelos">
+    <div class="container">
+      <div class="secao__cabeca">
+        <span class="eyebrow">03 · Planos</span>
+        <h2>Três formatos, escopo declarado</h2>
+        <p class="lead">Não vendemos licença nem produto de prateleira. O que você contrata é entrega — e o que for construído fica documentado, no seu ambiente e no seu nome.</p>
+      </div>
+      <div class="planos">
+        <article class="plano">
+          <h3>Prova de conceito</h3>
+          <p class="plano__desc">Um processo, escopo curto. Para ver a automação rodando antes de decidir o resto.</p>
+          <p class="plano__preco">sob consulta</p>
+          <ul class="plano__itens"><li>Mapeamento do processo escolhido</li><li>Automação funcional em ambiente de teste</li><li>Estimativa de ganho e do esforço para escalar</li></ul>
+          <a class="botao botao--bloco botao--secundario" href="#contato">Começar por aqui</a>
+        </article>
+        <article class="plano plano--destaque">
+          <span class="plano__badge">mais comum</span>
+          <h3>Projeto</h3>
+          <p class="plano__desc">Escopo, prazo e preço fechados. Do desenho à entrega em produção, com treinamento.</p>
+          <p class="plano__preco">sob consulta</p>
+          <ul class="plano__itens"><li>Desenho da solução e documentação</li><li>Construção, testes e homologação com a área</li><li>Publicação no seu tenant e treinamento</li><li>Garantia de correção após a entrega</li></ul>
+          <a class="botao botao--bloco botao--primario" href="#contato">Solicitar contato</a>
+        </article>
+        <article class="plano">
+          <h3>Evolução contínua</h3>
+          <p class="plano__desc">Horas mensais para sustentar o que está rodando e automatizar o próximo da fila.</p>
+          <p class="plano__preco">sob consulta</p>
+          <ul class="plano__itens"><li>Correção quando o sistema de origem muda</li><li>Ajustes e novas regras nos fluxos existentes</li><li>Fila priorizada com você a cada mês</li></ul>
+          <a class="botao botao--bloco botao--secundario" href="#contato">Conversar</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--alt" id="metodo">
+    <div class="container">
+      <div class="secao__cabeca">
+        <span class="eyebrow">04 · Metodologia</span>
+        <h2>Da primeira conversa ao fluxo em produção</h2>
+      </div>
+      <div class="grade-colada grade-colada--etapas">
+        <div class="celula">
+          <span class="etapa__num">Etapa 1</span>
+          <h3>Mapear</h3>
+          <p>30 minutos por vídeo, sem custo. Você mostra o processo como ele é hoje; eu digo se vale automatizar.</p>
+        </div>
+        <div class="celula">
+          <span class="etapa__num">Etapa 2</span>
+          <h3>Desenhar e orçar</h3>
+          <p>Fluxo proposto, sistemas envolvidos, exceções previstas, prazo e preço. O que não entra também fica escrito.</p>
+        </div>
+        <div class="celula">
+          <span class="etapa__num">Etapa 3</span>
+          <h3>Construir e homologar</h3>
+          <p>Entregas parciais para a área validar cedo. Quem usa o processo testa antes de virar produção.</p>
+        </div>
+        <div class="celula">
+          <span class="etapa__num">Etapa 4</span>
+          <h3>Publicar e transferir</h3>
+          <p>Publicação no seu ambiente, documentação, treinamento e monitoramento das execuções.</p>
         </div>
       </div>
+    </div>
+  </section>
 
-      <div class="duas__corpo">
-        <svg viewBox="0 0 600 260" width="600" height="260" role="img" aria-label="Comparação: quatro repasses numa consultoria convencional contra ligação direta na Alvesmaia">
-          <text x="0" y="16" font-family="Nunito Sans, sans-serif" font-weight="700" font-size="11" letter-spacing="0.14em" fill="#7A8FA3">CONSULTORIA CONVENCIONAL</text>
-          <g fill="none" stroke="#C3CFDA" stroke-width="1">
-            <line x1="72" y1="58" x2="128" y2="58"></line>
-            <line x1="200" y1="58" x2="256" y2="58"></line>
-            <line x1="328" y1="58" x2="384" y2="58"></line>
-            <line x1="456" y1="58" x2="512" y2="58"></line>
-          </g>
-          <g fill="#FFFFFF" stroke="#C3CFDA" stroke-width="1">
-            <rect x="0" y="40" width="72" height="36" rx="3"></rect>
-            <rect x="128" y="40" width="72" height="36" rx="3"></rect>
-            <rect x="256" y="40" width="72" height="36" rx="3"></rect>
-            <rect x="384" y="40" width="72" height="36" rx="3"></rect>
-            <rect x="512" y="40" width="72" height="36" rx="3"></rect>
-          </g>
-          <g font-family="Nunito Sans, sans-serif" font-weight="700" font-size="10" fill="#7A8FA3" text-anchor="middle">
-            <text x="36" y="62">CLIENTE</text>
-            <text x="164" y="62">ATENDIM.</text>
-            <text x="292" y="62">GERENTE</text>
-            <text x="420" y="62">ANALISTA</text>
-            <text x="548" y="62">DEV</text>
-          </g>
-          <text x="0" y="106" font-family="Nunito Sans, sans-serif" font-size="13" fill="#7A8FA3">Quatro repasses entre quem tem o problema e quem escreve o código.</text>
-
-          <line x1="0" y1="140" x2="600" y2="140" stroke="#D5DEE6" stroke-width="1"></line>
-
-          <text x="0" y="176" font-family="Nunito Sans, sans-serif" font-weight="700" font-size="11" letter-spacing="0.14em" fill="#0077AB">ALVESMAIA</text>
-          <line x1="72" y1="218" x2="512" y2="218" stroke="#00A8E8" stroke-width="1.5"></line>
-          <circle cx="294" cy="218" r="6" fill="#00A8E8"></circle>
-          <g fill="#FFFFFF" stroke="#102A43" stroke-width="1.25">
-            <rect x="0" y="200" width="72" height="36" rx="3"></rect>
-            <rect x="512" y="200" width="72" height="36" rx="3"></rect>
-          </g>
-          <g font-family="Nunito Sans, sans-serif" font-weight="700" font-size="10" fill="#102A43" text-anchor="middle">
-            <text x="36" y="222">CLIENTE</text>
-            <text x="548" y="222">SOLUÇÃO</text>
-          </g>
-        </svg>
+  <section class="secao" id="sobre">
+    <div class="container duas-colunas">
+      <div class="secao__cabeca">
+        <span class="eyebrow">05 · Sobre</span>
+        <h2>Operação enxuta, compromissos claros</h2>
+        <p class="lead" style="font-size:16.5px">Consultoria pequena tem uma vantagem que a grande não consegue imitar: quem conversa com você é quem constrói. E tem um limite honesto: um projeto por vez, bem feito.</p>
       </div>
+      <div class="grade-colada grade-colada--compromissos">
+        <div class="celula compromisso"><strong>Sem lock-in</strong><span>Fluxos e código no seu tenant, no seu repositório</span></div>
+        <div class="celula compromisso"><strong>Preço fechado</strong><span>Escopo definido antes; mudança vira aditivo combinado</span></div>
+        <div class="celula compromisso"><strong>Documentado</strong><span>Cada entrega sai com desenho do fluxo e manual de operação</span></div>
+        <div class="celula compromisso"><strong>Interlocutor único</strong><span>Sem repassar o contexto para um time que troca a cada mês</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--alt faq" id="faq">
+    <div class="container container--estreito">
+      <span class="eyebrow">06 · FAQ</span>
+      <h2 style="margin:12px 0 26px">Perguntas frequentes</h2>
+      <details>
+        <summary>Preciso ter Power Platform para contratar?</summary>
+        <p>Não. Se a empresa já usa Microsoft 365, boa parte do que é preciso já está incluída e o custo adicional pode ser zero. Quando o caso exige conector premium ou execução desassistida, isso é dito na proposta com o valor estimado — antes de você decidir.</p>
+      </details>
+      <details>
+        <summary>E se o meu sistema não tem API?</summary>
+        <p>É o caso mais comum. Quando não há API, o robô opera a interface como um usuário — com validação a cada passo e evidência do que fez. Quando há API, ela é sempre a primeira escolha: é mais rápida e quebra menos.</p>
+      </details>
+      <details>
+        <summary>O que acontece quando a automação falha?</summary>
+        <p>Toda entrega prevê a falha: log de execução, notificação para o responsável e uma rota manual para o caso não tratado. Automação sem plano de exceção só transfere o problema de lugar.</p>
+      </details>
+      <details>
+        <summary>A automação fica presa a vocês?</summary>
+        <p>Não. Tudo é publicado no seu tenant, com a documentação do fluxo e das credenciais usadas. Se você quiser levar a manutenção para dentro ou para outro fornecedor, sai com o material completo.</p>
+      </details>
+      <details>
+        <summary>Quanto tempo leva a primeira entrega?</summary>
+        <p>Uma prova de conceito de um processo costuma ficar pronta em duas a três semanas, dependendo do acesso aos sistemas. Projetos maiores são quebrados em etapas para você ver resultado antes do fim.</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="secao secao--sem-borda contato" id="contato">
+    <div class="container contato-grade">
+      <div class="secao__cabeca">
+        <span class="eyebrow">07 · Contato</span>
+        <h2>Traga um processo, saia com um diagnóstico</h2>
+        <p class="lead">Trinta minutos por vídeo. Você mostra a rotina como ela é hoje e recebe uma leitura honesta: dá para automatizar, quanto custaria e o que dá para fazer antes disso de graça.</p>
+        <p class="micro" style="margin-top:16px">Atendimento de segunda a sexta, das 9h às 18h.</p>
+      </div>
+
+      <form class="form" method="POST" action="/api/contato">
+        <div class="aviso aviso--ok" id="enviado" role="status">Recebido. Respondo em até 1 dia útil.</div>
+        <div class="aviso aviso--erro" id="erro" role="alert">Não foi possível enviar. Tente novamente em alguns instantes.</div>
+        <div class="aviso aviso--erro" id="robo" role="alert">Verificação não concluída. Marque a caixa antes de enviar.</div>
+
+        <div class="form__linha">
+          <label class="campo">
+            <span>Nome</span>
+            <input type="text" name="nome" required minlength="2" autocomplete="name" placeholder="Seu nome">
+          </label>
+          <label class="campo">
+            <span>Empresa</span>
+            <input type="text" name="empresa" maxlength="120" autocomplete="organization" placeholder="Razão social">
+          </label>
+        </div>
+        <label class="campo">
+          <span>E-mail corporativo</span>
+          <input type="email" name="email" required autocomplete="email" placeholder="voce@empresa.com.br">
+        </label>
+        <label class="campo">
+          <span>Descreva o processo</span>
+          <textarea name="mensagem" rows="4" required minlength="10" maxlength="5000" placeholder="Ex.: todo dia alguém baixa 40 notas do e-mail, confere no ERP e lança na planilha do financeiro"></textarea>
+        </label>
+
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAEvKx-DjzOnRIGgI" data-action="contato"></div>
+
+        <button class="botao botao--primario" type="submit">Agendar os 30 minutos</button>
+        <p class="form__legal">Seus dados são usados só para responder este contato — nada de lista de disparo. Tratamento conforme a LGPD.</p>
+      </form>
     </div>
   </section>
 
 </main>
 
 <footer class="rodape">
-  <div class="container rodape__topo">
+  <div class="rodape__grade">
     <div class="rodape__marca">
-      <svg viewBox="0 0 198 96" aria-hidden="true" focusable="false">
-        <g transform="translate(-27 -8)">
-          <path d="M 27,103 L 58,103 L 98,42 L 136,103 L 167,103 L 115,18 C 111,11 105,8 98,8 C 91,8 86,12 82,18 Z" fill="#FFFFFF"></path>
-          <path d="M 160,33 C 165,28 173,27 179,30 C 183,32 185,35 187,39 L 225,104 L 195,104 L 171,62 L 157,82 L 143,58 Z" fill="#00A8E8"></path>
-          <circle cx="98.5" cy="92" r="12" fill="#00A8E8"></circle>
-        </g>
-      </svg>
-      <p>Soluções sob medida para a sua empresa.</p>
+      <img data-logo="claro" src="/img/logo-claro.svg" alt="Alvesmaia" width="180" height="24">
+      <img data-logo="escuro" src="/img/logo-escuro.svg" alt="Alvesmaia" width="180" height="24">
+      <p>Consultoria de TI. Soluções sob medida para a sua empresa.</p>
     </div>
-    <div class="rodape__colunas">
-      <nav class="rodape__coluna" aria-label="Soluções">
-        <span class="rotulo">Soluções</span>
-        <a href="/servicos.html#rpa">Automação de processos</a>
-        <a href="/servicos.html#integracoes">Integrações</a>
-        <a href="/servicos.html#sistemas">Sistemas sob medida</a>
-        <a href="/servicos.html#power-platform">Power Platform</a>
-      </nav>
-      <nav class="rodape__coluna" aria-label="Páginas">
-        <span class="rotulo">Páginas</span>
-        <a href="/">Início</a>
-        <a href="/servicos.html">Serviços</a>
-        <a href="/sobre.html">Sobre</a>
-        <a href="/contato.html">Contato</a>
-      </nav>
-      <div class="rodape__coluna">
-        <span class="rotulo">Contato</span>
-        <a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a>
-      </div>
+    <div class="rodape__coluna">
+      <h3>Serviços</h3>
+      <a href="#servicos">Automação (RPA)</a>
+      <a href="#servicos">Integrações</a>
+      <a href="#servicos">Power Platform</a>
+      <a href="#servicos">Plataformas internas</a>
+    </div>
+    <div class="rodape__coluna">
+      <h3>Empresa</h3>
+      <a href="#modelos">Planos</a>
+      <a href="#metodo">Metodologia</a>
+      <a href="#sobre">Sobre</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="rodape__coluna">
+      <h3>Contato</h3>
+      <a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a>
     </div>
   </div>
-  <div class="container rodape__copyright">
-    <small>&copy; 2026 Alvesmaia. Todos os direitos reservados.</small>
+  <div class="rodape__barra">
+    <span>&copy; 2026 Alvesmaia · alvesmaia.com</span>
   </div>
 </footer>
 
+<script src="/js/app.js" defer></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </body>
 </html>

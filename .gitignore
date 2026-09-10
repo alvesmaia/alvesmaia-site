@@ -3,7 +3,3 @@ api/node_modules/
 api/dist/
 api/local.settings.json
 .DS_Store
-
-# Canvas montado do Claude Design: artefato gerado a partir dos .dc.html
-# e do canvas.json. 2,5 MB por versao — a fonte e o que fica versionado.
-docs/design/site-alvesmaia.html
