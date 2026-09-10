@@ -129,6 +129,8 @@ p { text-wrap: pretty; }
 
 /* ---------- Seções ---------- */
 .secao { padding: 72px 0; border-bottom: 1px solid var(--am-linha); }
+/* O cabeçalho é fixo: sem esta folga a âncora para atrás dele. */
+.secao[id] { scroll-margin-top: 96px; }
 .secao--branca { background: var(--am-branco); }
 .secao--papel { background: var(--am-papel); }
 /* Grade de blueprint: só nas aberturas, e discreta */
@@ -403,7 +405,7 @@ p { text-wrap: pretty; }
 .rodape__marca { max-width: 300px; display: flex; flex-direction: column; gap: 16px; }
 .rodape__marca svg { width: 52px; height: 25px; }
 .rodape__marca p { font-size: 14px; line-height: 1.6; }
-.rodape__colunas { display: flex; gap: 72px; flex-wrap: wrap; }
+.rodape__colunas { display: flex; gap: 56px; flex-wrap: wrap; }
 .rodape__coluna { display: flex; flex-direction: column; gap: 10px; }
 .rodape__coluna .rotulo { color: var(--am-sobre-navy-fraco); }
 .rodape__coluna a { font-size: 14px; color: var(--am-sobre-navy-forte); }
