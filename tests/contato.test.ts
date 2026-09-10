@@ -17,7 +17,6 @@ const { contato } = await import("../api/src/functions/contato");
 const camposValidos = {
   nome: "Maria Silva",
   email: "maria@empresa.com.br",
-  assunto: "Quero saber mais",
   mensagem: "Gostaria de automatizar a conferência de notas fiscais.",
   "cf-turnstile-response": "token-valido",
 };
@@ -128,6 +127,24 @@ describe("contato", () => {
     const res = await chamar();
     expect((res.headers as Record<string, string>).Location).toBe("/contato.html#erro");
     expect(turnstileValido).not.toHaveBeenCalled();
+  });
+
+  it("passa o contexto opcional adiante, gravado e no e-mail", async () => {
+    await chamar({ ...camposValidos, empresa: "  Acme Ltda ", segmento: "Indústria", funcionarios: "11 a 50" });
+    const gravado = gravarSubmissao.mock.calls[0][0];
+    expect(gravado.empresa).toBe("Acme Ltda");
+    expect(gravado.segmento).toBe("Indústria");
+    expect(enviarEmail.mock.calls[0][1]).toEqual({
+      empresa: "Acme Ltda",
+      segmento: "Indústria",
+      funcionarios: "11 a 50",
+    });
+  });
+
+  it("aceita o envio com o contexto todo em branco", async () => {
+    const res = await chamar();
+    expect((res.headers as Record<string, string>).Location).toBe("/contato.html#enviado");
+    expect(enviarEmail.mock.calls[0][1]).toEqual({ empresa: "", segmento: "", funcionarios: "" });
   });
 
   it("passa a ação e os hostnames esperados para a verificação", async () => {

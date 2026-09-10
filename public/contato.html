@@ -71,22 +71,51 @@
         </div>
 
         <form class="form" method="POST" action="/api/contato">
-          <div class="campo">
-            <label for="nome">Nome</label>
-            <input type="text" id="nome" name="nome" required minlength="2" autocomplete="name">
+          <div class="campo--par">
+            <div class="campo">
+              <label for="nome">Nome</label>
+              <input type="text" id="nome" name="nome" required minlength="2" autocomplete="name">
+            </div>
+            <div class="campo">
+              <label for="email">E-mail</label>
+              <input type="email" id="email" name="email" required autocomplete="email">
+            </div>
           </div>
-          <div class="campo">
-            <label for="email">E-mail</label>
-            <input type="email" id="email" name="email" required autocomplete="email">
+
+          <div class="campo--par">
+            <div class="campo">
+              <label for="empresa">Empresa <span class="campo__opcional">opcional</span></label>
+              <input type="text" id="empresa" name="empresa" maxlength="120" autocomplete="organization">
+            </div>
+            <div class="campo">
+              <label for="segmento">Segmento <span class="campo__opcional">opcional</span></label>
+              <select id="segmento" name="segmento">
+                <option value=""></option>
+                <option value="Comércio">Comércio</option>
+                <option value="Indústria">Indústria</option>
+                <option value="Serviços">Serviços</option>
+                <option value="Saúde">Saúde</option>
+                <option value="Educação">Educação</option>
+                <option value="Logística e transporte">Logística e transporte</option>
+                <option value="Construção">Construção</option>
+                <option value="Tecnologia">Tecnologia</option>
+                <option value="Agronegócio">Agronegócio</option>
+                <option value="Outro">Outro</option>
+              </select>
+            </div>
           </div>
-          <div class="campo">
-            <label for="assunto">Assunto</label>
-            <select id="assunto" name="assunto" required>
-              <option value="Quero saber mais">Quero saber mais</option>
-              <option value="Suporte">Suporte</option>
-              <option value="Outro">Outro</option>
+
+          <div class="campo campo--meio">
+            <label for="funcionarios">Funcionários <span class="campo__opcional">opcional</span></label>
+            <select id="funcionarios" name="funcionarios">
+              <option value=""></option>
+              <option value="1 a 10">1 a 10</option>
+              <option value="11 a 50">11 a 50</option>
+              <option value="51 a 200">51 a 200</option>
+              <option value="Mais de 200">Mais de 200</option>
             </select>
           </div>
+
           <div class="campo">
             <label for="mensagem">Mensagem</label>
             <textarea id="mensagem" name="mensagem" required minlength="10" maxlength="5000" placeholder="Ex.: conferimos cerca de 300 notas fiscais por mês manualmente, comparando o portal com a nossa planilha de recebimento."></textarea>
@@ -99,16 +128,6 @@
       </div>
 
       <div class="canais">
-        <div style="display: flex; flex-direction: column; gap: 14px;">
-          <span class="rotulo">Canal direto</span>
-          <p style="font-size: 15.5px; line-height: 1.62; color: var(--am-tinta-2);">Se preferir usar o seu próprio e-mail, escreva direto. É a mesma caixa que recebe o formulário.</p>
-        </div>
-
-        <div class="canais__endereco">
-          <a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a>
-          <span>Um endereço só, para qualquer assunto.</span>
-        </div>
-
         <div class="nota">
           <div class="nota__cabeca"><span class="marcador"></span><span class="rotulo">O que acontece depois</span></div>
           <p>A mensagem vai direto para a caixa de quem vai atender. A resposta sai em até um dia útil, e traz uma primeira leitura do processo — não um formulário de qualificação.</p>

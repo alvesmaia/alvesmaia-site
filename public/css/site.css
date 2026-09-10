@@ -163,6 +163,7 @@ p { text-wrap: pretty; }
   font-weight: 700;
   padding: 15px 28px;
   border: 1px solid transparent;
+  border-radius: var(--am-raio);
   cursor: pointer;
   font-family: inherit;
   text-align: center;
@@ -264,7 +265,7 @@ p { text-wrap: pretty; }
 .etapa p { font-size: 15px; line-height: 1.62; color: var(--am-tinta-2); }
 
 /* ---------- Painel (ficha, listas de perfil) ---------- */
-.painel { border: 1px solid var(--am-linha-forte); background: var(--am-branco); }
+.painel { border: 1px solid var(--am-linha-forte); background: var(--am-branco); border-radius: var(--am-raio); }
 .painel--fraco { border-color: var(--am-linha); background: var(--am-papel-alt); }
 .painel__cabeca {
   border-bottom: 1px solid var(--am-linha);
@@ -346,10 +347,22 @@ p { text-wrap: pretty; }
   color: var(--am-tinta);
   background: var(--am-branco);
   border: 1px solid var(--am-linha-forte);
-  border-radius: 0;
+  border-radius: var(--am-raio);
   padding: 13px 15px;
 }
 .campo input, .campo select { height: 50px; }
+/* Marca o campo como dispensável sem gritar — o visitante decide rápido. */
+.campo__opcional {
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--am-tinta-4);
+}
+/* Dois campos curtos na mesma linha; empilham no mobile pela regra abaixo. */
+.campo--par { display: flex; flex-direction: row; gap: 18px; }
+.campo--par > .campo { flex: 1; min-width: 0; }
+/* Campo curto sozinho na linha: sem isto ele estica e desequilibra a coluna. */
+.campo--meio { max-width: calc(50% - 9px); }
 .campo textarea { min-height: 168px; resize: vertical; line-height: 1.6; }
 .campo input::placeholder, .campo textarea::placeholder { color: var(--am-tinta-4); }
 .campo input:focus-visible, .campo select:focus-visible, .campo textarea:focus-visible {
@@ -360,17 +373,7 @@ p { text-wrap: pretty; }
 .form button { align-self: flex-start; margin-top: 4px; padding: 16px 34px; }
 
 .canais { flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 30px; }
-.canais__endereco {
-  border-top: 1px solid var(--am-linha-secao);
-  border-bottom: 1px solid var(--am-linha-tenue);
-  padding: 22px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.canais__endereco a { font-size: 19px; font-weight: 700; }
-.canais__endereco span { font-size: 13.5px; color: var(--am-tinta-3); }
-.nota { border: 1px solid var(--am-linha-forte); background: var(--am-papel-alt); padding: 20px 22px; }
+.nota { border: 1px solid var(--am-linha-forte); background: var(--am-papel-alt); border-radius: var(--am-raio); padding: 20px 22px; }
 .nota p { font-size: 14.5px; line-height: 1.62; color: var(--am-tinta-2); margin-top: 9px; }
 .nota__cabeca { display: flex; align-items: center; gap: 10px; }
 .nota__cabeca .rotulo { color: var(--am-tinta); }
@@ -380,6 +383,7 @@ p { text-wrap: pretty; }
 .aviso {
   border: 1px solid;
   border-left-width: 3px;
+  border-radius: var(--am-raio);
   padding: 16px 20px;
   margin-bottom: 26px;
   max-width: 620px;
@@ -476,6 +480,8 @@ p { text-wrap: pretty; }
   #menu-toggle:checked ~ .cabecalho__nav { display: block; }
 
   .atuacao { grid-template-columns: 1fr; }
+  .campo--par { flex-direction: column; gap: 24px; }
+  .campo--meio { max-width: none; }
   .rodape__colunas { gap: 40px; }
 }
 

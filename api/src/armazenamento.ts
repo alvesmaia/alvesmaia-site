@@ -1,9 +1,9 @@
 import { TableClient } from "@azure/data-tables";
-import type { DadosContato } from "./validacao";
+import type { DadosContato, ContextoEmpresa } from "./validacao";
 
 const TABELA = "submissoes";
 
-export interface Submissao extends DadosContato {
+export interface Submissao extends DadosContato, ContextoEmpresa {
   ip: string;
 }
 
@@ -44,8 +44,10 @@ export async function gravarSubmissao(
       rowKey,
       nome: s.nome.trim(),
       email: s.email.trim(),
-      assunto: s.assunto,
       mensagem: s.mensagem.trim(),
+      empresa: s.empresa,
+      segmento: s.segmento,
+      funcionarios: s.funcionarios,
       ip: s.ip,
       enviado: false,
     });

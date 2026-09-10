@@ -4,7 +4,12 @@ import {
   type HttpResponseInit,
   type InvocationContext,
 } from "@azure/functions";
-import { validarFormulario, type DadosContato } from "../validacao";
+import {
+  validarFormulario,
+  normalizarContexto,
+  type DadosContato,
+  type ContextoEmpresa,
+} from "../validacao";
 import { turnstileValido, type ConfigTurnstile } from "../turnstile";
 import { gravarSubmissao, marcarEnviado } from "../armazenamento";
 import { enviarEmail, type ConfigGraph } from "../graph";
@@ -85,9 +90,15 @@ export async function contato(
   const dados: DadosContato = {
     nome: String(form.get("nome") ?? ""),
     email: String(form.get("email") ?? ""),
-    assunto: String(form.get("assunto") ?? ""),
     mensagem: String(form.get("mensagem") ?? ""),
   };
+
+  // Contexto opcional: em branco não impede o envio, só empobrece o e-mail.
+  const contexto: ContextoEmpresa = normalizarContexto({
+    empresa: String(form.get("empresa") ?? ""),
+    segmento: String(form.get("segmento") ?? ""),
+    funcionarios: String(form.get("funcionarios") ?? ""),
+  });
 
   const erros = validarFormulario(dados);
   if (erros.length > 0) {
@@ -102,10 +113,10 @@ export async function contato(
   }
 
   // Grava antes de enviar: se o Graph falhar, o lead continua recuperavel.
-  const rowKey = await gravarSubmissao({ ...dados, ip }, config.conexaoTabelas);
+  const rowKey = await gravarSubmissao({ ...dados, ...contexto, ip }, config.conexaoTabelas);
   if (!rowKey) return redirecionar("erro");
 
-  const enviado = await enviarEmail(dados, config.graph);
+  const enviado = await enviarEmail(dados, contexto, config.graph);
   if (!enviado) return redirecionar("erro");
 
   await marcarEnviado(rowKey, config.conexaoTabelas);

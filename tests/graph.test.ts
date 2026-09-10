@@ -10,9 +10,11 @@ const cfg = {
 const dados = {
   nome: "Maria Silva",
   email: "maria@empresa.com.br",
-  assunto: "Quero saber mais",
   mensagem: "Gostaria de automatizar a conferência de notas fiscais.",
 };
+
+const contexto = { empresa: "Acme Ltda", segmento: "Indústria", funcionarios: "11 a 50" };
+const semContexto = { empresa: "", segmento: "", funcionarios: "" };
 
 beforeEach(() => vi.restoreAllMocks());
 
@@ -42,12 +44,12 @@ function corpoGraph(spy: ReturnType<typeof mockFetch>) {
 describe("enviarEmail", () => {
   it("devolve true quando o Graph aceita", async () => {
     mockFetch();
-    expect(await enviarEmail(dados, cfg)).toBe(true);
+    expect(await enviarEmail(dados, contexto, cfg)).toBe(true);
   });
 
   it("pede o token com client_credentials e o escopo do Graph", async () => {
     const spy = mockFetch();
-    await enviarEmail(dados, cfg);
+    await enviarEmail(dados, contexto, cfg);
     const chamada = spy.mock.calls.find((c) => String(c[0]).includes("microsoftonline"));
     const corpo = String((chamada![1] as RequestInit).body);
     expect(corpo).toContain("grant_type=client_credentials");
@@ -56,7 +58,7 @@ describe("enviarEmail", () => {
 
   it("envia como no-reply e entrega em contato", async () => {
     const spy = mockFetch();
-    await enviarEmail(dados, cfg);
+    await enviarEmail(dados, contexto, cfg);
     expect(String(chamadaGraph(spy)![0])).toContain("no-reply%40alvesmaia.com");
     expect(corpoGraph(spy).message.toRecipients[0].emailAddress.address).toBe(
       "contato@alvesmaia.com",
@@ -65,7 +67,7 @@ describe("enviarEmail", () => {
 
   it("põe o e-mail do visitante em replyTo", async () => {
     const spy = mockFetch();
-    await enviarEmail(dados, cfg);
+    await enviarEmail(dados, contexto, cfg);
     expect(corpoGraph(spy).message.replyTo[0].emailAddress.address).toBe(
       "maria@empresa.com.br",
     );
@@ -73,31 +75,68 @@ describe("enviarEmail", () => {
 
   it("não guarda em Itens Enviados", async () => {
     const spy = mockFetch();
-    await enviarEmail(dados, cfg);
+    await enviarEmail(dados, contexto, cfg);
     expect(corpoGraph(spy).saveToSentItems).toBe(false);
   });
 
   it("escapa HTML vindo do visitante", async () => {
     const spy = mockFetch();
-    await enviarEmail({ ...dados, nome: "<script>alert(1)</script>" }, cfg);
+    await enviarEmail({ ...dados, nome: "<script>alert(1)</script>" }, contexto, cfg);
     const html = corpoGraph(spy).message.body.content;
     expect(html).not.toContain("<script>");
     expect(html).toContain("&lt;script&gt;");
   });
 
+  it("o assunto traz nome e empresa quando ela foi informada", async () => {
+    const spy = mockFetch();
+    await enviarEmail(dados, contexto, cfg);
+    expect(corpoGraph(spy).message.subject).toBe("[Site] Maria Silva — Acme Ltda");
+  });
+
+  it("o assunto traz só o nome quando não há empresa", async () => {
+    const spy = mockFetch();
+    await enviarEmail(dados, semContexto, cfg);
+    expect(corpoGraph(spy).message.subject).toBe("[Site] Maria Silva");
+  });
+
+  it("inclui o contexto da empresa quando preenchido", async () => {
+    const spy = mockFetch();
+    await enviarEmail(dados, contexto, cfg);
+    const html = corpoGraph(spy).message.body.content;
+    expect(html).toContain("Acme Ltda");
+    expect(html).toContain("Indústria");
+    expect(html).toContain("11 a 50");
+  });
+
+  it("omite as linhas de contexto em branco", async () => {
+    const spy = mockFetch();
+    await enviarEmail(dados, semContexto, cfg);
+    const html = corpoGraph(spy).message.body.content;
+    expect(html).not.toContain("Empresa:");
+    expect(html).not.toContain("Segmento:");
+    expect(html).not.toContain("Funcionários:");
+  });
+
+  it("escapa HTML vindo do contexto", async () => {
+    const spy = mockFetch();
+    await enviarEmail(dados, { ...contexto, empresa: "<b>x</b>" }, cfg);
+    const html = corpoGraph(spy).message.body.content;
+    expect(html).toContain("&lt;b&gt;x&lt;/b&gt;");
+  });
+
   it("devolve false quando o token é recusado", async () => {
     mockFetch({ tokenOk: false });
-    expect(await enviarEmail(dados, cfg)).toBe(false);
+    expect(await enviarEmail(dados, contexto, cfg)).toBe(false);
   });
 
   it("não chama o Graph quando o token falhou", async () => {
     const spy = mockFetch({ tokenOk: false });
-    await enviarEmail(dados, cfg);
+    await enviarEmail(dados, contexto, cfg);
     expect(chamadaGraph(spy)).toBeUndefined();
   });
 
   it("devolve false quando o Graph recusa o envio", async () => {
     mockFetch({ envioOk: false });
-    expect(await enviarEmail(dados, cfg)).toBe(false);
+    expect(await enviarEmail(dados, contexto, cfg)).toBe(false);
   });
 });

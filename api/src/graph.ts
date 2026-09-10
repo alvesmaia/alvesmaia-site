@@ -1,4 +1,4 @@
-import type { DadosContato } from "./validacao";
+import type { DadosContato, ContextoEmpresa } from "./validacao";
 
 const REMETENTE = "no-reply@alvesmaia.com";
 const DESTINO = "contato@alvesmaia.com";
@@ -46,24 +46,50 @@ function escapar(texto: string): string {
     .replace(/>/g, "&gt;");
 }
 
-function montarHtml(d: DadosContato): string {
+/** Linhas do contexto opcional: só entram as que o visitante preencheu. */
+function linhasContexto(c: ContextoEmpresa): string {
+  const campos: Array<[string, string]> = [
+    ["Empresa", c.empresa],
+    ["Segmento", c.segmento],
+    ["Funcionários", c.funcionarios],
+  ];
+  return campos
+    .filter(([, valor]) => valor !== "")
+    .map(([nome, valor]) => `<p><strong>${nome}:</strong> ${escapar(valor)}</p>`)
+    .join("");
+}
+
+/**
+ * O formulário não pede mais assunto. O que identifica a mensagem na caixa
+ * de entrada passa a ser quem escreveu e, quando informada, a empresa.
+ */
+function assuntoDoEmail(d: DadosContato, c: ContextoEmpresa): string {
+  const nome = d.nome.trim();
+  return c.empresa ? `[Site] ${nome} — ${c.empresa}` : `[Site] ${nome}`;
+}
+
+function montarHtml(d: DadosContato, c: ContextoEmpresa): string {
   return (
     `<p><strong>Nome:</strong> ${escapar(d.nome.trim())}</p>` +
     `<p><strong>E-mail:</strong> ${escapar(d.email.trim())}</p>` +
-    `<p><strong>Assunto:</strong> ${escapar(d.assunto)}</p>` +
+    linhasContexto(c) +
     `<hr>` +
     `<p>${escapar(d.mensagem.trim()).replace(/\n/g, "<br>")}</p>`
   );
 }
 
-export async function enviarEmail(d: DadosContato, cfg: ConfigGraph): Promise<boolean> {
+export async function enviarEmail(
+  d: DadosContato,
+  c: ContextoEmpresa,
+  cfg: ConfigGraph,
+): Promise<boolean> {
   const token = await obterToken(cfg);
   if (!token) return false;
 
   const mensagem = {
     message: {
-      subject: `[Site] ${d.assunto} — ${d.nome.trim()}`,
-      body: { contentType: "HTML", content: montarHtml(d) },
+      subject: assuntoDoEmail(d, c),
+      body: { contentType: "HTML", content: montarHtml(d, c) },
       toRecipients: [{ emailAddress: { address: DESTINO } }],
       // Responder no Outlook vai direto para o visitante.
       replyTo: [{ emailAddress: { address: d.email.trim() } }],

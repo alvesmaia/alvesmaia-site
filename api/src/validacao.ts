@@ -1,7 +1,6 @@
 export interface DadosContato {
   nome: string;
   email: string;
-  assunto: string;
   mensagem: string;
 }
 
@@ -19,4 +18,26 @@ export function validarFormulario(d: DadosContato): string[] {
   if (msg.length > 5000) erros.push("mensagem_longa");
 
   return erros;
+}
+
+/**
+ * Contexto opcional da empresa. Não entra na validação: campo opcional em
+ * branco não pode barrar o envio. O que precisa de guarda é o tamanho —
+ * `empresa` é texto livre, e sem teto vira vetor de abuso.
+ */
+export interface ContextoEmpresa {
+  empresa: string;
+  segmento: string;
+  funcionarios: string;
+}
+
+const TETO_CONTEXTO = 120;
+
+export function normalizarContexto(c: ContextoEmpresa): ContextoEmpresa {
+  const limpar = (v: string) => (v ?? "").trim().slice(0, TETO_CONTEXTO);
+  return {
+    empresa: limpar(c.empresa),
+    segmento: limpar(c.segmento),
+    funcionarios: limpar(c.funcionarios),
+  };
 }

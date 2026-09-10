@@ -1,10 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { validarFormulario } from "../api/src/validacao";
+import { validarFormulario, normalizarContexto } from "../api/src/validacao";
 
 const valido = {
   nome: "Maria Silva",
   email: "maria@empresa.com.br",
-  assunto: "Quero saber mais",
   mensagem: "Gostaria de automatizar a conferência de notas fiscais.",
 };
 
@@ -42,9 +41,31 @@ describe("validarFormulario", () => {
   });
 
   it("acumula múltiplos erros de uma vez", () => {
-    const erros = validarFormulario({ nome: "", email: "x", assunto: "", mensagem: "" });
+    const erros = validarFormulario({ nome: "", email: "x", mensagem: "" });
     expect(erros).toContain("nome");
     expect(erros).toContain("email");
     expect(erros).toContain("mensagem_curta");
+  });
+});
+
+describe("normalizarContexto", () => {
+  it("apara espaços dos três campos", () => {
+    expect(normalizarContexto({ empresa: "  Acme  ", segmento: " Indústria ", funcionarios: " 11 a 50 " }))
+      .toEqual({ empresa: "Acme", segmento: "Indústria", funcionarios: "11 a 50" });
+  });
+
+  it("aceita os três em branco", () => {
+    expect(normalizarContexto({ empresa: "", segmento: "", funcionarios: "" }))
+      .toEqual({ empresa: "", segmento: "", funcionarios: "" });
+  });
+
+  it("corta texto acima de 120 caracteres", () => {
+    // empresa é texto livre; sem teto vira vetor de abuso
+    const { empresa } = normalizarContexto({ empresa: "a".repeat(500), segmento: "", funcionarios: "" });
+    expect(empresa).toHaveLength(120);
+  });
+
+  it("não deixa o contexto interferir na validação dos campos obrigatórios", () => {
+    expect(validarFormulario(valido)).toEqual([]);
   });
 });

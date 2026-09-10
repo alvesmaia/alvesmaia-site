@@ -19,8 +19,10 @@ const { gravarSubmissao, marcarEnviado } = await import("../api/src/armazenament
 const submissao = {
   nome: "Maria Silva",
   email: "maria@empresa.com.br",
-  assunto: "Quero saber mais",
   mensagem: "Gostaria de automatizar a conferência de notas fiscais.",
+  empresa: "Acme Ltda",
+  segmento: "Indústria",
+  funcionarios: "11 a 50",
   ip: "203.0.113.7",
 };
 
@@ -56,9 +58,16 @@ describe("gravarSubmissao", () => {
     const e = criarEntidade.mock.calls[0][0];
     expect(e.nome).toBe("Maria Silva");
     expect(e.email).toBe("maria@empresa.com.br");
-    expect(e.assunto).toBe("Quero saber mais");
     expect(e.mensagem).toContain("notas fiscais");
     expect(e.ip).toBe("203.0.113.7");
+  });
+
+  it("grava o contexto opcional da empresa", async () => {
+    await gravarSubmissao(submissao, "conexao-fake");
+    const e = criarEntidade.mock.calls[0][0];
+    expect(e.empresa).toBe("Acme Ltda");
+    expect(e.segmento).toBe("Indústria");
+    expect(e.funcionarios).toBe("11 a 50");
   });
 
   it("gera rowKeys distintos para submissões simultâneas", async () => {

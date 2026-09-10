@@ -72,6 +72,11 @@
 
   /* Rótulo técnico não é outra fonte: é a Nunito Sans em caixa alta, com peso
      e espaçamento próprios. Fonte única, como manda o manual da marca. */
+  /* Raio suave: tira a dureza do desenho esquemático sem virar cartão.
+     O -svg é menor porque os elementos dos diagramas são pequenos. */
+  --am-raio:4px;
+  --am-raio-svg:3;
+
   --am-rotulo-peso:700;
   --am-rotulo-espaco:0.14em;
 }
