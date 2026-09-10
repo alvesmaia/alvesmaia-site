@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="/img/favicon/apple-touch-icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="/css/tokens.css">
 <link rel="stylesheet" href="/css/site.css">
 </head>
@@ -18,10 +18,24 @@
 
 <a class="pular-para-conteudo" href="#conteudo">Pular para o conteúdo</a>
 
+<div class="faixa">
+  <div class="container">
+    <span>Consultoria de TI · Automação · Integração</span>
+    <span>alvesmaia.com</span>
+  </div>
+</div>
+
 <header class="cabecalho">
   <div class="container">
     <a class="cabecalho__logo" href="/" aria-label="Alvesmaia, página inicial">
-      <img src="/img/logo-horizontal-escuro.svg" alt="Alvesmaia">
+      <svg viewBox="0 0 198 96" aria-hidden="true" focusable="false">
+        <g transform="translate(-27 -8)">
+          <path d="M 27,103 L 58,103 L 98,42 L 136,103 L 167,103 L 115,18 C 111,11 105,8 98,8 C 91,8 86,12 82,18 Z" fill="#102A43"></path>
+          <path d="M 160,33 C 165,28 173,27 179,30 C 183,32 185,35 187,39 L 225,104 L 195,104 L 171,62 L 157,82 L 143,58 Z" fill="#00A8E8"></path>
+          <circle cx="98.5" cy="92" r="12" fill="#00A8E8"></circle>
+        </g>
+      </svg>
+      <span>Alvesmaia</span>
     </a>
     <input type="checkbox" id="menu-toggle" aria-label="Abrir menu de navegação">
     <label class="cabecalho__hamburguer" for="menu-toggle" aria-hidden="true">
@@ -40,52 +54,153 @@
 
 <main id="conteudo">
 
-  <section class="secao">
-    <div class="container">
-      <div class="secao__intro">
+  <section class="secao secao--grade">
+    <div class="container duas">
+      <div class="duas__enunciado" style="width: 640px;">
+        <p class="eyebrow">Quem atende</p>
         <h1>Sobre a Alvesmaia</h1>
+        <p class="chamada" style="color: var(--am-tinta);">A Alvesmaia é uma consultoria de TI voltada a pequenas e médias empresas, atuando em automação de processos, integração de sistemas e desenvolvimento sob medida.</p>
+        <p class="corpo">Foi fundada e é conduzida por Uemerson Maia, desenvolvedor com atuação em automação e integração de sistemas corporativos.</p>
       </div>
-      <p style="font-size:18px">A Alvesmaia é uma consultoria de TI voltada a pequenas e médias empresas, atuando em automação de processos, integração de sistemas e desenvolvimento sob medida.</p>
-      <p style="margin-top:18px">Foi fundada e é conduzida por Uemerson Maia, desenvolvedor com atuação em automação e integração de sistemas corporativos.</p>
+      <div class="duas__corpo" style="display: flex; justify-content: flex-end;">
+        <div class="painel ficha">
+          <div class="painel__cabeca"><span class="rotulo" style="color: var(--am-tinta-3);">Ficha</span></div>
+          <dl style="margin: 0;">
+            <div class="ficha__linha"><dt>Atuação</dt><dd>Brasil</dd></div>
+            <div class="ficha__linha"><dt>Porte atendido</dt><dd>Pequeno e médio</dd></div>
+            <div class="ficha__linha"><dt>Frentes</dt><dd>Quatro</dd></div>
+            <div class="ficha__linha"><dt>Interlocutor</dt><dd class="destaque">Único</dd></div>
+          </dl>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="secao secao--alt">
+  <section class="secao secao--branca">
     <div class="container">
-      <h2>Processo antes da tecnologia</h2>
-      <p>Todo projeto começa pelo entendimento de como o trabalho é feito hoje: quem executa, com que frequência, onde a informação trava. A escolha da tecnologia vem depois — e às vezes a conclusão é que nenhuma ferramenta nova se justifica.</p>
+      <div class="duas duas--centro" style="margin-bottom: 46px;">
+        <div class="duas__enunciado">
+          <span class="rotulo">Método</span>
+          <h2>Processo antes da tecnologia</h2>
+        </div>
+        <p class="duas__corpo corpo" style="max-width: 38em;">Todo projeto começa pelo entendimento de como o trabalho é feito hoje: quem executa, com que frequência, onde a informação trava. A escolha da tecnologia vem depois — e às vezes a conclusão é que nenhuma ferramenta nova se justifica.</p>
+      </div>
+      <div class="etapas">
+        <div class="etapa">
+          <div class="etapa__marca"><b>01</b><i></i></div>
+          <h3>Entender</h3>
+          <p>Mapeamento do processo como ele existe hoje, com quem executa. Sem promessa de ferramenta nesta etapa.</p>
+        </div>
+        <div class="etapa">
+          <div class="etapa__marca"><b>02</b><i></i></div>
+          <h3>Decidir</h3>
+          <p>Qual das quatro frentes resolve, quanto custa, e o que muda na rotina de quem usa. Incluindo a opção de não construir.</p>
+        </div>
+        <div class="etapa">
+          <div class="etapa__marca"><b>03</b><i></i></div>
+          <h3>Entregar</h3>
+          <p>Construção e acompanhamento até o processo rodar sozinho — com quem participou do diagnóstico.</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="secao">
-    <div class="container">
-      <h2>Um único interlocutor</h2>
-      <p>Quem faz o diagnóstico é quem desenvolve a solução. Não há transferência de chamado nem escopo reinterpretado na passagem entre equipes: o que foi combinado na primeira conversa é o que chega na entrega.</p>
+  <section class="secao secao--papel">
+    <div class="container duas duas--centro">
+      <div class="duas__enunciado">
+        <span class="rotulo">Atendimento</span>
+        <h2>Um único interlocutor</h2>
+        <p class="corpo">Quem faz o diagnóstico é quem desenvolve a solução. Não há transferência de chamado nem escopo reinterpretado na passagem entre equipes: o que foi combinado na primeira conversa é o que chega na entrega.</p>
+      </div>
+      <div class="duas__corpo" style="display: flex; justify-content: center;">
+        <svg viewBox="0 0 520 200" width="520" height="200" role="img" aria-label="Diagrama: cliente ligado diretamente à Alvesmaia, sem repasse">
+          <circle cx="80" cy="100" r="36" fill="#FFFFFF" stroke="#102A43" stroke-width="1.25"></circle>
+          <text x="80" y="104" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="#102A43" letter-spacing="0.08em">CLIENTE</text>
+          <line x1="116" y1="100" x2="404" y2="100" stroke="#00A8E8" stroke-width="1.5"></line>
+          <rect x="254" y="94" width="12" height="12" fill="#00A8E8"></rect>
+          <text x="260" y="80" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="#0077AB" letter-spacing="0.1em">SEM REPASSE</text>
+          <circle cx="440" cy="100" r="36" fill="#102A43"></circle>
+          <svg x="418" y="88" width="44" height="22" viewBox="0 0 198 96">
+            <g transform="translate(-27 -8)">
+              <path d="M 27,103 L 58,103 L 98,42 L 136,103 L 167,103 L 115,18 C 111,11 105,8 98,8 C 91,8 86,12 82,18 Z" fill="#FFFFFF"></path>
+              <path d="M 160,33 C 165,28 173,27 179,30 C 183,32 185,35 187,39 L 225,104 L 195,104 L 171,62 L 157,82 L 143,58 Z" fill="#00A8E8"></path>
+              <circle cx="98.5" cy="92" r="12" fill="#00A8E8"></circle>
+            </g>
+          </svg>
+        </svg>
+      </div>
     </div>
   </section>
 
-  <section class="secao secao--alt">
+  <section class="secao secao--branca">
     <div class="container">
-      <h2>Clareza sobre o perfil de projeto</h2>
-      <p>A Alvesmaia é uma operação enxuta, e isso define que tipo de trabalho atende bem. Projetos que exigem uma equipe numerosa atuando em paralelo, sob prazo curto, não são o perfil da casa — e você ouve isso na primeira conversa, antes de investir tempo.</p>
-      <p style="margin-top:24px"><a class="botao botao-primario" href="/contato.html">Falar sobre seu projeto</a></p>
+      <div class="duas duas--centro" style="margin-bottom: 42px;">
+        <div class="duas__enunciado">
+          <span class="rotulo">Limites</span>
+          <h2>Clareza sobre o perfil de projeto</h2>
+        </div>
+        <p class="duas__corpo corpo" style="max-width: 38em;">A Alvesmaia é uma operação enxuta, e isso define que tipo de trabalho atende bem. Você ouve isso na primeira conversa, antes de investir tempo.</p>
+      </div>
+      <div class="perfil">
+        <div class="painel">
+          <div class="painel__cabeca"><span class="marcador"></span><span class="rotulo">Atende bem</span></div>
+          <ul class="painel__lista">
+            <li>Processos definidos que consomem horas recorrentes de gente qualificada</li>
+            <li>Sistemas que precisam trocar dados e hoje dependem de digitação manual</li>
+            <li>Empresas que já usam Microsoft 365 e querem extrair mais do que pagam</li>
+          </ul>
+        </div>
+        <div class="painel painel--fraco">
+          <div class="painel__cabeca"><span class="marcador marcador--vazio"></span><span class="rotulo">Não é o perfil</span></div>
+          <ul class="painel__lista">
+            <li>Projetos que exigem equipe numerosa atuando em paralelo</li>
+            <li>Prazos curtos que dependem de escalar pessoas, não de método</li>
+            <li>Sustentação 24×7 com plantão presencial</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chamada-bloco">
+    <div class="container">
+      <h2>Seu processo se encaixa no primeiro grupo?</h2>
+      <a class="botao botao--ciano" href="/contato.html">Falar sobre seu projeto</a>
     </div>
   </section>
 
 </main>
 
 <footer class="rodape">
-  <div class="container">
-    <div>
-      <img src="/img/simbolo-escuro.svg" alt="">
-      <p style="color:#9CBBD2;margin-top:14px;font-size:14px">Soluções sob medida para a sua empresa</p>
+  <div class="container rodape__topo">
+    <div class="rodape__marca">
+      <svg viewBox="0 0 198 96" aria-hidden="true" focusable="false">
+        <g transform="translate(-27 -8)">
+          <path d="M 27,103 L 58,103 L 98,42 L 136,103 L 167,103 L 115,18 C 111,11 105,8 98,8 C 91,8 86,12 82,18 Z" fill="#FFFFFF"></path>
+          <path d="M 160,33 C 165,28 173,27 179,30 C 183,32 185,35 187,39 L 225,104 L 195,104 L 171,62 L 157,82 L 143,58 Z" fill="#00A8E8"></path>
+          <circle cx="98.5" cy="92" r="12" fill="#00A8E8"></circle>
+        </g>
+      </svg>
+      <p>Soluções sob medida para a sua empresa.</p>
     </div>
-    <div>
-      <p style="color:#CFE3F0;font-weight:700;margin-bottom:6px">Contato</p>
-      <p style="font-size:14px"><a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a></p>
+    <div class="rodape__colunas">
+      <nav class="rodape__coluna" aria-label="Rodapé">
+        <span class="rotulo">Páginas</span>
+        <a href="/">Início</a>
+        <a href="/servicos.html">Serviços</a>
+        <a href="/sobre.html">Sobre</a>
+        <a href="/contato.html">Contato</a>
+      </nav>
+      <div class="rodape__coluna">
+        <span class="rotulo">Contato</span>
+        <a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a>
+      </div>
     </div>
-    <div class="rodape__legal">
-      Alvesmaia · Consultoria de TI
+  </div>
+  <div class="rodape__legal">
+    <div class="container">
+      <span>Alvesmaia · Consultoria de TI</span>
+      <span>contato@alvesmaia.com</span>
     </div>
   </div>
 </footer>

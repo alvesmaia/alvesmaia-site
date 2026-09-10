@@ -1,0 +1,27 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "Início", "x": 0, "y": 0, "w": 1280, "h": 1950 },
+    { "file": "Servicos.dc.html", "title": "Serviços", "x": 1400, "y": 0, "w": 1280, "h": 2300 },
+    { "file": "Sobre.dc.html", "title": "Sobre", "x": 2800, "y": 0, "w": 1280, "h": 2300 },
+    { "file": "Contato.dc.html", "title": "Contato", "x": 4200, "y": 0, "w": 1280, "h": 1500 },
+    { "file": "DirecaoB.dc.html", "title": "Direção B — Bloco cromático", "x": 0, "y": 2560, "w": 620, "h": 860 },
+    { "file": "DirecaoC.dc.html", "title": "Direção C — Editorial sóbrio", "x": 740, "y": 2560, "w": 620, "h": 820 }
+  ],
+  "annotations": [
+    {
+      "id": "direcao-escolhida",
+      "x": 0,
+      "y": -230,
+      "w": 620,
+      "text": "DIREÇÃO A — ESQUEMÁTICO (construída nas 4 páginas)\n\nEstética de desenho técnico: papel claro, hairlines, mono para rótulos, diagramas no lugar de cartões.\n\nA aposta é que o site mostre o que a Alvesmaia faz — fluxo entre sistemas — em vez de só descrever. Navy vira acento estrutural, não fundo de página inteira."
+    },
+    {
+      "id": "alternativas",
+      "x": 0,
+      "y": 2400,
+      "w": 620,
+      "text": "ALTERNATIVAS EM ESBOÇO\n\nDuas direções que descartei, com o motivo em cada uma. Se alguma fizer mais sentido, ela vira a base e eu refaço as quatro páginas."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

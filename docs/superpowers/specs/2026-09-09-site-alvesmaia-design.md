@@ -59,7 +59,7 @@ Quatro blocos. Cada um descreve o problema que resolve, não uma lista de tecnol
 |---|---|
 | RPA | Automação de tarefas repetitivas que hoje consomem hora de gente |
 | Integrações | Sistemas que não conversam entre si passando a trocar dados |
-| Aplicações web | Software sob medida quando o pronto de prateleira não serve |
+| Sistemas sob medida | Software próprio quando o pronto de prateleira não serve |
 | Power Platform | Automação e apps dentro do Microsoft 365 que a empresa já paga |
 
 ### `sobre.html` — Sobre
@@ -74,18 +74,29 @@ de interlocutor único.
 
 ### `contato.html` — Contato
 - Formulário (nome, e-mail, assunto, mensagem)
-- E-mails diretos listados para quem preferir escrever sem formulário
+- **Um único endereço divulgado**, `contato@alvesmaia.com`, para quem preferir
+  escrever sem formulário. `suporte@` e `financeiro@` seguem ativos no Microsoft 365,
+  mas não aparecem no site: divulgá-los multiplica a superfície de spam e obriga o
+  visitante a escolher, quando a caixa de destino é a mesma
 - Estado de sucesso/erro após envio
 
 ## Base visual
 
 - **Tokens:** reaproveita `brand/tokens.css` (copiado para o repo do site)
-- **Tipografia:** Nunito Sans via Google Fonts
+- **Tipografia:** Nunito Sans para texto; IBM Plex Mono para rótulos técnicos,
+  índices e etiquetas de diagrama. O mono é o que dá o caráter de documentação
+  de engenharia sem pesar no corpo do texto
 - **Logos:** variantes brancas — cabeçalho e rodapé ficam sobre fundo navy
 - **Favicon:** conjunto completo já existente em `brand/favicon/`
 - **Tema:** único, claro. Decisão de 10/09/2026 — o tema escuro deixava a leitura
-  pesada demais para um site institucional. Cabeçalho, hero e rodapé em navy dão o
-  contraponto escuro sem escurecer o corpo do texto
+  pesada demais para um site institucional
+- **Direção visual "Esquemático"** (10/09/2026): estética de desenho técnico. Papel
+  claro, hairlines e diagramas no lugar de cartões, rótulos em mono. Navy é acento
+  estrutural — faixa, rodapé, blocos de chamada — não fundo de página inteira.
+  A aposta é o site mostrar o que a Alvesmaia faz (fluxo entre sistemas) em vez de
+  só descrever
+- **Cabeçalho fixo** (`position: sticky`), separado do conteúdo por uma hairline
+  clara mais uma sombra curta que dissolve para baixo
 - **JavaScript próprio:** nenhum. O menu mobile usa CSS puro (checkbox oculto +
   `:checked`) e os avisos de estado usam `:target`, então navegação e formulário
   funcionam com JavaScript desabilitado. O único `<script>` do site é o widget do
@@ -259,6 +270,8 @@ diferença entre um segredo vazado mandar spam e um segredo vazado se passar por
 | Microsoft Graph | Resend, Cloudflare Email Sending | Sem fornecedor novo, sem DNS de envio |
 | Table Storage | Cosmos DB | Cosmos é caro e complexo para gravar formulário |
 | Turnstile | reCAPTCHA | Gratuito, discreto, melhor privacidade |
+| Direção "Esquemático" | Bloco cromático, Editorial sóbrio | Mostra o que a empresa faz; as outras duas descrevem |
+| Um e-mail divulgado | Três endereços | Menos spam, e o visitante não precisa escolher |
 | Repo separado do `branding` | Subpasta em `branding` | Site tem ciclo de vida próprio |
 
 ### Sobre a mudança de Cloudflare Pages para Azure

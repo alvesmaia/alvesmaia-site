@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Serviços — Alvesmaia</title>
-<meta name="description" content="RPA, integrações, aplicações web e Power Platform para pequenas e médias empresas.">
+<meta name="description" content="RPA, integrações, sistemas sob medida e Power Platform para pequenas e médias empresas.">
 <link rel="icon" href="/img/favicon/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/img/favicon/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/img/favicon/apple-touch-icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="/css/tokens.css">
 <link rel="stylesheet" href="/css/site.css">
 </head>
@@ -18,10 +18,24 @@
 
 <a class="pular-para-conteudo" href="#conteudo">Pular para o conteúdo</a>
 
+<div class="faixa">
+  <div class="container">
+    <span>Consultoria de TI · Automação · Integração</span>
+    <span>alvesmaia.com</span>
+  </div>
+</div>
+
 <header class="cabecalho">
   <div class="container">
     <a class="cabecalho__logo" href="/" aria-label="Alvesmaia, página inicial">
-      <img src="/img/logo-horizontal-escuro.svg" alt="Alvesmaia">
+      <svg viewBox="0 0 198 96" aria-hidden="true" focusable="false">
+        <g transform="translate(-27 -8)">
+          <path d="M 27,103 L 58,103 L 98,42 L 136,103 L 167,103 L 115,18 C 111,11 105,8 98,8 C 91,8 86,12 82,18 Z" fill="#102A43"></path>
+          <path d="M 160,33 C 165,28 173,27 179,30 C 183,32 185,35 187,39 L 225,104 L 195,104 L 171,62 L 157,82 L 143,58 Z" fill="#00A8E8"></path>
+          <circle cx="98.5" cy="92" r="12" fill="#00A8E8"></circle>
+        </g>
+      </svg>
+      <span>Alvesmaia</span>
     </a>
     <input type="checkbox" id="menu-toggle" aria-label="Abrir menu de navegação">
     <label class="cabecalho__hamburguer" for="menu-toggle" aria-hidden="true">
@@ -40,69 +54,150 @@
 
 <main id="conteudo">
 
-  <section class="secao">
-    <div class="container">
-      <div class="secao__intro">
+  <section class="secao secao--grade">
+    <div class="container duas" style="align-items: flex-end;">
+      <div class="duas__enunciado" style="width: 620px;">
+        <p class="eyebrow">Quatro frentes</p>
         <h1>Serviços</h1>
-        <p style="margin-top:16px">Cada projeto começa pelo entendimento do processo, antes da tecnologia. Quando a melhor decisão é não construir nada, a Alvesmaia diz isso.</p>
+        <p class="chamada">Cada projeto começa pelo entendimento do processo, antes da tecnologia. Quando a melhor decisão é não construir nada, a Alvesmaia diz isso.</p>
+      </div>
+      <div class="duas__corpo">
+        <ul class="indice">
+          <li>RPA <span>Automação</span></li>
+          <li>Integrações <span>Troca de dados</span></li>
+          <li>Sistemas <span>Sob medida</span></li>
+          <li>Power Platform <span>Microsoft 365</span></li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <section class="secao secao--alt">
-    <div class="container">
-      <h2>RPA — Automação de processos</h2>
-      <p>Robôs de software que executam tarefas repetitivas do jeito que uma pessoa executaria: abrindo sistemas, preenchendo formulários, conferindo planilhas, movendo arquivos entre pastas e sistemas.</p>
-      <p style="margin-top:14px"><strong style="color:var(--am-texto)">Quando faz sentido:</strong> existe um processo bem definido que alguém repete várias vezes por semana, e alterar o sistema de origem não é viável ou não compensa.</p>
+  <section class="secao secao--branca">
+    <div class="container servico">
+      <div class="servico__rail">
+        <span class="rotulo">RPA</span>
+        <svg viewBox="0 0 150 96" width="150" height="96" fill="none" aria-hidden="true">
+          <rect x="0.5" y="14.5" width="52" height="30" stroke="#B7C6D2"></rect>
+          <rect x="0.5" y="54.5" width="52" height="30" stroke="#B7C6D2"></rect>
+          <path d="M52 29.5h20v20h20" stroke="#B7C6D2"></path>
+          <path d="M52 69.5h20v-20h20" stroke="#B7C6D2"></path>
+          <rect x="89" y="43" width="7" height="7" fill="#00A8E8"></rect>
+          <rect x="109.5" y="34.5" width="40" height="30" stroke="#102A43"></rect>
+          <path d="M118 49.5h8m6 0h8" stroke="#102A43"></path>
+        </svg>
+      </div>
+      <div class="servico__corpo">
+        <h2>Automação de processos</h2>
+        <p class="corpo">Robôs de software que executam tarefas repetitivas do jeito que uma pessoa executaria: abrindo sistemas, preenchendo formulários, conferindo planilhas, movendo arquivos entre pastas e sistemas.</p>
+        <div class="criterio"><span class="rotulo">Quando faz sentido</span><p>Existe um processo bem definido que alguém repete várias vezes por semana, e alterar o sistema de origem não é viável ou não compensa.</p></div>
+      </div>
     </div>
   </section>
 
-  <section class="secao">
-    <div class="container">
-      <h2>Integrações</h2>
-      <p>Conexão entre sistemas que não foram feitos para conversar — ERP com e-commerce, planilha com banco de dados, sistema legado com serviço em nuvem.</p>
-      <p style="margin-top:14px"><strong style="color:var(--am-texto)">Quando faz sentido:</strong> a mesma informação é digitada em dois lugares, ou alguém exporta de um sistema para importar em outro.</p>
+  <section class="secao secao--papel">
+    <div class="container servico">
+      <div class="servico__rail">
+        <span class="rotulo">Integrações</span>
+        <svg viewBox="0 0 150 96" width="150" height="96" fill="none" aria-hidden="true">
+          <rect x="0.5" y="34.5" width="46" height="30" stroke="#102A43"></rect>
+          <rect x="103.5" y="34.5" width="46" height="30" stroke="#102A43"></rect>
+          <path d="M46 44h58" stroke="#00A8E8"></path>
+          <path d="M104 56H46" stroke="#00A8E8"></path>
+          <path d="M98 40l6 4-6 4" stroke="#00A8E8"></path>
+          <path d="M52 52l-6 4 6 4" stroke="#00A8E8"></path>
+        </svg>
+      </div>
+      <div class="servico__corpo">
+        <h2>Integrações</h2>
+        <p class="corpo">Conexão entre sistemas que não foram feitos para conversar — ERP com e-commerce, planilha com banco de dados, sistema legado com serviço em nuvem.</p>
+        <div class="criterio"><span class="rotulo">Quando faz sentido</span><p>A mesma informação é digitada em dois lugares, ou alguém exporta de um sistema para importar em outro.</p></div>
+      </div>
     </div>
   </section>
 
-  <section class="secao secao--alt">
-    <div class="container">
-      <h2>Aplicações web</h2>
-      <p>Desenvolvimento de sistemas próprios, do zero, quando nenhuma solução de mercado atende ao processo da empresa.</p>
-      <p style="margin-top:14px"><strong style="color:var(--am-texto)">Quando faz sentido:</strong> o processo é a vantagem competitiva do negócio, e forçá-lo a caber num software genérico custa mais do que construir o certo.</p>
+  <section class="secao secao--branca">
+    <div class="container servico">
+      <div class="servico__rail">
+        <span class="rotulo">Sistemas sob medida</span>
+        <svg viewBox="0 0 150 96" width="150" height="96" fill="none" aria-hidden="true">
+          <rect x="0.5" y="18.5" width="110" height="62" stroke="#102A43"></rect>
+          <path d="M0.5 32.5h110" stroke="#102A43"></path>
+          <rect x="8" y="23" width="5" height="5" fill="#00A8E8"></rect>
+          <path d="M12 46h40M12 58h60M12 70h30" stroke="#B7C6D2"></path>
+          <rect x="118" y="40" width="26" height="18" stroke="#00A8E8"></rect>
+        </svg>
+      </div>
+      <div class="servico__corpo">
+        <h2>Sistemas sob medida</h2>
+        <p class="corpo">Desenvolvimento de sistemas próprios, do zero, quando nenhuma solução de mercado atende ao processo da empresa.</p>
+        <div class="criterio"><span class="rotulo">Quando faz sentido</span><p>O processo é a vantagem competitiva do negócio, e forçá-lo a caber num software genérico custa mais do que construir o certo.</p></div>
+      </div>
     </div>
   </section>
 
-  <section class="secao">
-    <div class="container">
-      <h2>Power Platform</h2>
-      <p>Automação e aplicativos construídos dentro do Microsoft 365 — Power Automate, Power Apps, SharePoint — aproveitando as licenças que a empresa já paga.</p>
-      <p style="margin-top:14px"><strong style="color:var(--am-texto)">Quando faz sentido:</strong> a empresa já usa Microsoft 365 e o processo pode ser resolvido sem contratar software adicional.</p>
+  <section class="secao secao--papel">
+    <div class="container servico">
+      <div class="servico__rail">
+        <span class="rotulo">Power Platform</span>
+        <svg viewBox="0 0 150 96" width="150" height="96" fill="none" aria-hidden="true">
+          <rect x="0.5" y="12.5" width="112" height="72" stroke="#B7C6D2" stroke-dasharray="4 4"></rect>
+          <text x="8" y="26" font-family="IBM Plex Mono, monospace" font-size="9" fill="#7A8FA3" letter-spacing="0.1em">MICROSOFT 365</text>
+          <rect x="16.5" y="38.5" width="34" height="26" stroke="#102A43"></rect>
+          <rect x="66.5" y="38.5" width="34" height="26" stroke="#102A43"></rect>
+          <path d="M50 51.5h17" stroke="#00A8E8"></path>
+          <path d="M126 40l-8 12h6l-2 8 8-12h-6z" fill="#00A8E8"></path>
+        </svg>
+      </div>
+      <div class="servico__corpo">
+        <h2>Power Platform</h2>
+        <p class="corpo">Automação e aplicativos construídos dentro do Microsoft 365 — Power Automate, Power Apps, SharePoint — aproveitando as licenças que a empresa já paga.</p>
+        <div class="criterio"><span class="rotulo">Quando faz sentido</span><p>A empresa já usa Microsoft 365 e o processo pode ser resolvido sem contratar software adicional.</p></div>
+      </div>
     </div>
   </section>
 
-  <section class="secao secao--alt">
+  <section class="chamada-bloco">
     <div class="container">
-      <h2>Não sabe qual se aplica ao seu caso?</h2>
-      <p>Descreva o processo que vem gerando retrabalho. Costuma ficar claro em uma conversa.</p>
-      <p style="margin-top:24px"><a class="botao botao-primario" href="/contato.html">Descrever meu processo</a></p>
+      <div>
+        <h2>Não sabe qual se aplica ao seu caso?</h2>
+        <p>Descreva o processo que vem gerando retrabalho. Costuma ficar claro em uma conversa.</p>
+      </div>
+      <a class="botao botao--ciano" href="/contato.html">Descrever meu processo</a>
     </div>
   </section>
 
 </main>
 
 <footer class="rodape">
-  <div class="container">
-    <div>
-      <img src="/img/simbolo-escuro.svg" alt="">
-      <p style="color:#9CBBD2;margin-top:14px;font-size:14px">Soluções sob medida para a sua empresa</p>
+  <div class="container rodape__topo">
+    <div class="rodape__marca">
+      <svg viewBox="0 0 198 96" aria-hidden="true" focusable="false">
+        <g transform="translate(-27 -8)">
+          <path d="M 27,103 L 58,103 L 98,42 L 136,103 L 167,103 L 115,18 C 111,11 105,8 98,8 C 91,8 86,12 82,18 Z" fill="#FFFFFF"></path>
+          <path d="M 160,33 C 165,28 173,27 179,30 C 183,32 185,35 187,39 L 225,104 L 195,104 L 171,62 L 157,82 L 143,58 Z" fill="#00A8E8"></path>
+          <circle cx="98.5" cy="92" r="12" fill="#00A8E8"></circle>
+        </g>
+      </svg>
+      <p>Soluções sob medida para a sua empresa.</p>
     </div>
-    <div>
-      <p style="color:#CFE3F0;font-weight:700;margin-bottom:6px">Contato</p>
-      <p style="font-size:14px"><a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a></p>
+    <div class="rodape__colunas">
+      <nav class="rodape__coluna" aria-label="Rodapé">
+        <span class="rotulo">Páginas</span>
+        <a href="/">Início</a>
+        <a href="/servicos.html">Serviços</a>
+        <a href="/sobre.html">Sobre</a>
+        <a href="/contato.html">Contato</a>
+      </nav>
+      <div class="rodape__coluna">
+        <span class="rotulo">Contato</span>
+        <a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a>
+      </div>
     </div>
-    <div class="rodape__legal">
-      Alvesmaia · Consultoria de TI
+  </div>
+  <div class="rodape__legal">
+    <div class="container">
+      <span>Alvesmaia · Consultoria de TI</span>
+      <span>contato@alvesmaia.com</span>
     </div>
   </div>
 </footer>

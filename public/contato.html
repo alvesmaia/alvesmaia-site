@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Contato — Alvesmaia</title>
-<meta name="description" content="Fale sobre seu projeto de automação, integração ou desenvolvimento.">
+<meta name="description" content="Fale sobre seu projeto de automação, integração ou desenvolvimento sob medida.">
 <link rel="icon" href="/img/favicon/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/img/favicon/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/img/favicon/apple-touch-icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="/css/tokens.css">
 <link rel="stylesheet" href="/css/site.css">
 </head>
@@ -18,10 +18,24 @@
 
 <a class="pular-para-conteudo" href="#conteudo">Pular para o conteúdo</a>
 
+<div class="faixa">
+  <div class="container">
+    <span>Consultoria de TI · Automação · Integração</span>
+    <span>alvesmaia.com</span>
+  </div>
+</div>
+
 <header class="cabecalho">
   <div class="container">
     <a class="cabecalho__logo" href="/" aria-label="Alvesmaia, página inicial">
-      <img src="/img/logo-horizontal-escuro.svg" alt="Alvesmaia">
+      <svg viewBox="0 0 198 96" aria-hidden="true" focusable="false">
+        <g transform="translate(-27 -8)">
+          <path d="M 27,103 L 58,103 L 98,42 L 136,103 L 167,103 L 115,18 C 111,11 105,8 98,8 C 91,8 86,12 82,18 Z" fill="#102A43"></path>
+          <path d="M 160,33 C 165,28 173,27 179,30 C 183,32 185,35 187,39 L 225,104 L 195,104 L 171,62 L 157,82 L 143,58 Z" fill="#00A8E8"></path>
+          <circle cx="98.5" cy="92" r="12" fill="#00A8E8"></circle>
+        </g>
+      </svg>
+      <span>Alvesmaia</span>
     </a>
     <input type="checkbox" id="menu-toggle" aria-label="Abrir menu de navegação">
     <label class="cabecalho__hamburguer" for="menu-toggle" aria-hidden="true">
@@ -40,84 +54,110 @@
 
 <main id="conteudo">
 
-  <section class="secao">
-    <div class="container">
-      <div class="secao__intro">
-        <h1>Contato</h1>
-        <p style="margin-top:16px">Conte o que a sua empresa precisa resolver. Respondemos em até um dia útil.</p>
-      </div>
-
-      <div class="aviso aviso--ok" id="enviado" role="status">
-        <p><strong>Mensagem enviada.</strong> Recebemos seu contato e respondemos em até um dia útil.</p>
-      </div>
-
-      <div class="aviso aviso--erro" id="erro" role="alert">
-        <p><strong>Não foi possível enviar.</strong> Tente novamente em alguns instantes, ou escreva direto para <a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a>.</p>
-      </div>
-
-      <div class="aviso aviso--erro" id="robo" role="alert">
-        <p><strong>Verificação não concluída.</strong> Marque a caixa de verificação antes de enviar.</p>
-      </div>
-
-      <form class="form" method="POST" action="/api/contato">
-        <div class="campo">
-          <label for="nome">Nome</label>
-          <input type="text" id="nome" name="nome" required minlength="2" autocomplete="name">
-        </div>
-
-        <div class="campo">
-          <label for="email">E-mail</label>
-          <input type="email" id="email" name="email" required autocomplete="email">
-        </div>
-
-        <div class="campo">
-          <label for="assunto">Assunto</label>
-          <select id="assunto" name="assunto" required>
-            <option value="Orçamento">Orçamento</option>
-            <option value="Dúvida técnica">Dúvida técnica</option>
-            <option value="Suporte">Suporte</option>
-            <option value="Outro">Outro</option>
-          </select>
-        </div>
-
-        <div class="campo">
-          <label for="mensagem">Mensagem</label>
-          <textarea id="mensagem" name="mensagem" required minlength="10" maxlength="5000"></textarea>
-        </div>
-
-        <div class="cf-turnstile" data-sitekey="COLAR_SITE_KEY_AQUI"></div>
-
-        <button type="submit">Enviar mensagem</button>
-      </form>
+  <section class="secao secao--grade">
+    <div class="container" style="display: flex; flex-direction: column; gap: 22px;">
+      <p class="eyebrow">Resposta em até um dia útil</p>
+      <h1>Contato</h1>
+      <p class="chamada" style="max-width: 34em;">Conte o que a sua empresa precisa resolver. Quanto mais concreto o processo, mais útil a primeira resposta.</p>
     </div>
   </section>
 
-  <section class="secao secao--alt">
-    <div class="container">
-      <h2>Ou escreva direto</h2>
-      <p>Se preferir usar o seu próprio e-mail:</p>
-      <ul style="margin-top:16px;display:flex;flex-direction:column;gap:8px;color:var(--am-texto-suave)">
-        <li><a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a> — assuntos gerais</li>
-        <li><a href="mailto:suporte@alvesmaia.com">suporte@alvesmaia.com</a> — clientes com contrato</li>
-        <li><a href="mailto:financeiro@alvesmaia.com">financeiro@alvesmaia.com</a> — notas e pagamentos</li>
-      </ul>
+  <section class="secao secao--branca">
+    <div class="container contato-grade">
+
+      <div style="width: 620px; flex-shrink: 0;">
+
+        <div class="aviso aviso--ok" id="enviado" role="status">
+          <p><strong>Mensagem enviada.</strong> Recebemos seu contato e respondemos em até um dia útil.</p>
+        </div>
+        <div class="aviso aviso--erro" id="erro" role="alert">
+          <p><strong>Não foi possível enviar.</strong> Tente novamente em alguns instantes, ou escreva direto para <a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a>.</p>
+        </div>
+        <div class="aviso aviso--erro" id="robo" role="alert">
+          <p><strong>Verificação não concluída.</strong> Marque a caixa de verificação antes de enviar.</p>
+        </div>
+
+        <form class="form" method="POST" action="/api/contato">
+          <div class="campo">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" name="nome" required minlength="2" autocomplete="name">
+          </div>
+          <div class="campo">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" required autocomplete="email">
+          </div>
+          <div class="campo">
+            <label for="assunto">Assunto</label>
+            <select id="assunto" name="assunto" required>
+              <option value="Orçamento">Orçamento</option>
+              <option value="Dúvida técnica">Dúvida técnica</option>
+              <option value="Suporte">Suporte</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="mensagem">Mensagem</label>
+            <textarea id="mensagem" name="mensagem" required minlength="10" maxlength="5000" placeholder="Ex.: conferimos cerca de 300 notas fiscais por mês manualmente, comparando o portal com a nossa planilha de recebimento."></textarea>
+          </div>
+
+          <div class="cf-turnstile" data-sitekey="COLAR_SITE_KEY_AQUI"></div>
+
+          <button class="botao botao--primario" type="submit">Enviar mensagem</button>
+        </form>
+      </div>
+
+      <div class="canais">
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <span class="rotulo">Canal direto</span>
+          <p style="font-size: 15.5px; line-height: 1.62; color: var(--am-tinta-2);">Se preferir usar o seu próprio e-mail, escreva direto. É a mesma caixa que recebe o formulário.</p>
+        </div>
+
+        <div class="canais__endereco">
+          <a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a>
+          <span>Um endereço só, para qualquer assunto.</span>
+        </div>
+
+        <div class="nota">
+          <div class="nota__cabeca"><span class="marcador"></span><span class="rotulo">O que acontece depois</span></div>
+          <p>A mensagem vai direto para a caixa de quem vai atender. A resposta sai em até um dia útil, e traz uma primeira leitura do processo — não um formulário de qualificação.</p>
+        </div>
+      </div>
+
     </div>
   </section>
 
 </main>
 
 <footer class="rodape">
-  <div class="container">
-    <div>
-      <img src="/img/simbolo-escuro.svg" alt="">
-      <p style="color:#9CBBD2;margin-top:14px;font-size:14px">Soluções sob medida para a sua empresa</p>
+  <div class="container rodape__topo">
+    <div class="rodape__marca">
+      <svg viewBox="0 0 198 96" aria-hidden="true" focusable="false">
+        <g transform="translate(-27 -8)">
+          <path d="M 27,103 L 58,103 L 98,42 L 136,103 L 167,103 L 115,18 C 111,11 105,8 98,8 C 91,8 86,12 82,18 Z" fill="#FFFFFF"></path>
+          <path d="M 160,33 C 165,28 173,27 179,30 C 183,32 185,35 187,39 L 225,104 L 195,104 L 171,62 L 157,82 L 143,58 Z" fill="#00A8E8"></path>
+          <circle cx="98.5" cy="92" r="12" fill="#00A8E8"></circle>
+        </g>
+      </svg>
+      <p>Soluções sob medida para a sua empresa.</p>
     </div>
-    <div>
-      <p style="color:#CFE3F0;font-weight:700;margin-bottom:6px">Contato</p>
-      <p style="font-size:14px"><a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a></p>
+    <div class="rodape__colunas">
+      <nav class="rodape__coluna" aria-label="Rodapé">
+        <span class="rotulo">Páginas</span>
+        <a href="/">Início</a>
+        <a href="/servicos.html">Serviços</a>
+        <a href="/sobre.html">Sobre</a>
+        <a href="/contato.html">Contato</a>
+      </nav>
+      <div class="rodape__coluna">
+        <span class="rotulo">Contato</span>
+        <a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a>
+      </div>
     </div>
-    <div class="rodape__legal">
-      Alvesmaia · Consultoria de TI
+  </div>
+  <div class="rodape__legal">
+    <div class="container">
+      <span>Alvesmaia · Consultoria de TI</span>
+      <span>contato@alvesmaia.com</span>
     </div>
   </div>
 </footer>
