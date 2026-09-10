@@ -521,7 +521,7 @@ export async function marcarEnviado(rowKey: string, conexao: string): Promise<vo
 npx vitest run tests/armazenamento.test.ts
 ```
 
-Esperado: 8 testes passando.
+Esperado: 9 testes passando.
 
 - [ ] **Passo 5: Commit**
 
@@ -1093,7 +1093,7 @@ app.http("contato", {
 npm run verificar
 ```
 
-Esperado: `tsc` sem erros e 37 testes passando (9 validação + 8 armazenamento + 9 graph + 11 contato).
+Esperado: `tsc` sem erros e 38 testes passando (9 validação + 9 armazenamento + 9 graph + 11 contato).
 
 - [ ] **Passo 5: Commit**
 
