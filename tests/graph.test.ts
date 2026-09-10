@@ -10,7 +10,7 @@ const cfg = {
 const dados = {
   nome: "Maria Silva",
   email: "maria@empresa.com.br",
-  assunto: "Orçamento",
+  assunto: "Quero saber mais",
   mensagem: "Gostaria de automatizar a conferência de notas fiscais.",
 };
 

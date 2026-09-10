@@ -19,7 +19,7 @@ const { gravarSubmissao, marcarEnviado } = await import("../api/src/armazenament
 const submissao = {
   nome: "Maria Silva",
   email: "maria@empresa.com.br",
-  assunto: "Orçamento",
+  assunto: "Quero saber mais",
   mensagem: "Gostaria de automatizar a conferência de notas fiscais.",
   ip: "203.0.113.7",
 };
@@ -56,7 +56,7 @@ describe("gravarSubmissao", () => {
     const e = criarEntidade.mock.calls[0][0];
     expect(e.nome).toBe("Maria Silva");
     expect(e.email).toBe("maria@empresa.com.br");
-    expect(e.assunto).toBe("Orçamento");
+    expect(e.assunto).toBe("Quero saber mais");
     expect(e.mensagem).toContain("notas fiscais");
     expect(e.ip).toBe("203.0.113.7");
   });
