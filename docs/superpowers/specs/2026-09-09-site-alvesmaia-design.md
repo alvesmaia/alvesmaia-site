@@ -6,9 +6,8 @@
 
 ## Contexto
 
-A Alvesmaia é uma consultoria de TI operada por uma pessoa (Uemerson Maia), voltada a
-pequenas e médias empresas. A identidade visual, o domínio e o e-mail corporativo já
-estão prontos:
+A Alvesmaia é uma consultoria de TI operada por uma pessoa. A identidade visual, o
+domínio e o e-mail corporativo já estão prontos:
 
 - Marca completa em `C:/PROJETOS/branding/brand/` — logos SVG, favicon, paleta, tokens CSS
 - Domínio `alvesmaia.com` na Cloudflare, com DNS gerenciado lá
@@ -63,8 +62,9 @@ Quatro blocos. Cada um descreve o problema que resolve, não uma lista de tecnol
 | Power Platform | Automação e apps dentro do Microsoft 365 que a empresa já paga |
 
 ### `sobre.html` — Sobre
-Voz institucional: quem fala é a Alvesmaia, não Uemerson. Uemerson aparece nomeado como
-fundador, uma vez.
+Voz institucional: quem fala é a Alvesmaia, não uma pessoa. **Ninguém é nomeado no
+site** — decisão de 10/09/2026. O repositório é público, e associar um nome pessoal à
+operação não acrescenta nada ao argumento comercial.
 
 **Não simular equipe.** Voz institucional não autoriza inventar estrutura: nada de
 "nossa equipe de especialistas". Pelo contrário — a seção "Clareza sobre o perfil de
