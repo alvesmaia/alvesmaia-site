@@ -304,16 +304,27 @@ p { text-wrap: pretty; }
 .ficha__linha dd { margin: 0; font-weight: 600; }
 .ficha__linha dd.destaque { color: var(--am-ciano-700); }
 
-/* ---------- Bloco de chamada ---------- */
-.chamada-bloco { background: var(--am-tinta); color: #FFFFFF; padding: 64px 0; }
+/* ---------- Bloco de chamada ----------
+   Claro, e não navy: o rodapé já é navy, e dois blocos escuros empilhados
+   se fundem num rodapé só. A grade de blueprint fecha a página com o mesmo
+   motivo que a abre, e a régua navy no topo separa da seção anterior. */
+.chamada-bloco {
+  background-color: var(--am-papel);
+  background-image:
+    linear-gradient(var(--am-grade) 1px, transparent 1px),
+    linear-gradient(90deg, var(--am-grade) 1px, transparent 1px);
+  background-size: 32px 32px;
+  border-top: 1px solid var(--am-linha-secao);
+  padding: 68px 0;
+}
 .chamada-bloco .container {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 60px;
 }
-.chamada-bloco h2 { color: #FFFFFF; max-width: 22em; }
-.chamada-bloco p { font-size: 16.5px; color: var(--am-sobre-navy); margin-top: 12px; }
+.chamada-bloco h2 { max-width: 22em; }
+.chamada-bloco p { font-size: 16.5px; color: var(--am-tinta-2); margin-top: 12px; }
 .chamada-bloco .botao { white-space: nowrap; }
 
 /* ---------- Formulário ---------- */
