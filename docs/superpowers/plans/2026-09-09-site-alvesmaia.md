@@ -76,7 +76,7 @@ alvesmaia-site/
 - Consome: assets de `C:/PROJETOS/branding/brand/`
 - Produz: as classes CSS `.cabecalho`, `.rodape`, `.container`, `.botao`, `.botao-primario`, `.cartao`, e o padrão de menu mobile via `#menu-toggle` — todas as páginas seguintes reutilizam
 
-- [ ] **Passo 1: Copiar os assets de marca**
+- [x] **Passo 1: Copiar os assets de marca**
 
 ```bash
 cd C:/PROJETOS/alvesmaia-site
@@ -91,7 +91,7 @@ cp C:/PROJETOS/branding/brand/favicon/favicon-32.png public/img/favicon/favicon-
 cp C:/PROJETOS/branding/brand/favicon/apple-touch-icon-180.png public/img/favicon/apple-touch-icon-180.png
 ```
 
-- [ ] **Passo 2: Verificar que os arquivos chegaram**
+- [x] **Passo 2: Verificar que os arquivos chegaram**
 
 ```bash
 ls -la public/css/ public/img/ public/img/favicon/
@@ -99,7 +99,7 @@ ls -la public/css/ public/img/ public/img/favicon/
 
 Esperado: `tokens.css`, 3 SVGs de logo (o simbolo e o horizontal do cabecalho sao as variantes brancas, porque ambos ficam sobre fundo navy), 3 arquivos de favicon.
 
-- [ ] **Passo 3: Acrescentar os tokens de tema escuro ao `tokens.css`**
+- [x] **Passo 3: Acrescentar os tokens de tema escuro ao `tokens.css`**
 
 O `tokens.css` original só tem valores claros. Acrescentar ao final do arquivo:
 
@@ -133,7 +133,7 @@ O `tokens.css` original só tem valores claros. Acrescentar ao final do arquivo:
 }
 ```
 
-- [ ] **Passo 4: Criar `public/css/site.css`**
+- [x] **Passo 4: Criar `public/css/site.css`**
 
 ```css
 /* Reset mínimo */
@@ -264,7 +264,7 @@ a{color:var(--am-link)}
 .pular-para-conteudo:focus{left:0}
 ```
 
-- [ ] **Passo 5: Criar `public/index.html`**
+- [x] **Passo 5: Criar `public/index.html`**
 
 O cabeçalho e o rodapé deste arquivo são o **molde** para as outras 3 páginas. Ao copiar para as próximas, mudar apenas o `aria-current="page"`.
 
@@ -379,7 +379,7 @@ O cabeçalho e o rodapé deste arquivo são o **molde** para as outras 3 página
 </html>
 ```
 
-- [ ] **Passo 6: Abrir no navegador e conferir**
+- [x] **Passo 6: Abrir no navegador e conferir**
 
 ```bash
 cd C:/PROJETOS/alvesmaia-site/public && python -m http.server 8080
@@ -389,7 +389,7 @@ Se `python` não estiver disponível, usar `npx serve public` ou abrir o arquivo
 
 Conferir: logo aparece, menu funciona ao estreitar a janela abaixo de 760px, hero legível, 4 cartões alinhados, rodapé com símbolo.
 
-- [ ] **Passo 7: Commit**
+- [x] **Passo 7: Commit**
 
 ```bash
 cd C:/PROJETOS/alvesmaia-site
@@ -415,7 +415,7 @@ Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
 - Consome: classes CSS e o molde de cabeçalho/rodapé da Task 1
 - Produz: nada consumido por tarefas seguintes
 
-- [ ] **Passo 1: Criar `public/servicos.html`**
+- [x] **Passo 1: Criar `public/servicos.html`**
 
 Copiar `index.html` inteiro, trocar `<title>`, `<meta name="description">`, mover `aria-current="page"` para o link de Serviços, e substituir todo o `<main>` por:
 
@@ -475,7 +475,7 @@ Copiar `index.html` inteiro, trocar `<title>`, `<meta name="description">`, move
 `<title>`: `Serviços — Alvesmaia`
 `<meta name="description">`: `RPA, integrações, aplicações web e Power Platform para pequenas e médias empresas.`
 
-- [ ] **Passo 2: Criar `public/sobre.html`**
+- [x] **Passo 2: Criar `public/sobre.html`**
 
 Mesmo molde, `aria-current="page"` no link Sobre, e `<main>`:
 
@@ -519,11 +519,11 @@ Mesmo molde, `aria-current="page"` no link Sobre, e `<main>`:
 `<title>`: `Sobre — Alvesmaia`
 `<meta name="description">`: `Quem está por trás da Alvesmaia, como eu trabalho, e o que eu não faço.`
 
-- [ ] **Passo 3: Conferir a navegação**
+- [x] **Passo 3: Conferir a navegação**
 
 Abrir as 3 páginas no servidor local. Verificar que o link da página atual está destacado em cada uma, e que o menu mobile abre nas três.
 
-- [ ] **Passo 4: Commit**
+- [x] **Passo 4: Commit**
 
 ```bash
 git add public/servicos.html public/sobre.html
@@ -550,7 +550,7 @@ Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
 
 **Nota:** os avisos de sucesso/erro aparecem via CSS a partir da query string, sem JavaScript. A técnica: os três avisos existem no HTML, ficam ocultos por padrão, e o CSS `:target` não serve aqui — então usamos uma solução server-side simples. Como não há server-side rendering, o caminho sem JS é o formulário apontar para âncoras diferentes. **Decisão:** a Function redireciona para `/contato.html#enviado`, `#erro` ou `#robo`, e o CSS usa `:target` para revelar o aviso correspondente.
 
-- [ ] **Passo 1: Acrescentar o CSS dos avisos por `:target` ao `site.css`**
+- [x] **Passo 1: Acrescentar o CSS dos avisos por `:target` ao `site.css`**
 
 ```css
 /* Avisos revelados por âncora — funciona sem JavaScript */
@@ -562,7 +562,7 @@ Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
 .aviso[id]{scroll-margin-top:100vh}
 ```
 
-- [ ] **Passo 2: Criar `public/contato.html`**
+- [x] **Passo 2: Criar `public/contato.html`**
 
 Mesmo molde de cabeçalho/rodapé, `aria-current="page"` em Contato, e `<main>`:
 
@@ -643,7 +643,7 @@ Antes do `</body>`, acrescentar o script do Turnstile — **é o único JavaScri
 `<title>`: `Contato — Alvesmaia`
 `<meta name="description">`: `Fale sobre seu projeto de automação, integração ou desenvolvimento.`
 
-- [ ] **Passo 3: Conferir os três estados manualmente**
+- [x] **Passo 3: Conferir os três estados manualmente**
 
 Abrir no navegador local:
 - `/contato.html` — nenhum aviso visível
@@ -651,7 +651,7 @@ Abrir no navegador local:
 - `/contato.html#erro` — aviso vermelho
 - `/contato.html#robo` — aviso vermelho de verificação
 
-- [ ] **Passo 4: Commit**
+- [x] **Passo 4: Commit**
 
 ```bash
 git add public/contato.html public/css/site.css
@@ -678,7 +678,7 @@ Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
 - Produz: `interface DadosContato { nome: string; email: string; assunto: string; mensagem: string }`
 - Produz: `function validarFormulario(d: DadosContato): string[]` — retorna array vazio quando válido, ou lista de códigos de erro (`"nome"`, `"email"`, `"mensagem_curta"`, `"mensagem_longa"`). A Task 5 consome exatamente esta assinatura.
 
-- [ ] **Passo 1: Criar `package.json`**
+- [x] **Passo 1: Criar `package.json`**
 
 ```json
 {
@@ -697,13 +697,13 @@ Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
 }
 ```
 
-- [ ] **Passo 2: Instalar**
+- [x] **Passo 2: Instalar**
 
 ```bash
 cd C:/PROJETOS/alvesmaia-site && npm install
 ```
 
-- [ ] **Passo 3: Escrever o teste que falha**
+- [x] **Passo 3: Escrever o teste que falha**
 
 Criar `tests/validacao.test.ts`:
 
@@ -760,7 +760,7 @@ describe("validarFormulario", () => {
 });
 ```
 
-- [ ] **Passo 4: Rodar e confirmar que falha**
+- [x] **Passo 4: Rodar e confirmar que falha**
 
 ```bash
 npm test
@@ -768,7 +768,7 @@ npm test
 
 Esperado: FALHA com erro de módulo não encontrado (`../src/validacao`).
 
-- [ ] **Passo 5: Implementar o mínimo para passar**
+- [x] **Passo 5: Implementar o mínimo para passar**
 
 Criar `src/validacao.ts`:
 
@@ -796,7 +796,7 @@ export function validarFormulario(d: DadosContato): string[] {
 }
 ```
 
-- [ ] **Passo 6: Rodar e confirmar que passa**
+- [x] **Passo 6: Rodar e confirmar que passa**
 
 ```bash
 npm test
@@ -804,7 +804,7 @@ npm test
 
 Esperado: 9 testes passando.
 
-- [ ] **Passo 7: Commit**
+- [x] **Passo 7: Commit**
 
 ```bash
 git add package.json package-lock.json src/validacao.ts tests/validacao.test.ts
@@ -830,7 +830,7 @@ Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
 - Consome: nomes de campo do formulário da Task 3
 - Produz: respostas HTTP 303 para `/contato.html#enviado`, `#erro`, `#robo`
 
-- [ ] **Passo 1: Escrever os testes que falham**
+- [x] **Passo 1: Escrever os testes que falham**
 
 Criar `tests/contato.test.ts`:
 
@@ -918,7 +918,7 @@ describe("onRequestPost", () => {
 });
 ```
 
-- [ ] **Passo 2: Rodar e confirmar que falha**
+- [x] **Passo 2: Rodar e confirmar que falha**
 
 ```bash
 npm test
@@ -926,7 +926,7 @@ npm test
 
 Esperado: FALHA, módulo `../functions/api/contato` não existe.
 
-- [ ] **Passo 3: Implementar a Function**
+- [x] **Passo 3: Implementar a Function**
 
 Criar `functions/api/contato.ts`:
 
@@ -1045,7 +1045,7 @@ export const onRequestPost = async (contexto: {
 };
 ```
 
-- [ ] **Passo 4: Rodar e confirmar que passa**
+- [x] **Passo 4: Rodar e confirmar que passa**
 
 ```bash
 npm test
@@ -1053,7 +1053,7 @@ npm test
 
 Esperado: 15 testes passando (9 de validação + 6 do handler).
 
-- [ ] **Passo 5: Commit**
+- [x] **Passo 5: Commit**
 
 ```bash
 git add functions/ tests/contato.test.ts
@@ -1076,7 +1076,7 @@ Esta tarefa mistura passos que exigem contas e cartão — o executor **não** d
 **Files:**
 - Modify: `public/contato.html` (trocar a site key do Turnstile)
 
-- [ ] **Passo 1: Criar o repositório no GitHub**
+- [x] **Passo 1: Criar o repositório no GitHub**
 
 ```bash
 cd C:/PROJETOS/alvesmaia-site
