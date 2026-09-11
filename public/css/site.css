@@ -483,9 +483,12 @@ img[data-logo="escuro"] { display: none; }
   transition: opacity 0.4s ease;
 }
 .fluxo__passo--destaque { background: var(--card-2); border-color: var(--rule-2); }
-.fluxo__passo svg { width: 17px; height: 17px; flex: none; color: var(--muted); }
-.fluxo__passo--inicio svg { color: var(--link); }
-.fluxo__passo--fim svg { color: var(--ok); }
+/* :not(.contorno) e essencial: sem ele a regra de icone alcanca o SVG do
+   contorno, que vira um retangulo de 17x17 — com rx=8, um circulo preso no
+   canto superior esquerdo do passo. */
+.fluxo__passo > svg:not(.contorno) { width: 17px; height: 17px; flex: none; color: var(--muted); }
+.fluxo__passo--inicio > svg:not(.contorno) { color: var(--link); }
+.fluxo__passo--fim > svg:not(.contorno) { color: var(--ok); }
 
 .conector { margin-left: 31px; opacity: 0.2; transition: opacity 0.4s ease; }
 
@@ -494,6 +497,8 @@ img[data-logo="escuro"] { display: none; }
 .contorno {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   overflow: visible;
   pointer-events: none;
   opacity: 0;
