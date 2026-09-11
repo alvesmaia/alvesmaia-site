@@ -6,7 +6,8 @@
       "/js/*",
       "/img/*",
       "/api/*",
-      "/*.{png,svg,ico,webmanifest,txt,xml}"
+      "/*.{png,svg,ico,webmanifest,txt,xml}",
+      "/*.html"
     ]
   },
   "globalHeaders": {

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Política de Privacidade — Alvesmaia</title>
+<meta name="description" content="Como a Alvesmaia trata os dados enviados pelo formulário de contato.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;900&display=swap">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/site.css">
+<style>
+  /* Documento de leitura: coluna estreita, sem os blocos da home. */
+  .doc { max-width: 68ch; margin: 0 auto; padding: 40px 24px 80px; }
+  .doc h1 { margin-bottom: 6px; }
+  .doc h2 { margin: 38px 0 12px; font-size: 19px; }
+  .doc h3 { margin: 22px 0 8px; font-size: 15.5px; }
+  .doc p, .doc li { color: var(--faint); line-height: 1.72; }
+  .doc ul { margin: 10px 0 10px 20px; }
+  .doc li { margin-bottom: 7px; }
+  .doc table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  .doc th, .doc td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .doc th { color: var(--ink); font-weight: 700; }
+  .doc__data { font-size: 13px; color: var(--muted); margin-bottom: 30px; }
+  .doc__volta { display: inline-block; margin-bottom: 26px; font-size: 14px; font-weight: 600; }
+  .pendente {
+    background: var(--chip);
+    color: var(--link);
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.94em;
+  }
+</style>
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem("alvesmaia-tema");
+      if (!t) t = matchMedia("(prefers-color-scheme: dark)").matches ? "escuro" : "claro";
+      document.documentElement.dataset.tema = t;
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<main class="doc">
+  <a class="doc__volta" href="/">&larr; Voltar ao site</a>
+  <h1>Política de Privacidade</h1>
+  <p class="doc__data">Em vigor desde 11 de setembro de 2026.</p>
+
+  <p>Esta política explica o que acontece com os dados que você envia pelo
+  formulário de contato deste site. Ela descreve o comportamento real do
+  sistema, não uma intenção.</p>
+
+  <h2>Quem é o controlador</h2>
+  <p><mark class="pendente">[razão social]</mark>, inscrita no CNPJ sob o nº
+  <mark class="pendente">[CNPJ]</mark>, é a controladora dos dados tratados aqui.
+  Contato para qualquer assunto desta política:
+  <a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a>.</p>
+
+  <h2>O que é coletado</h2>
+  <p>Somente o que você digita no formulário, mais o endereço IP de onde a
+  submissão partiu:</p>
+  <table>
+    <thead><tr><th>Dado</th><th>Obrigatório</th><th>Para quê</th></tr></thead>
+    <tbody>
+      <tr><td>Nome</td><td>Sim</td><td>Saber com quem falamos</td></tr>
+      <tr><td>E-mail</td><td>Sim</td><td>Responder ao contato</td></tr>
+      <tr><td>Mensagem</td><td>Sim</td><td>Entender o que você precisa</td></tr>
+      <tr><td>Empresa</td><td>Não</td><td>Contexto da conversa</td></tr>
+      <tr><td>Segmento</td><td>Não</td><td>Contexto da conversa</td></tr>
+      <tr><td>Nº de funcionários</td><td>Não</td><td>Contexto da conversa</td></tr>
+      <tr><td>Endereço IP</td><td>Automático</td><td>Registro contra abuso do formulário</td></tr>
+    </tbody>
+  </table>
+  <p>Não há cookies de rastreamento, analytics, pixel de rede social nem
+  perfilamento. O único dado guardado no seu navegador é a sua escolha de
+  tema claro ou escuro, que fica só no seu aparelho e nunca é enviada.</p>
+
+  <h2>Para que é usado</h2>
+  <p>Exclusivamente para responder ao seu contato. Seus dados não são
+  vendidos, cedidos nem usados para disparo de marketing. A base legal é o
+  legítimo interesse em responder a quem nos procura, nos termos do art. 7º,
+  IX da Lei nº 13.709/2018 (LGPD).</p>
+
+  <h2>Onde fica e quem tem acesso</h2>
+  <p>A submissão é gravada no Microsoft Azure Table Storage, em conta
+  hospedada na região <strong>Brazil South</strong>, com tráfego apenas por
+  HTTPS. Uma cópia chega por e-mail em <code>contato@alvesmaia.com</code>,
+  no Microsoft 365. O acesso é restrito a <mark class="pendente">[razão social]</mark>.</p>
+
+  <h3>Terceiros envolvidos</h3>
+  <ul>
+    <li><strong>Microsoft</strong> — hospedagem do site, armazenamento dos
+    contatos e entrega do e-mail (Azure e Microsoft 365).</li>
+    <li><strong>Cloudflare</strong> — DNS do domínio e o desafio anti-robô
+    do formulário (Turnstile), que recebe um sinal técnico do seu navegador
+    apenas para distinguir pessoa de automação.</li>
+    <li><strong>Google Fonts</strong> — a fonte usada no site é carregada
+    dos servidores do Google, que recebem seu IP nesse momento.</li>
+  </ul>
+
+  <h2>Por quanto tempo fica guardado</h2>
+  <p>Até hoje não há expurgo automático: os contatos permanecem armazenados
+  por prazo indeterminado até serem apagados a pedido. <mark class="pendente">[definir prazo de retenção]</mark>
+  — e, definido o prazo, ele será aplicado de fato, não só escrito aqui.</p>
+
+  <h2>Seus direitos</h2>
+  <p>A LGPD garante que você peça, a qualquer momento, a confirmação de que
+  tratamos seus dados, o acesso a eles, a correção do que estiver errado, a
+  anonimização ou eliminação, a portabilidade e a informação sobre com quem
+  foram compartilhados. Basta escrever para
+  <a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a>;
+  respondemos em até 15 dias.</p>
+
+  <h2>Segurança</h2>
+  <p>O site é servido apenas por HTTPS, com HSTS e política de conteúdo
+  restritiva. O formulário é protegido por desafio anti-robô e valida os
+  dados no servidor. Nenhuma medida elimina risco por completo, e não
+  prometemos o contrário.</p>
+
+  <h2>Mudanças</h2>
+  <p>Alterações passam a valer na data indicada no topo desta página.</p>
+
+</main>
+</body>
+</html>

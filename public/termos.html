@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Termos de Uso — Alvesmaia</title>
+<meta name="description" content="Condições de uso do site da Alvesmaia.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;900&display=swap">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/site.css">
+<style>
+  /* Documento de leitura: coluna estreita, sem os blocos da home. */
+  .doc { max-width: 68ch; margin: 0 auto; padding: 40px 24px 80px; }
+  .doc h1 { margin-bottom: 6px; }
+  .doc h2 { margin: 38px 0 12px; font-size: 19px; }
+  .doc h3 { margin: 22px 0 8px; font-size: 15.5px; }
+  .doc p, .doc li { color: var(--faint); line-height: 1.72; }
+  .doc ul { margin: 10px 0 10px 20px; }
+  .doc li { margin-bottom: 7px; }
+  .doc table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  .doc th, .doc td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .doc th { color: var(--ink); font-weight: 700; }
+  .doc__data { font-size: 13px; color: var(--muted); margin-bottom: 30px; }
+  .doc__volta { display: inline-block; margin-bottom: 26px; font-size: 14px; font-weight: 600; }
+  .pendente {
+    background: var(--chip);
+    color: var(--link);
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.94em;
+  }
+</style>
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem("alvesmaia-tema");
+      if (!t) t = matchMedia("(prefers-color-scheme: dark)").matches ? "escuro" : "claro";
+      document.documentElement.dataset.tema = t;
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<main class="doc">
+  <a class="doc__volta" href="/">&larr; Voltar ao site</a>
+  <h1>Termos de Uso</h1>
+  <p class="doc__data">Em vigor desde 11 de setembro de 2026.</p>
+
+  <p>Ao usar este site você concorda com as condições abaixo. Se não
+  concordar, não o utilize.</p>
+
+  <h2>Quem opera este site</h2>
+  <p><mark class="pendente">[razão social]</mark>, CNPJ <mark class="pendente">[CNPJ]</mark>, doravante
+  &ldquo;Alvesmaia&rdquo;. Contato:
+  <a href="mailto:contato@alvesmaia.com">contato@alvesmaia.com</a>.</p>
+
+  <h2>O que este site é</h2>
+  <p>Uma apresentação institucional dos serviços da Alvesmaia e um canal
+  para quem quiser nos procurar. O conteúdo tem caráter informativo: nada
+  aqui constitui proposta comercial vinculante, nem aconselhamento técnico,
+  jurídico ou contábil para o seu caso específico.</p>
+
+  <h2>Contato pelo formulário</h2>
+  <p>Enviar o formulário não cria relação contratual nem obrigação de
+  prestação de serviço. Procuramos responder em até um dia útil, mas isso é
+  um compromisso de atendimento, não uma garantia contratual. Você se
+  compromete a fornecer informações verdadeiras e a não usar o formulário
+  para envio automatizado, conteúdo ilícito ou abusivo.</p>
+
+  <h2>Disponibilidade</h2>
+  <p>O site é oferecido no estado em que se encontra. Não garantimos
+  funcionamento ininterrupto: pode haver indisponibilidade por manutenção,
+  falha de terceiros ou causas fora do nosso controle.</p>
+
+  <h2>Propriedade intelectual</h2>
+  <p>A marca Alvesmaia, o logotipo, os textos e a identidade visual deste
+  site pertencem à Alvesmaia. Você pode ler, imprimir e compartilhar o
+  endereço das páginas. Reproduzir, adaptar ou usar comercialmente esse
+  material depende de autorização por escrito.</p>
+
+  <h2>Limitação de responsabilidade</h2>
+  <p>A Alvesmaia não responde por danos decorrentes de decisões tomadas com
+  base apenas no conteúdo informativo deste site, nem por indisponibilidade
+  temporária. Esta limitação não afasta direitos que a lei garanta de forma
+  inafastável.</p>
+
+  <h2>Privacidade</h2>
+  <p>O tratamento dos dados enviados pelo formulário está descrito na
+  <a href="/privacidade.html">Política de Privacidade</a>, que integra estes
+  termos.</p>
+
+  <h2>Lei aplicável</h2>
+  <p>Estes termos são regidos pela lei brasileira. Fica eleito o foro da
+  comarca de <mark class="pendente">[cidade/UF]</mark> para dirimir controvérsias.</p>
+
+  <h2>Mudanças</h2>
+  <p>Alterações passam a valer na data indicada no topo desta página.</p>
+
+</main>
+</body>
+</html>
