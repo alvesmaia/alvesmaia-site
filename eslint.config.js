@@ -64,4 +64,18 @@ export default [
     files: ["*.config.js", "*.config.ts", "vitest.config.ts"],
     languageOptions: { globals: { ...globals.node } },
   },
+
+  {
+    // Ferramentas de operacao: rodam em Node, na maquina de quem opera.
+    files: ["docs/deploy/**/*.js", "docs/deploy/**/*.mjs"],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: "module",
+      globals: { ...globals.node },
+    },
+    rules: {
+      // O proposito destes scripts e imprimir no terminal.
+      "no-console": "off",
+    },
+  },
 ];
