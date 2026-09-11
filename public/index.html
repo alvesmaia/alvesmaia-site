@@ -21,6 +21,30 @@
       document.documentElement.dataset.tema = t;
     } catch (e) {}
   })();
+
+  // Pouso de âncora é instantâneo; clique em link continua suave.
+  //
+  // O formulário envia por POST e a API responde 303 para /#enviado. Com
+  // scroll-behavior: smooth valendo também no carregamento, o navegador
+  // ANIMA os 4545px do topo até o contato — medido: 42 quadros. A página
+  // percorre o site inteiro sozinha, e conforme o navegador restaura a
+  // posição anterior isso aparece como subir e descer.
+  //
+  // Precisa rodar aqui, no <head>: o app.js tem defer e só executa depois
+  // de o navegador já ter começado a rolagem.
+  (function () {
+    if (!location.hash) return;
+    var raiz = document.documentElement;
+    raiz.style.scrollBehavior = "auto";
+    addEventListener("load", function () {
+      // Dois quadros: o primeiro ainda está dentro do pouso.
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          raiz.style.scrollBehavior = "";
+        });
+      });
+    });
+  })();
 </script>
 </head>
 <body>
@@ -313,6 +337,7 @@
       </div>
 
       <form class="form" method="POST" action="/api/contato">
+        <p class="anuncio" id="anuncio" role="status" aria-live="polite"></p>
         <div class="aviso aviso--ok" id="enviado" role="status">Recebido. Respondemos em até 1 dia útil.</div>
         <div class="aviso aviso--erro" id="erro" role="alert">Não foi possível enviar. Tente novamente em alguns instantes.</div>
         <div class="aviso aviso--erro" id="robo" role="alert">Verificação não concluída. Marque a caixa antes de enviar.</div>

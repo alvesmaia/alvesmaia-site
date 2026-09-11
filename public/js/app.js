@@ -80,15 +80,19 @@
   /* ---------- Avisos do formulário ---------- */
   // Os três avisos já existem no DOM na carga e o :target os revela depois
   // do 303 da API. Uma live region que já estava presente no load não
-  // dispara anúncio nenhum — não há mutação. Reinserir o texto cria a
-  // mutação que o leitor de tela precisa para falar.
+  // dispara anúncio nenhum — não há mutação.
+  //
+  // A mutação precisa acontecer em um elemento SEM pegada de layout. Mexer
+  // no texto do aviso visível fazia a página rolar sozinha: o elemento
+  // colapsava, o conteúdo abaixo subia, e ao restaurar descia de volta.
   const aviso = location.hash && document.querySelector(location.hash + ".aviso");
-  if (aviso) {
-    const texto = aviso.textContent;
-    aviso.textContent = "";
-    setTimeout(function () {
-      aviso.textContent = texto;
-    }, 120);
+  const anuncio = document.getElementById("anuncio");
+  if (aviso && anuncio) {
+    // Um quadro de atraso: preencher durante a carga não conta como mutação
+    // para o leitor de tela, que ainda está montando a árvore.
+    requestAnimationFrame(function () {
+      anuncio.textContent = aviso.textContent.trim();
+    });
   }
 
   /* ---------- Cartão de fluxos ---------- */
