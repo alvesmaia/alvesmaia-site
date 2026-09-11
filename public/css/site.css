@@ -159,38 +159,6 @@ img[data-logo="escuro"] { display: none; }
 .hero h1 { margin: 18px 0 16px; }
 .hero__acoes { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
 
-/* ---------- Faixa de tecnologias ---------- */
-.stack {
-  background: var(--bg-alt);
-  border-bottom: 1px solid var(--rule);
-  padding: 26px 24px;
-}
-.stack__interno {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 32px;
-  flex-wrap: wrap;
-}
-.stack__rotulo {
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--faint);
-}
-.stack__chips { display: flex; gap: 12px; flex-wrap: wrap; }
-.stack__chips li {
-  font-size: 14px;
-  font-weight: 700;
-  border: 1px solid var(--rule);
-  background: var(--card);
-  border-radius: 6px;
-  padding: 8px 14px;
-  color: var(--text);
-}
-
 /* ---------- Grades de cartão ---------- */
 .grade-cards {
   display: grid;
@@ -363,7 +331,6 @@ img[data-logo="escuro"] { display: none; }
 .campo input:focus, .campo textarea:focus { border-color: var(--cta); }
 .campo input::placeholder, .campo textarea::placeholder { color: var(--muted); opacity: 0.75; }
 .form button { padding: 14px; font-size: 15.5px; border-radius: 7px; }
-.form__legal { font-size: 11px; line-height: 1.6; color: var(--faint); }
 
 /* Avisos de estado, revelados por âncora — funcionam sem JavaScript. */
 .aviso {
@@ -692,5 +659,4 @@ img[data-logo="escuro"] { display: none; }
 @media (max-width: 520px) {
   .compromissos li { grid-template-columns: 1fr; gap: 6px; }
   .hero__acoes .botao { width: 100%; }
-  .stack__interno { gap: 16px; }
 }
