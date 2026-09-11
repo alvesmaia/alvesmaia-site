@@ -98,6 +98,12 @@ export async function enviarEmail(
     message: {
       subject: assuntoDoEmail(d, c),
       body: { contentType: "HTML", content: montarHtml(d, c) },
+      // no-reply@ e contato@ sao aliases da mesma caixa. Sem declarar o
+      // `from`, o Exchange carimba o endereco PRIMARIO dela — e a mensagem
+      // do formulario chegaria aparentando vir da caixa pessoal, nao do
+      // remetente automatico. Exige SendFromAliasEnabled ligado no tenant,
+      // o que ja e o caso.
+      from: { emailAddress: { address: REMETENTE } },
       toRecipients: [{ emailAddress: { address: DESTINO } }],
       // Responder no Outlook vai direto para o visitante.
       replyTo: [{ emailAddress: { address: d.email.trim() } }],

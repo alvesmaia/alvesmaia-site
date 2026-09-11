@@ -65,6 +65,15 @@ describe("enviarEmail", () => {
     );
   });
 
+  it("declara o remetente explicitamente, e não deixa o Exchange escolher", async () => {
+    // no-reply@ e contato@ sao aliases da mesma caixa. Sem o campo `from`,
+    // o Exchange carimba o endereco primario dela e a mensagem chega
+    // aparentando vir da caixa pessoal.
+    const spy = mockFetch();
+    await enviarEmail(dados, contexto, cfg);
+    expect(corpoGraph(spy).message.from.emailAddress.address).toBe("no-reply@alvesmaia.com");
+  });
+
   it("põe o e-mail do visitante em replyTo", async () => {
     const spy = mockFetch();
     await enviarEmail(dados, contexto, cfg);
