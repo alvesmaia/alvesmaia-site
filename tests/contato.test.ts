@@ -219,4 +219,33 @@ describe("contato", () => {
     }
     process.env.TURNSTILE_HOSTNAMES = "alvesmaia.com,www.alvesmaia.com";
   });
+
+  it("responde 303 para o POST nativo, sem Accept de JSON", async () => {
+    const res = await chamar();
+    expect(res.status).toBe(303);
+    expect((res.headers as Record<string, string>).Location).toBe("/#enviado");
+  });
+
+  it("responde JSON quando a pagina pede, em vez de redirecionar", async () => {
+    // Sem isto o 303 recarrega a pagina e o visitante perde o que escreveu.
+    const req = requisicao(camposValidos, { accept: "application/json" });
+    const res = await contato(req as never, contexto as never);
+    expect(res.status).toBe(200);
+    expect(res.jsonBody).toEqual({ resultado: "enviado" });
+    expect(res.headers).toBeUndefined();
+  });
+
+  it("usa 400 no JSON quando o envio falha, para o fetch saber", async () => {
+    turnstileValido.mockResolvedValue(false);
+    const req = requisicao(camposValidos, { accept: "application/json" });
+    const res = await contato(req as never, contexto as never);
+    expect(res.status).toBe(400);
+    expect(res.jsonBody).toEqual({ resultado: "robo" });
+  });
+
+  it("nao confunde um Accept generico com pedido de JSON", async () => {
+    const req = requisicao(camposValidos, { accept: "text/html,application/xhtml+xml" });
+    const res = await contato(req as never, contexto as never);
+    expect(res.status).toBe(303);
+  });
 });

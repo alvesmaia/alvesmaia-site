@@ -746,3 +746,7 @@ img[data-logo="escuro"] { display: none; }
   padding-right: 34px;
   cursor: pointer;
 }
+
+/* O aviso aparece por :target no caminho sem JavaScript, e por esta classe
+   quando o envio acontece sem recarregar a página. */
+.aviso--visivel { display: block; }

@@ -15,10 +15,27 @@ import { gravarSubmissao, marcarEnviado } from "../armazenamento";
 import { enviarEmail, type ConfigGraph } from "../graph";
 
 /**
- * O site virou pagina unica: a ancora de estado vive na raiz, dentro da
- * secao #contato. O CSS revela o aviso por :target.
+ * Duas formas de dizer a mesma coisa, conforme quem pergunta.
+ *
+ * Sem JavaScript o formulario faz POST nativo e o navegador segue o 303
+ * ate a ancora, que o CSS revela por :target — e a pagina recarrega vazia,
+ * perdendo o que a pessoa escreveu.
+ *
+ * Com JavaScript a pagina pede JSON, le o resultado e revela o aviso sem
+ * recarregar, preservando o texto. O 303 continua sendo o comportamento
+ * base: a camada de JavaScript melhora, nao substitui.
  */
-function redirecionar(ancora: string): HttpResponseInit {
+function querJson(request: HttpRequest): boolean {
+  return (request.headers.get("accept") ?? "").includes("application/json");
+}
+
+function responder(ancora: string, request: HttpRequest): HttpResponseInit {
+  if (querJson(request)) {
+    return {
+      status: ancora === "enviado" ? 200 : 400,
+      jsonBody: { resultado: ancora },
+    };
+  }
   return { status: 303, headers: { Location: `/#${ancora}` } };
 }
 
@@ -116,13 +133,13 @@ export async function contato(
   const config = lerConfig();
   if (!config) {
     context.error("Application Settings incompletas — o formulario nao pode operar");
-    return redirecionar("erro");
+    return responder("erro", request);
   }
 
   const declarado = Number(request.headers.get("content-length") ?? "0");
   if (declarado > TETO_CORPO_BYTES) {
     context.error("Corpo acima do teto:", declarado);
-    return redirecionar("erro");
+    return responder("erro", request);
   }
 
   let form: FormData;
@@ -130,7 +147,7 @@ export async function contato(
     form = await request.formData();
   } catch (e) {
     context.error("Corpo do formulario ilegivel:", e);
-    return redirecionar("erro");
+    return responder("erro", request);
   }
 
   const dados: DadosContato = {
@@ -149,24 +166,24 @@ export async function contato(
   const erros = validarFormulario(dados);
   if (erros.length > 0) {
     context.error("Formulario invalido:", erros.join(", "));
-    return redirecionar("erro");
+    return responder("erro", request);
   }
 
   const ip = ipDoCliente(request.headers.get("x-forwarded-for"));
   const token = String(form.get("cf-turnstile-response") ?? "");
   if (!(await turnstileValido(token, ip || null, config.turnstile))) {
-    return redirecionar("robo");
+    return responder("robo", request);
   }
 
   // Grava antes de enviar: se o Graph falhar, o lead continua recuperavel.
   const rowKey = await gravarSubmissao({ ...dados, ...contexto, ip }, config.conexaoTabelas);
-  if (!rowKey) return redirecionar("erro");
+  if (!rowKey) return responder("erro", request);
 
   const enviado = await enviarEmail(dados, contexto, config.graph);
-  if (!enviado) return redirecionar("erro");
+  if (!enviado) return responder("erro", request);
 
   await marcarEnviado(rowKey, config.conexaoTabelas);
-  return redirecionar("enviado");
+  return responder("enviado", request);
 }
 
 app.http("contato", {

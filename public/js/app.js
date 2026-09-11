@@ -95,6 +95,87 @@
     });
   }
 
+  /* ---------- Envio do formulário ---------- */
+  // Camada sobre o POST nativo, não substituição dele: sem JavaScript o
+  // formulário continua funcionando pelo 303 e pelo :target. Com
+  // JavaScript, o envio acontece sem recarregar — e o que a pessoa
+  // escreveu não se perde quando algo falha.
+  const formulario = document.querySelector(".form");
+  if (formulario && window.fetch && window.FormData) {
+    const botao = formulario.querySelector("button[type=submit]");
+    const rotuloOriginal = botao ? botao.textContent : "";
+    let enviando = false;
+
+    function mostrarAviso(qual) {
+      // Os avisos são revelados por :target no CSS. Sem recarregar a página
+      // o :target não muda sozinho, então o hash é ajustado na mão.
+      if (location.hash !== "#" + qual) {
+        history.replaceState(null, "", "#" + qual);
+      }
+      // replaceState não redispara :target; forçar o recálculo é o que faz
+      // o aviso aparecer.
+      const alvo = document.getElementById(qual);
+      if (alvo) {
+        alvo.classList.add("aviso--visivel");
+        for (const outro of document.querySelectorAll(".aviso")) {
+          if (outro !== alvo) outro.classList.remove("aviso--visivel");
+        }
+        if (anuncio) anuncio.textContent = alvo.textContent.trim();
+        alvo.scrollIntoView({ block: "nearest" });
+      }
+    }
+
+    formulario.addEventListener("submit", async function (e) {
+      if (enviando) {
+        e.preventDefault();
+        return;
+      }
+      // Deixa a validação nativa agir primeiro; só assume se ela passou.
+      if (!formulario.checkValidity()) return;
+
+      e.preventDefault();
+      enviando = true;
+      if (botao) {
+        botao.disabled = true;
+        botao.textContent = "Enviando...";
+      }
+
+      let resultado = "erro";
+      try {
+        const r = await fetch(formulario.action, {
+          method: "POST",
+          body: new FormData(formulario),
+          headers: { Accept: "application/json" },
+        });
+        const corpo = await r.json();
+        resultado = corpo.resultado || "erro";
+      } catch {
+        // Rede caiu no meio. O texto continua na tela, que é o ponto.
+        resultado = "erro";
+      }
+
+      enviando = false;
+      if (botao) {
+        botao.disabled = false;
+        botao.textContent = rotuloOriginal;
+      }
+
+      if (resultado === "enviado") {
+        formulario.reset();
+      }
+      // O token do Turnstile é de uso único: sem reiniciar o widget, a
+      // segunda tentativa falha sozinha por token repetido.
+      if (window.turnstile && typeof window.turnstile.reset === "function") {
+        try {
+          window.turnstile.reset();
+        } catch {
+          // Widget ainda não montado: nada a reiniciar.
+        }
+      }
+      mostrarAviso(resultado);
+    });
+  }
+
   /* ---------- Cartão de fluxos ---------- */
   const cartao = document.querySelector(".fluxos");
   if (!cartao) return;
