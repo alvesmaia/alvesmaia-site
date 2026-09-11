@@ -233,7 +233,6 @@ img[data-logo="escuro"] { display: none; }
 }
 .grade-colada--4 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
 .grade-colada--etapas { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
-.grade-colada--compromissos { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); margin-top: 0; }
 .celula { background: var(--card); padding: 24px; }
 .grade-colada--etapas .celula { padding: 26px; }
 .celula h3 { font-size: 16.5px; }
@@ -277,17 +276,10 @@ img[data-logo="escuro"] { display: none; }
 }
 .plano h3 { font-size: 19px; }
 .plano__desc { font-size: 14px; color: var(--muted); margin-top: 8px; }
-.plano__preco {
+.plano__itens {
   margin-top: 20px;
-  padding: 16px 0;
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
-  font-size: 30px;
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  color: var(--ink);
-}
-.plano__itens { margin-top: 18px; display: flex; flex-direction: column; gap: 10px; }
+  padding-top: 20px;
+  border-top: 1px solid var(--rule); display: flex; flex-direction: column; gap: 10px; }
 .plano__itens li { display: flex; gap: 10px; font-size: 14.5px; line-height: 1.5; color: var(--text); }
 .plano__itens li::before { content: "✓"; color: var(--ok); font-weight: 800; flex: none; }
 
@@ -298,8 +290,19 @@ img[data-logo="escuro"] { display: none; }
   gap: 48px;
   align-items: center;
 }
-.compromisso strong { display: block; font-size: 26px; font-weight: 900; letter-spacing: -0.03em; color: var(--ink); }
-.compromisso span { display: block; font-size: 14px; color: var(--muted); margin-top: 6px; }
+/* Lista com divisorias, nao grade de celulas: em 2x2 os titulos quebravam
+   e o texto era cortado na largura da coluna. */
+.compromissos { border-top: 1px solid var(--rule); }
+.compromissos li {
+  border-bottom: 1px solid var(--rule);
+  padding: 18px 0;
+  display: grid;
+  grid-template-columns: minmax(140px, 190px) 1fr;
+  gap: 24px;
+  align-items: baseline;
+}
+.compromissos strong { font-size: 17px; font-weight: 800; color: var(--ink); }
+.compromissos span { font-size: 14.5px; line-height: 1.55; color: var(--muted); }
 
 /* ---------- FAQ ---------- */
 .faq details { border-top: 1px solid var(--rule); padding: 18px 0; }
@@ -403,7 +406,8 @@ img[data-logo="escuro"] { display: none; }
   margin: 0 auto;
   padding: 20px 24px 40px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  text-align: center;
   gap: 16px;
   flex-wrap: wrap;
   font-size: 11.5px;
@@ -686,6 +690,7 @@ img[data-logo="escuro"] { display: none; }
 }
 
 @media (max-width: 520px) {
+  .compromissos li { grid-template-columns: 1fr; gap: 6px; }
   .hero__acoes .botao { width: 100%; }
   .stack__interno { gap: 16px; }
 }

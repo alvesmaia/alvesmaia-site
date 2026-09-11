@@ -46,7 +46,7 @@
 
   /* compostos */
   --header: rgba(255, 255, 255, 0.86);
-  --hero: radial-gradient(900px 420px at 18% -10%, #E7ECFF 0%, #FFFFFF 62%);
+  --hero: radial-gradient(1800px 680px at 50% -22%, #E7ECFF 0%, #FFFFFF 72%);
   --shadow: 0 18px 44px rgba(16, 42, 67, 0.10);
 
   /* tipografia */
@@ -81,6 +81,6 @@
   --danger: #F08B7C;
 
   --header: rgba(25, 25, 25, 0.86);
-  --hero: radial-gradient(900px 420px at 18% -10%, #23283D 0%, #191919 62%);
+  --hero: radial-gradient(1800px 680px at 50% -22%, #23283D 0%, #191919 72%);
   --shadow: 0 18px 44px rgba(0, 0, 0, 0.44);
 }
