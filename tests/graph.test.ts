@@ -74,6 +74,22 @@ describe("enviarEmail", () => {
     expect(corpoGraph(spy).message.from.emailAddress.address).toBe("no-reply@alvesmaia.com");
   });
 
+  it("assina com o nome da empresa, não com o da caixa", async () => {
+    // no-reply@ e alias de uma caixa pessoal. Sem nome explicito o Exchange
+    // usa o da caixa, e a mensagem chega assinada com o nome da pessoa.
+    const spy = mockFetch();
+    await enviarEmail(dados, contexto, cfg);
+    expect(corpoGraph(spy).message.from.emailAddress.name).toBe("Alvesmaia");
+  });
+
+  it("leva o nome do visitante no replyTo", async () => {
+    const spy = mockFetch();
+    await enviarEmail(dados, contexto, cfg);
+    const rt = corpoGraph(spy).message.replyTo[0].emailAddress;
+    expect(rt.name).toBe(dados.nome.trim());
+    expect(rt.address).toBe(dados.email.trim());
+  });
+
   it("põe o e-mail do visitante em replyTo", async () => {
     const spy = mockFetch();
     await enviarEmail(dados, contexto, cfg);

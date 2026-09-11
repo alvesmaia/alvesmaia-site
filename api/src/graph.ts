@@ -3,6 +3,13 @@ import type { DadosContato, ContextoEmpresa } from "./validacao";
 const REMETENTE = "no-reply@alvesmaia.com";
 
 /**
+ * Sem nome explicito o Exchange usa o da caixa. Como no-reply@ e alias de
+ * uma caixa pessoal, a mensagem chegava assinada com o nome da pessoa — o
+ * endereco estava certo, a assinatura e que denunciava.
+ */
+const NOME_REMETENTE = "Alvesmaia";
+
+/**
  * Sem isto o fetch herda o headersTimeout do undici — 300s. O host do
  * Functions mata a invocacao antes, o visitante recebe um 5xx cru em vez do
  * redirect, e o catch que escreveria o log nunca roda: a falha some.
@@ -103,10 +110,10 @@ export async function enviarEmail(
       // do formulario chegaria aparentando vir da caixa pessoal, nao do
       // remetente automatico. Exige SendFromAliasEnabled ligado no tenant,
       // o que ja e o caso.
-      from: { emailAddress: { address: REMETENTE } },
+      from: { emailAddress: { address: REMETENTE, name: NOME_REMETENTE } },
       toRecipients: [{ emailAddress: { address: DESTINO } }],
       // Responder no Outlook vai direto para o visitante.
-      replyTo: [{ emailAddress: { address: d.email.trim() } }],
+      replyTo: [{ emailAddress: { address: d.email.trim(), name: d.nome.trim() } }],
     },
     saveToSentItems: false,
   };
