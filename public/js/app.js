@@ -10,35 +10,35 @@
   "use strict";
 
   /* ---------- Tema ---------- */
-  var CHAVE = "alvesmaia-tema";
-  var raiz = document.documentElement;
-  var botaoTema = document.getElementById("tema");
+  const CHAVE = "alvesmaia-tema";
+  const raiz = document.documentElement;
+  const botaoTema = document.getElementById("tema");
 
   if (botaoTema) {
     botaoTema.addEventListener("click", function () {
-      var novo = raiz.dataset.tema === "escuro" ? "claro" : "escuro";
+      const novo = raiz.dataset.tema === "escuro" ? "claro" : "escuro";
       raiz.dataset.tema = novo;
       try {
         localStorage.setItem(CHAVE, novo);
-      } catch (e) {
+      } catch {
         // Modo privado ou storage bloqueado: o tema vale só para esta sessão.
       }
     });
   }
 
   /* ---------- Cartão de fluxos ---------- */
-  var cartao = document.querySelector(".fluxos");
+  const cartao = document.querySelector(".fluxos");
   if (!cartao) return;
 
-  var TOTAL_FLUXOS = cartao.querySelectorAll("[data-fluxo]").length;
+  const TOTAL_FLUXOS = cartao.querySelectorAll("[data-fluxo]").length;
   if (!TOTAL_FLUXOS) return;
 
-  var semMovimento = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const semMovimento = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  var fluxo = 0;
-  var etapa = 0;
-  var timer = null;
-  var visivel = true;
+  let fluxo = 0;
+  let etapa = 0;
+  let timer = null;
+  let visivel = true;
 
   function pintar() {
     cartao.dataset.ativo = String(fluxo);

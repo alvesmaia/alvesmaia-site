@@ -1,5 +1,37 @@
+# Dependencias e build
 node_modules/
 api/node_modules/
 api/dist/
+dist/
+
+# Segredos. Este repositorio e PUBLICO — nada abaixo pode ser versionado.
+# local.settings.json guarda GRAPH_CLIENT_SECRET, TURNSTILE_SECRET_KEY e a
+# connection string do Table Storage em desenvolvimento.
 api/local.settings.json
+local.settings.json
+.env
+.env.*
+!.env.example
+*.publishsettings
+*.pem
+*.key
+*.pfx
+*.p12
+
+# Azure CLI / Functions Core Tools
+.azure/
+azure.yaml.local
+__azurite_db*.json
+__blobstorage__/
+__queuestorage__/
+
+# Ferramentas e editores
+.vscode/
+.idea/
+coverage/
+
+# Sistemas e temporarios
 .DS_Store
+Thumbs.db
+desktop.ini
+*.stackdump
