@@ -1,5 +1,17 @@
 # Handoff: Site institucional Alvesmaia — v2
 
+> **Divergência deliberada do copy — 10/09/2026.** O handoff diz para usar o texto
+> exatamente como está. Dois trechos foram alterados por decisão do cliente: falavam em
+> primeira pessoa do singular, e a Alvesmaia se apresenta como empresa, não como pessoa.
+>
+> | Onde | No handoff | No site |
+> |---|---|---|
+> | Metodologia, etapa "Mapear" | "…; eu digo se vale automatizar." | "…e nós dizemos se vale automatizar." |
+> | Mensagem de sucesso do formulário | "Recebido. Respondo em até 1 dia útil." | "Recebido. Respondemos em até 1 dia útil." |
+>
+> A pergunta do FAQ "E se o **meu** sistema não tem API?" ficou intacta: ali quem fala é
+> o visitante.
+
 ## O que mudou na v2
 
 - Cartão do herói virou **carrossel de cinco fluxos** (Fiscal, Jurídico, RH, Financeiro,
