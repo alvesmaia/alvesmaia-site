@@ -35,3 +35,6 @@ coverage/
 Thumbs.db
 desktop.ini
 *.stackdump
+
+# Artefatos de ferramentas de navegador
+.playwright-mcp/
