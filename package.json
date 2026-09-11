@@ -6,8 +6,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "tipos": "tsc --noEmit -p api/tsconfig.json",
-    "verificar": "npm run lint && npm run tipos && npm test",
-    "lint": "eslint ."
+    "verificar": "npm run lint && npm run tipos && npm run build && npm test",
+    "lint": "eslint .",
+    "build": "npm run build --prefix api"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

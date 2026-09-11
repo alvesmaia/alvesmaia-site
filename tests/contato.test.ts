@@ -10,9 +10,14 @@ vi.mock("../api/src/armazenamento", () => ({ gravarSubmissao, marcarEnviado }));
 vi.mock("../api/src/graph", () => ({ enviarEmail }));
 // app.http() roda na importação do módulo; sem este mock o registro real
 // tenta se conectar ao runtime do Functions e o import falha.
-vi.mock("@azure/functions", () => ({ app: { http: vi.fn() } }));
+const appHttp = vi.fn();
+vi.mock("@azure/functions", () => ({ app: { http: appHttp } }));
 
 const { contato } = await import("../api/src/functions/contato");
+
+// app.http() roda na importacao. O clearAllMocks do beforeEach apaga essa
+// chamada, entao ela precisa ser capturada agora.
+const registro = appHttp.mock.calls[0];
 
 const camposValidos = {
   nome: "Maria Silva",
@@ -23,12 +28,12 @@ const camposValidos = {
 
 const ROW_KEY = "2026-09-10T12:00:00.000Z-abc";
 
-function requisicao(campos: Record<string, string>) {
+function requisicao(campos: Record<string, string>, extras: Record<string, string> = {}) {
   const form = new FormData();
   for (const [k, v] of Object.entries(campos)) form.append(k, v);
   return {
     formData: async () => form,
-    headers: new Headers({ "x-forwarded-for": "203.0.113.7" }),
+    headers: new Headers({ "x-forwarded-for": "203.0.113.7", ...extras }),
   };
 }
 
@@ -152,5 +157,66 @@ describe("contato", () => {
     const cfg = turnstileValido.mock.calls[0][2];
     expect(cfg.acaoEsperada).toBe("contato");
     expect(cfg.hostnamesPermitidos).toEqual(["alvesmaia.com", "www.alvesmaia.com"]);
+  });
+
+  it("registra o endpoint só para POST e só como anônimo", async () => {
+    // Sem esta asserção, trocar methods para ["POST","GET"] ou authLevel
+    // para "function" deixa os testes verdes: o mock engole o registro.
+    expect(registro).toBeDefined();
+    const [nome, opcoes] = registro;
+    expect(nome).toBe("contato");
+    expect(opcoes.methods).toEqual(["POST"]);
+    expect(opcoes.authLevel).toBe("anonymous");
+    expect(opcoes.route).toBe("contato");
+  });
+
+  it("recusa um corpo acima do teto antes de lê-lo", async () => {
+    const req = requisicao(camposValidos, { "content-length": String(50 * 1024 * 1024) });
+    const res = await contato(req as never, contexto as never);
+    expect((res.headers as Record<string, string>).Location).toBe("/#erro");
+    // O ponto do teto e nao chegar aqui: nada foi verificado nem gravado.
+    expect(turnstileValido).not.toHaveBeenCalled();
+    expect(gravarSubmissao).not.toHaveBeenCalled();
+  });
+
+  it("tira a porta do x-forwarded-for antes de usar o IP", async () => {
+    // O App Service manda ip:porta. Sem tratar, o remoteip que vai ao
+    // siteverify e malformado e a coluna ip da tabela guarda lixo.
+    const req = requisicao(camposValidos, { "x-forwarded-for": "203.0.113.7:48192" });
+    await contato(req as never, contexto as never);
+    expect(turnstileValido.mock.calls[0][1]).toBe("203.0.113.7");
+    expect(gravarSubmissao.mock.calls[0][0].ip).toBe("203.0.113.7");
+  });
+
+  it("usa só o primeiro IP quando há proxies encadeados", async () => {
+    const req = requisicao(camposValidos, { "x-forwarded-for": "203.0.113.7, 10.0.0.1, 10.0.0.2" });
+    await contato(req as never, contexto as never);
+    expect(turnstileValido.mock.calls[0][1]).toBe("203.0.113.7");
+  });
+
+  it("preserva IPv6 inteiro, com e sem colchetes", async () => {
+    for (const [bruto, esperado] of [
+      ["[2001:db8::1]:443", "2001:db8::1"],
+      ["2001:db8::1", "2001:db8::1"],
+    ]) {
+      vi.clearAllMocks();
+      turnstileValido.mockResolvedValue(true);
+      gravarSubmissao.mockResolvedValue(ROW_KEY);
+      enviarEmail.mockResolvedValue(true);
+      const req = requisicao(camposValidos, { "x-forwarded-for": bruto });
+      await contato(req as never, contexto as never);
+      expect(turnstileValido.mock.calls[0][1]).toBe(esperado);
+    }
+  });
+
+  it("trata TURNSTILE_HOSTNAMES presente mas sem hostname algum como config quebrada", async () => {
+    // " " e ",," sao strings verdadeiras. Antes a config passava, a lista
+    // saia vazia e TODO visitante levava "marque a caixa antes de enviar".
+    for (const valor of [" ", ",,", " , , "]) {
+      process.env.TURNSTILE_HOSTNAMES = valor;
+      const res = await chamar();
+      expect((res.headers as Record<string, string>).Location).toBe("/#erro");
+    }
+    process.env.TURNSTILE_HOSTNAMES = "alvesmaia.com,www.alvesmaia.com";
   });
 });

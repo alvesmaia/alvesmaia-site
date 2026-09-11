@@ -1,6 +1,13 @@
 import type { DadosContato, ContextoEmpresa } from "./validacao";
 
 const REMETENTE = "no-reply@alvesmaia.com";
+
+/**
+ * Sem isto o fetch herda o headersTimeout do undici — 300s. O host do
+ * Functions mata a invocacao antes, o visitante recebe um 5xx cru em vez do
+ * redirect, e o catch que escreveria o log nunca roda: a falha some.
+ */
+const TEMPO_LIMITE_MS = 10_000;
 const DESTINO = "contato@alvesmaia.com";
 
 export interface ConfigGraph {
@@ -23,6 +30,7 @@ async function obterToken(cfg: ConfigGraph): Promise<string | null> {
       {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        signal: AbortSignal.timeout(TEMPO_LIMITE_MS),
         body: corpo.toString(),
       },
     );
@@ -106,6 +114,7 @@ export async function enviarEmail(
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+        signal: AbortSignal.timeout(TEMPO_LIMITE_MS),
         body: JSON.stringify(mensagem),
       },
     );

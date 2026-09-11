@@ -70,10 +70,20 @@ describe("gravarSubmissao", () => {
     expect(e.funcionarios).toBe("11 a 50");
   });
 
-  it("gera rowKeys distintos para submissões simultâneas", async () => {
-    const a = await gravarSubmissao(submissao, "conexao-fake");
-    const b = await gravarSubmissao(submissao, "conexao-fake");
-    expect(a).not.toBe(b);
+  it("gera rowKeys distintos para submissões de fato simultâneas", async () => {
+    // O teste anterior fazia duas chamadas sequenciais com await: passaria
+    // ate se chaveLinha usasse so um contador. O que precisa de prova e o
+    // caso real — varias submissoes no MESMO milissegundo, onde so o sufixo
+    // aleatorio separa as chaves.
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-09-10T12:00:00.000Z"));
+    const chaves = await Promise.all(
+      Array.from({ length: 200 }, () => gravarSubmissao(submissao, "conexao-fake")),
+    );
+    expect(new Set(chaves).size).toBe(200);
+    // Todas partilham o mesmo carimbo de tempo: a distincao veio do sufixo.
+    expect(new Set(chaves.map((k) => k!.split("-").slice(0, 3).join("-"))).size).toBe(1);
+    vi.useRealTimers();
   });
 
   it("o prefixo do rowKey é igual à partição", async () => {

@@ -46,6 +46,47 @@ describe("validarFormulario", () => {
     expect(erros).toContain("email");
     expect(erros).toContain("mensagem_curta");
   });
+
+  it("recusa endereços que a regex antiga deixava passar", () => {
+    // Todos passavam antes e so falhavam la no Graph — que devolve 400 e
+    // deixa a linha na tabela com enviado:false, sem ninguem olhando.
+    for (const email of [
+      "maria@empresa..com",
+      "maria@-.com",
+      "a@b.<script>",
+      "maria@empresa.com>x",
+      "maria@empresa.c",
+      ".maria@empresa.com",
+      "maria.@empresa.com",
+      "maria@empresa",
+    ]) {
+      expect(validarFormulario({ ...valido, email })).toContain("email");
+    }
+  });
+
+  it("aceita endereços legítimos", () => {
+    for (const email of [
+      "maria@empresa.com",
+      "maria.silva+nf@sub.empresa.com.br",
+      "a@b.co",
+      "contato@alves-maia.com",
+    ]) {
+      expect(validarFormulario({ ...valido, email })).toEqual([]);
+    }
+  });
+
+  it("recusa e-mail acima de 254 caracteres", () => {
+    const email = "a".repeat(250) + "@empresa.com";
+    expect(validarFormulario({ ...valido, email })).toContain("email");
+  });
+
+  it("recusa nome acima de 120 caracteres", () => {
+    // Sem teto, o nome vira o assunto do e-mail e estoura o limite de 32K
+    // por propriedade do Table Storage — o visitante ve "tente novamente em
+    // alguns instantes" para um erro que nunca vai se resolver.
+    const erros = validarFormulario({ ...valido, nome: "a".repeat(121) });
+    expect(erros).toContain("nome_longo");
+  });
 });
 
 describe("normalizarContexto", () => {
@@ -65,7 +106,16 @@ describe("normalizarContexto", () => {
     expect(empresa).toHaveLength(120);
   });
 
-  it("não deixa o contexto interferir na validação dos campos obrigatórios", () => {
-    expect(validarFormulario(valido)).toEqual([]);
+  it("corta por ponto de código, não por unidade UTF-16", () => {
+    // 119 letras + 1 emoji = 120 pontos de codigo, mas 121 unidades UTF-16.
+    // Um slice direto deixaria um substituto solto no fim — caractere
+    // invalido, que chega corrompido no e-mail.
+    const { empresa } = normalizarContexto({
+      empresa: "a".repeat(119) + "🏭",
+      segmento: "",
+      funcionarios: "",
+    });
+    expect(Array.from(empresa)).toHaveLength(120);
+    expect(empresa.endsWith("🏭")).toBe(true);
   });
 });

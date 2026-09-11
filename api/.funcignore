@@ -1,3 +1,10 @@
+# local.settings.json guarda GRAPH_CLIENT_SECRET, TURNSTILE_SECRET_KEY e a
+# connection string do Table Storage. O .gitignore o mantem fora do git, mas
+# nao fora do pacote de deploy: sem esta linha, `func publish` o sobe para
+# /home/site/wwwroot, legivel pelo Kudu.
+local.settings.json
+
 *.ts
 tsconfig.json
 .vscode
+.git*
