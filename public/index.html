@@ -345,16 +345,45 @@
         <div class="form__linha">
           <label class="campo">
             <span>Nome</span>
-            <input type="text" name="nome" required minlength="2" autocomplete="name" placeholder="Seu nome">
+            <input type="text" name="nome" required minlength="2" maxlength="120" autocomplete="name" placeholder="Seu nome">
           </label>
           <label class="campo">
-            <span>Empresa</span>
+            <span>E-mail corporativo</span>
+            <input type="email" name="email" required maxlength="254" autocomplete="email" placeholder="voce@empresa.com.br">
+          </label>
+        </div>
+        <div class="form__linha">
+          <label class="campo">
+            <span>Empresa <em class="campo__opcional">opcional</em></span>
             <input type="text" name="empresa" maxlength="120" autocomplete="organization" placeholder="Razão social">
+          </label>
+          <label class="campo">
+            <span>Segmento <em class="campo__opcional">opcional</em></span>
+            <input type="text" name="segmento" maxlength="120" list="segmentos" autocomplete="off" placeholder="Ex.: indústria">
+            <datalist id="segmentos">
+              <option value="Indústria"></option>
+              <option value="Comércio"></option>
+              <option value="Serviços"></option>
+              <option value="Construção"></option>
+              <option value="Logística e transporte"></option>
+              <option value="Saúde"></option>
+              <option value="Educação"></option>
+              <option value="Agronegócio"></option>
+              <option value="Tecnologia"></option>
+              <option value="Contabilidade e jurídico"></option>
+            </datalist>
           </label>
         </div>
         <label class="campo">
-          <span>E-mail corporativo</span>
-          <input type="email" name="email" required autocomplete="email" placeholder="voce@empresa.com.br">
+          <span>Número de funcionários <em class="campo__opcional">opcional</em></span>
+          <select name="funcionarios" autocomplete="off">
+            <option value="">Prefiro não informar</option>
+            <option>1 a 10</option>
+            <option>11 a 50</option>
+            <option>51 a 200</option>
+            <option>201 a 500</option>
+            <option>Mais de 500</option>
+          </select>
         </label>
         <label class="campo">
           <span>Descreva o processo</span>

@@ -330,7 +330,7 @@ img[data-logo="escuro"] { display: none; }
   text-transform: uppercase;
   color: var(--faint);
 }
-.campo input, .campo textarea {
+.campo input, .campo textarea, .campo select {
   font-family: inherit;
   font-size: 15px;
   color: var(--text);
@@ -340,7 +340,7 @@ img[data-logo="escuro"] { display: none; }
   padding: 11px 13px;
 }
 .campo textarea { resize: vertical; min-height: 104px; line-height: 1.6; }
-.campo input:focus, .campo textarea:focus { border-color: var(--cta); }
+.campo input:focus, .campo textarea:focus, .campo select:focus { border-color: var(--cta); }
 .campo input::placeholder, .campo textarea::placeholder { color: var(--muted); opacity: 1; }
 .form button { padding: 14px; font-size: 15.5px; border-radius: 7px; }
 
@@ -719,4 +719,30 @@ img[data-logo="escuro"] { display: none; }
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
+}
+
+/* Campo opcional. A marca fica no rótulo, não no placeholder: quem usa
+   leitor de tela ouve o rótulo, não o texto de exemplo — e quem preenche
+   rápido precisa saber o que pode pular antes de clicar. */
+.campo__opcional {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-left: 6px;
+}
+
+/* A seta nativa do select some quando a cor de fundo é definida em alguns
+   navegadores; esta é desenhada e acompanha o tema. */
+.campo select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+                    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 18px) calc(50% + 2px), calc(100% - 13px) calc(50% + 2px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
+  cursor: pointer;
 }
