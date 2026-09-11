@@ -80,7 +80,7 @@ function linhasContexto(c: ContextoEmpresa): string {
  */
 function assuntoDoEmail(d: DadosContato, c: ContextoEmpresa): string {
   const nome = d.nome.trim();
-  return c.empresa ? `[Site] ${nome} — ${c.empresa}` : `[Site] ${nome}`;
+  return c.empresa ? `[Site] ${nome} - ${c.empresa}` : `[Site] ${nome}`;
 }
 
 function montarHtml(d: DadosContato, c: ContextoEmpresa): string {

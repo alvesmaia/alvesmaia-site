@@ -115,7 +115,7 @@ describe("enviarEmail", () => {
   it("o assunto traz nome e empresa quando ela foi informada", async () => {
     const spy = mockFetch();
     await enviarEmail(dados, contexto, cfg);
-    expect(corpoGraph(spy).message.subject).toBe("[Site] Maria Silva — Acme Ltda");
+    expect(corpoGraph(spy).message.subject).toBe("[Site] Maria Silva - Acme Ltda");
   });
 
   it("o assunto traz só o nome quando não há empresa", async () => {
