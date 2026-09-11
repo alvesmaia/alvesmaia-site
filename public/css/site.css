@@ -76,8 +76,21 @@ h3 { font-size: 18px; font-weight: 800; letter-spacing: -0.01em; color: var(--in
 }
 .cabecalho__logo img { height: 26px; width: auto; }
 
-/* O checkbox comanda o menu no mobile e nunca é visto em largura nenhuma. */
-.nav-toggle { position: absolute; opacity: 0; pointer-events: none; }
+/* O checkbox comanda o menu no mobile e nunca é visto em largura nenhuma.
+   Ele fica sob o rótulo, e não transparente fora de tela: assim o anel de
+   foco aparece no hambúrguer, que é o controle que a pessoa enxerga. */
+.nav-toggle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.nav-hamburguer:focus-visible {
+  outline: 2px solid var(--cta);
+  outline-offset: 3px;
+}
 .nav { flex: 1; display: flex; gap: 22px; flex-wrap: wrap; }
 .nav a { font-size: 14.5px; font-weight: 600; color: var(--muted); }
 .nav a:hover { color: var(--ink); }
@@ -88,13 +101,13 @@ h3 { font-size: 18px; font-weight: 800; letter-spacing: -0.01em; color: var(--in
   flex: none;
   display: grid;
   place-items: center;
-  border: 1px solid var(--rule);
+  border: 1px solid var(--rule-forte);
   border-radius: 6px;
   background: transparent;
   color: var(--muted);
   cursor: pointer;
 }
-.tema-btn:hover { color: var(--ink); border-color: var(--rule-2); }
+.tema-btn:hover { color: var(--ink); border-color: var(--ink); }
 .tema-btn svg { width: 17px; height: 17px; }
 /* Um ícone por tema, alternado por CSS — sem trocar src por script. */
 .tema-btn [data-icone="escuro"] { display: none; }
@@ -118,7 +131,7 @@ img[data-logo="escuro"] { display: none; }
 }
 .botao--primario { background: var(--cta); color: var(--cta-ink); }
 .botao--primario:hover { background: var(--cta-hover); color: var(--cta-ink); }
-.botao--secundario { border-color: var(--rule-2); color: var(--text); }
+.botao--secundario { border-color: var(--rule-forte); color: var(--text); }
 .botao--secundario:hover { border-color: var(--muted); color: var(--ink); }
 .botao--cabecalho { font-size: 14px; padding: 9px 16px; }
 .botao--grande { font-size: 15.5px; font-weight: 700; padding: 14px 24px; border-radius: 7px; }
@@ -141,7 +154,7 @@ img[data-logo="escuro"] { display: none; }
 }
 .hero__grade {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
   gap: 52px;
   align-items: center;
 }
@@ -162,7 +175,7 @@ img[data-logo="escuro"] { display: none; }
 /* ---------- Grades de cartão ---------- */
 .grade-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
   gap: 16px;
   margin-top: 38px;
 }
@@ -199,8 +212,8 @@ img[data-logo="escuro"] { display: none; }
   overflow: hidden;
   margin-top: 38px;
 }
-.grade-colada--4 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-.grade-colada--etapas { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.grade-colada--4 { grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); }
+.grade-colada--etapas { grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr)); }
 .celula { background: var(--card); padding: 24px; }
 .grade-colada--etapas .celula { padding: 26px; }
 .celula h3 { font-size: 16.5px; }
@@ -212,7 +225,7 @@ img[data-logo="escuro"] { display: none; }
 /* ---------- Planos ---------- */
 .planos {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(290px, 100%), 1fr));
   gap: 18px;
   align-items: start;
   margin-top: 38px;
@@ -254,7 +267,7 @@ img[data-logo="escuro"] { display: none; }
 /* ---------- Sobre ---------- */
 .duas-colunas {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
   gap: 48px;
   align-items: center;
 }
@@ -294,7 +307,7 @@ img[data-logo="escuro"] { display: none; }
 /* ---------- Contato ---------- */
 .contato-grade {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: 48px;
   align-items: start;
 }
@@ -309,7 +322,7 @@ img[data-logo="escuro"] { display: none; }
   gap: 16px;
   box-shadow: var(--shadow);
 }
-.form__linha { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+.form__linha { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr)); gap: 16px; }
 .campo { display: flex; flex-direction: column; gap: 7px; }
 .campo > span {
   font-size: 10.5px;
@@ -322,14 +335,13 @@ img[data-logo="escuro"] { display: none; }
   font-size: 15px;
   color: var(--text);
   background: var(--bg);
-  border: 1px solid var(--rule);
+  border: 1px solid var(--rule-forte);
   border-radius: 7px;
   padding: 11px 13px;
-  outline: none;
 }
 .campo textarea { resize: vertical; min-height: 104px; line-height: 1.6; }
 .campo input:focus, .campo textarea:focus { border-color: var(--cta); }
-.campo input::placeholder, .campo textarea::placeholder { color: var(--muted); opacity: 0.75; }
+.campo input::placeholder, .campo textarea::placeholder { color: var(--muted); opacity: 1; }
 .form button { padding: 14px; font-size: 15.5px; border-radius: 7px; }
 
 /* Avisos de estado, revelados por âncora — funcionam sem JavaScript. */
@@ -350,7 +362,7 @@ img[data-logo="escuro"] { display: none; }
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
   gap: 40px;
   padding: 56px 24px 28px;
 }
@@ -518,13 +530,13 @@ img[data-logo="escuro"] { display: none; }
   width: 26px; height: 26px;
   display: grid;
   place-items: center;
-  border: 1px solid var(--rule);
+  border: 1px solid var(--rule-forte);
   border-radius: 6px;
   background: transparent;
   color: var(--muted);
   cursor: pointer;
 }
-.fluxos__seta:hover { color: var(--ink); border-color: var(--rule-2); }
+.fluxos__seta:hover { color: var(--ink); border-color: var(--ink); }
 .fluxos__seta svg { width: 14px; height: 14px; }
 .fluxos__progresso { width: 26px; height: 4px; background: var(--rule); border-radius: 100px; overflow: hidden; }
 .fluxos__progresso i { display: block; height: 100%; background: var(--cta); width: 4%; transition: width 1.4s linear; }
@@ -584,7 +596,7 @@ img[data-logo="escuro"] { display: none; }
 .fluxos[data-etapa="5"] .fluxos__caixa,
 .fluxos[data-etapa="6"] .fluxos__caixa {
   border-color: var(--ok);
-  box-shadow: 0 0 0 3px rgba(14, 122, 84, 0.10);
+  box-shadow: 0 0 0 3px var(--halo-ok);
 }
 
 .fluxos[data-etapa="0"] .fluxos__progresso i { width: 4%; transition: width 0.22s ease; }
@@ -640,7 +652,7 @@ img[data-logo="escuro"] { display: none; }
   .cabecalho__logo { flex: 1; }
   .nav {
     display: none;
-    order: 5;
+    order: 3;
     width: 100%;
     flex-direction: column;
     gap: 0;
@@ -649,7 +661,8 @@ img[data-logo="escuro"] { display: none; }
   }
   .nav a { padding: 10px 0; }
   .nav-toggle:checked ~ .nav { display: flex; }
-  .botao--cabecalho { order: 4; }
+  .tema-btn { order: 4; }
+  .botao--cabecalho { order: 5; }
 }
 
 @media (min-width: 861px) {
@@ -659,4 +672,34 @@ img[data-logo="escuro"] { display: none; }
 @media (max-width: 520px) {
   .compromissos li { grid-template-columns: 1fr; gap: 6px; }
   .hero__acoes .botao { width: 100%; }
+}
+
+/* Botão de pausa do carrossel — exigência de WCAG 2.2.2, nível A: as setas
+   avançam e reiniciam o timer; nenhuma delas para o movimento. */
+#fluxos-pausa [data-icone="retomar"] { display: none; }
+#fluxos-pausa[aria-pressed="true"] [data-icone="pausar"] { display: none; }
+#fluxos-pausa[aria-pressed="true"] [data-icone="retomar"] { display: block; }
+#fluxos-pausa[aria-pressed="true"] { color: var(--ink); border-color: var(--ink); }
+
+/* Congelar as animações CSS junto com o timer. O IntersectionObserver
+   parava o loop JS, mas `girar`, `fluir` e `rodar` continuavam rodando fora
+   da tela — o comentário sobre devolver CPU só valia para metade do
+   trabalho. Com a pausa explícita, vale para as duas. */
+.fluxos[data-pausado="true"] *,
+.fluxos[data-visivel="false"] * {
+  animation-play-state: paused;
+}
+
+/* Larguras muito estreitas.
+
+   O widget do Turnstile tem 300px de piso — abaixo disso ele empurra a
+   página inteira de lado. `data-size="flexible"` faz ele acompanhar o
+   container até esse piso; daí para baixo, rolar dentro da própria caixa é
+   melhor que arrastar o site todo. O mesmo vale para o conteúdo do cartão
+   de fluxos, cujos passos têm largura mínima própria. */
+.cf-turnstile { max-width: 100%; overflow-x: auto; }
+
+@media (max-width: 380px) {
+  .fluxos__caixa { margin-left: 14px; margin-right: 14px; padding: 12px; overflow-x: auto; }
+  .container { padding-left: 16px; padding-right: 16px; }
 }

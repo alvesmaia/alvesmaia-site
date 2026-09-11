@@ -33,9 +33,9 @@
       <img data-logo="claro" src="/img/logo-claro.svg" alt="Alvesmaia" width="180" height="26">
       <img data-logo="escuro" src="/img/logo-escuro.svg" alt="Alvesmaia" width="180" height="26">
     </a>
-    <input class="nav-toggle" type="checkbox" id="nav-toggle" aria-label="Abrir menu de navegação">
-    <label class="nav-hamburguer" for="nav-toggle" aria-hidden="true"><i></i></label>
-    <nav class="nav" aria-label="Principal">
+    <input class="nav-toggle" type="checkbox" id="nav-toggle" tabindex="-1" aria-hidden="true">
+    <label class="nav-hamburguer" for="nav-toggle" tabindex="0" role="button" aria-expanded="false" aria-controls="nav-principal" aria-label="Abrir menu de navegação"><i></i></label>
+    <nav class="nav" id="nav-principal" aria-label="Principal">
       <a href="#servicos">Serviços</a>
       <a href="#casos">Soluções</a>
       <a href="#modelos">Planos</a>
@@ -65,7 +65,7 @@
         </div>
       </div>
 
-      <div class="fluxos" data-ativo="0" data-etapa="0" role="img" aria-label="Exemplos de fluxos automatizados, em rotação">
+      <div class="fluxos" data-ativo="0" data-etapa="0" role="group" aria-roledescription="carrossel" aria-label="Exemplos de fluxos automatizados">
         <div class="fluxos__barra" aria-hidden="true"><i></i><i></i><i></i></div>
         <div class="fluxos__caixa">
       <span class="fluxos__legenda" data-rotulo="0">Fiscal - Conciliação de notas</span>
@@ -132,6 +132,7 @@
           </div>
         </div>
         <div class="fluxos__rodape">
+          <button class="fluxos__seta" type="button" id="fluxos-pausa" aria-label="Pausar a rotação dos fluxos" aria-pressed="false"><svg data-icone="pausar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="5" width="3.4" height="14" rx="1.2"></rect><rect x="13.6" y="5" width="3.4" height="14" rx="1.2"></rect></svg><svg data-icone="retomar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5.5v13l11-6.5-11-6.5Z"></path></svg></button>
           <button class="fluxos__seta" type="button" data-passo-fluxo="-1" aria-label="Fluxo anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
           <div class="fluxos__progresso" aria-hidden="true"><i></i></div>
           <button class="fluxos__seta" type="button" data-passo-fluxo="1" aria-label="Próximo fluxo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button>
@@ -335,7 +336,7 @@
           <textarea name="mensagem" rows="4" required minlength="10" maxlength="5000" placeholder="Ex.: todo dia alguém baixa 40 notas do e-mail, confere no ERP e lança na planilha do financeiro"></textarea>
         </label>
 
-        <div class="cf-turnstile" data-sitekey="0x4AAAAAAEvKx-DjzOnRIGgI" data-action="contato"></div>
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAEvKx-DjzOnRIGgI" data-action="contato" data-size="flexible"></div>
 
         <button class="botao botao--primario" type="submit">Quero o diagnóstico</button>
       </form>

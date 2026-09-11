@@ -24,6 +24,10 @@
   --rule: #D7E2EC;
   --rule-2: #B9C8D6;
   --rule-3: #EAF1F7;
+  /* Borda de controle, nao de divisoria. O WCAG 1.4.11 pede 3:1 para o que
+     delimita um componente de interface; --rule rende 1.31:1 sobre o fundo e
+     serve so como linha decorativa. Este rende 3.60:1. */
+  --rule-forte: #77899B;
 
   /* tinta */
   --ink: #102A43;
@@ -41,6 +45,7 @@
 
   /* semânticas */
   --ok: #0E7A54;
+  --halo-ok: rgba(14, 122, 84, 0.10);
   --warn: #96600B;
   --danger: #B02E21;
 
@@ -63,6 +68,8 @@
   --rule: #2F2F2F;
   --rule-2: #3D3D3D;
   --rule-3: #252525;
+  /* 3.30:1 sobre --bg e 3.06:1 sobre --card: passa nas duas superficies. */
+  --rule-forte: #6B6B6B;
 
   --ink: #FFFFFF;
   --text: #EDEDED;
@@ -77,6 +84,7 @@
   --chip: #232733;
 
   --ok: #4FC79A;
+  --halo-ok: rgba(79, 199, 154, 0.14);
   --warn: #E0A661;
   --danger: #F08B7C;
 
