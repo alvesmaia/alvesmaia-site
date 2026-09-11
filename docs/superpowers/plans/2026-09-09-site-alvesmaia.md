@@ -1,10 +1,24 @@
 # Site Institucional Alvesmaia — Plano de Implementação
 
+> **PLANO CONCLUÍDO, E PARCIALMENTE SUPERADO.** Leia isto antes de seguir
+> qualquer passo.
+>
+> As Tasks 1 a 9 foram executadas e descrevem o site como ele era: **quatro
+> páginas** (`index`, `servicos`, `contato`, `sobre`), sem JavaScript próprio.
+> O redesenho v2, de 10/09/2026, transformou tudo em **uma página só**
+> (`public/index.html`) com JavaScript para tema, carrossel e envio. Onde essas
+> tasks falam em `contato.html` ou em quatro arquivos, estão descrevendo algo
+> que não existe mais. A lógica do backend, essa sim, continua válida.
+>
+> A **Task 10** foi reescrita em 11/09/2026 e é o registro do que foi
+> implantado de fato — inclusive de três armadilhas do Exchange que o plano
+> original não previa e que custaram uma tarde.
+>
 > **Para executores agênticos:** SUB-SKILL OBRIGATÓRIA: use `superpowers:subagent-driven-development` (recomendado) ou `superpowers:executing-plans` para implementar tarefa a tarefa. Os passos usam checkbox (`- [ ]`) para acompanhamento.
 
-**Objetivo:** Publicar um site institucional de 4 páginas para a Alvesmaia em `alvesmaia.com`, com formulário de contato que grava toda submissão e entrega e-mail de verdade.
+**Objetivo:** Publicar um site institucional para a Alvesmaia em `alvesmaia.com`, com formulário de contato que grava toda submissão e entrega e-mail de verdade. *(Eram 4 páginas; o v2 consolidou em uma.)*
 
-**Arquitetura:** HTML/CSS estático servido pelo Azure Static Web Apps, sem build step e sem JavaScript próprio. O formulário faz `POST` clássico para uma Azure Function em TypeScript, que valida os dados, confere o Cloudflare Turnstile, grava no Azure Table Storage e envia o e-mail pelo Microsoft Graph usando o tenant do Microsoft 365 já contratado.
+**Arquitetura:** HTML/CSS estático servido pelo Azure Static Web Apps, sem build step. *(O v2 acrescentou JavaScript próprio, sempre como progressive enhancement — sem ele o site e o formulário continuam funcionando.)* O formulário faz `POST` clássico para uma Azure Function em TypeScript, que valida os dados, confere o Cloudflare Turnstile, grava no Azure Table Storage e envia o e-mail pelo Microsoft Graph usando o tenant do Microsoft 365 já contratado.
 
 **Tech Stack:** HTML5, CSS puro (custom properties), TypeScript, Azure Functions (Node 20, modelo de programação v4), Azure Table Storage (`@azure/data-tables`), Microsoft Graph, Cloudflare Turnstile, Vitest (só desenvolvimento).
 
@@ -1117,178 +1131,171 @@ Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
 
 ## Task 10: Provisionar o Azure e publicar
 
-Passos marcados **[USUÁRIO]** exigem contas, cartão ou consentimento de administrador. O executor não os faz.
+> **EXECUTADA em 11/09/2026.** O que segue é o registro do que foi feito de
+> fato, não um roteiro a executar. Quase tudo saiu por linha de comando, não
+> pelo portal, e o caminho real divergiu do planejado em pontos que custaram
+> horas — eles estão marcados como **armadilha**.
 
-**Files:**
-- Modify: `public/contato.html` (site key do Turnstile)
+### O que existe hoje
 
-- [ ] **Passo 1: [USUÁRIO] Criar o widget do Turnstile**
+| Recurso | Nome | Observação |
+|---|---|---|
+| Resource group | `rg-alvesmaia-site` | Brazil South |
+| Storage | `stalvesmaiasite` | Standard_LRS, TLS 1.2, só HTTPS |
+| Static Web App | `swa-alvesmaia-site` | Free, East US 2 |
+| Domínios | `alvesmaia.com`, `www` | Ready, certificado DigiCert |
+| App registration | `0bdf678a-ca4f-4e33-8107-b1dac150f765` | `Mail.Send` de aplicação |
+| Caixa de envio | `no-reply@alvesmaia.com` | **Caixa compartilhada**, não alias |
+| Grupo de escopo | `app-formulario-site@alvesmaia.com` | Existe só para dar escopo à policy |
+| Orçamento | US$ 5/mês | Alertas em 80% e 100% |
 
-Painel da Cloudflare → Turnstile → Add site. Domínio `alvesmaia.com`, modo **Managed**.
-Copiar a **site key** (pública) e a **secret key** (privada).
+### Identidade do remetente — o ponto que o plano original errava
 
-- [ ] **Passo 2: Colar a site key no HTML**
+O plano dizia para usar `no-reply@` como **alias** da caixa pessoal. Funciona
+para enviar, mas **assina errado**: uma caixa tem um único nome de exibição e
+todos os seus alias herdam ele. Pior, em mensagem interna o Outlook resolve o
+remetente pelo catálogo da organização e ignora o nome declarado no cabeçalho
+— a documentação diz que isso não é alterável nem pelo Exchange nem pelo
+cliente. Declarar `from.name` no código não resolve; o campo nunca é
+consultado.
 
-Em `public/contato.html`, trocar `COLAR_SITE_KEY_AQUI` pela site key real. Ela é pública, pode ir para o repositório.
+Resultado prático: cada mensagem do formulário chegava assinada com o nome
+pessoal do dono da caixa, mesmo com o endereço correto no rastreamento.
 
-```bash
-git add public/contato.html
-git commit -m "chore: site key do Turnstile
+**Endereço que um sistema usa para enviar precisa ser caixa compartilhada.**
+Ela é gratuita e não consome licença.
 
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01QssWCvHSMwSCEjdqbHeMPd"
-git push
-```
+### Restringir o `Mail.Send` — e as três armadilhas
 
-- [ ] **Passo 3: [USUÁRIO] Registrar o app no Entra**
+`Mail.Send` como permissão de aplicação autoriza envio como **qualquer caixa
+do tenant**. A `ApplicationAccessPolicy` é o que fecha isso, e precisa existir
+**antes** do consentimento administrativo.
 
-Portal do Azure → Microsoft Entra ID → App registrations → New registration.
+**Armadilha 1 — a policy não aceita caixa compartilhada como escopo.** A conta
+do Entra de uma caixa compartilhada é desabilitada por definição, e o Exchange
+recusa conta desabilitada como entidade de segurança. O escopo tem que ser um
+**grupo de segurança habilitado para e-mail** contendo a caixa.
 
-| Campo | Valor |
-|---|---|
-| Nome | `alvesmaia-site-formulario` |
-| Tipos de conta | Somente este diretório organizacional |
-| Redirect URI | deixar vazio |
+**Armadilha 2 — o `Test-ApplicationAccessPolicy` mente.** Ele contorna o cache
+por design: responde "Concedido" enquanto o envio real ainda devolve 403. Não
+serve como prova de que funciona. A única prova é um envio de verdade.
 
-Depois de criar, anotar **Application (client) ID** e **Directory (tenant) ID**.
+**Armadilha 3, a mais cara — mudança de permissão leva de 30 minutos a 2 horas,
+e cada tentativa renova o relógio.** A documentação é explícita: o cache de um
+app **sem chamadas** expira em 30 minutos; o de um app **ativo** é mantido por
+até 2 horas. Um monitor testando de minuto em minuto mantém o bloqueio vivo
+indefinidamente.
 
-Em **API permissions** → Add a permission → Microsoft Graph → **Application permissions** → `Mail.Send` → Add. Em seguida **Grant admin consent**.
+> **A regra que faltava:** faça **uma** mudança, pare de chamar a API, e só
+> teste depois de 60 minutos. Encadear mudanças em janelas menores que a
+> propagação torna impossível saber qual causou o quê. Foi assim que um ajuste
+> de dez minutos virou uma tarde inteira e uma indisponibilidade de três horas.
 
-Em **Certificates & secrets** → New client secret → validade 24 meses. Copiar o **Value** na hora; ele não é exibido de novo. **Colocar a data de expiração no calendário agora.**
+### Comandos que valem guardar
 
-- [ ] **Passo 4: [USUÁRIO] Restringir a permissão a uma única caixa**
-
-Sem isto, o app pode enviar como qualquer pessoa do tenant. Não é opcional.
-
-```powershell
-Install-Module -Name ExchangeOnlineManagement -Scope CurrentUser
-Connect-ExchangeOnline -UserPrincipalName uemerson@alvesmaia.com
-
-New-ApplicationAccessPolicy `
-  -AppId "<Application (client) ID do passo 3>" `
-  -PolicyScopeGroupId "no-reply@alvesmaia.com" `
-  -AccessRight RestrictAccess `
-  -Description "Formulario do site: so pode enviar como no-reply"
-```
-
-Conferir que ficou restrito:
-
-```powershell
-Test-ApplicationAccessPolicy -Identity no-reply@alvesmaia.com -AppId "<client id>"
-Test-ApplicationAccessPolicy -Identity uemerson@alvesmaia.com -AppId "<client id>"
-```
-
-Esperado: `AccessCheckResult: Granted` no primeiro, **`Denied` no segundo**. Se o segundo vier `Granted`, a política não aplicou — não prosseguir.
-
-- [ ] **Passo 5: [USUÁRIO] Criar a Storage Account**
-
-Portal do Azure → Storage accounts → Create.
-
-| Campo | Valor |
-|---|---|
-| Resource group | `rg-alvesmaia-site` (criar) |
-| Nome | `stalvesmaiasite` |
-| Região | Brazil South |
-| Performance | Standard |
-| Redundância | LRS |
-
-Depois: Security + networking → Access keys → copiar a **Connection string** da key1.
-
-- [ ] **Passo 6: [USUÁRIO] Criar o Static Web App**
-
-Portal do Azure → Static Web Apps → Create.
-
-| Campo | Valor |
-|---|---|
-| Resource group | `rg-alvesmaia-site` |
-| Nome | `swa-alvesmaia-site` |
-| Plano | **Free** |
-| Origem | GitHub → `alvesmaia/alvesmaia-site`, branch `main` |
-| Build preset | Custom |
-| App location | `public` |
-| Api location | `api` |
-| Output location | *(vazio)* |
-
-O Azure cria o GitHub Action e dispara o primeiro deploy sozinho.
-
-- [ ] **Passo 7: Conferir o workflow criado**
+Conectar ao Exchange Online **sem login interativo**, reaproveitando a sessão
+do Azure CLI:
 
 ```bash
-cd C:/PROJETOS/alvesmaia-site
-git pull
-cat .github/workflows/azure-static-web-apps-*.yml | grep -A3 'app_location'
-gh run list --limit 3
+TOKEN=$(az account get-access-token --resource "https://outlook.office365.com" \
+  --query accessToken -o tsv) pwsh -NoProfile -Command '
+Import-Module ExchangeOnlineManagement
+Connect-ExchangeOnline -AccessToken $env:TOKEN -Organization "alvesmaia.com" -ShowBanner:$false
+# comandos aqui
+Disconnect-ExchangeOnline -Confirm:$false | Out-Null
+'
 ```
 
-Confirmar que `app_location` é `public` e `api_location` é `api`.
-
-- [ ] **Passo 8: [USUÁRIO] Cadastrar as Application Settings**
-
-SWA → Settings → Environment variables → Add, uma por uma:
-
-| Nome | Origem |
-|---|---|
-| `GRAPH_TENANT_ID` | Directory (tenant) ID, passo 3 |
-| `GRAPH_CLIENT_ID` | Application (client) ID, passo 3 |
-| `GRAPH_CLIENT_SECRET` | Value do client secret, passo 3 |
-| `TURNSTILE_SECRET_KEY` | secret key, passo 1 |
-| `TURNSTILE_HOSTNAMES` | `alvesmaia.com,www.alvesmaia.com` — sem `localhost` |
-| `TABLES_CONNECTION_STRING` | Connection string, passo 5 |
-
-Salvar. O SWA reinicia a Function sozinho.
-
-- [ ] **Passo 9: [USUÁRIO] Criar o alerta de orçamento**
-
-Portal do Azure → Cost Management → Budgets → Add. Escopo `rg-alvesmaia-site`, valor **US$ 1**, alerta em 100%, e-mail `uemerson@alvesmaia.com`.
-
-- [ ] **Passo 10: Apontar o domínio**
-
-SWA → Custom domains → Add. Primeiro `www.alvesmaia.com` (CNAME), depois `alvesmaia.com` (apex, validação por TXT).
-
-Na Cloudflare, criar os registros que o Azure indicar. **Proxy desligado (nuvem cinza)** — o proxy da Cloudflare na frente do SWA quebra a validação do certificado.
-
-Atenção ao adicionar o TXT no apex: é um TXT **a mais**, ao lado do SPF existente. Não substituir nada.
-
-- [ ] **Passo 11: Verificação de regressão do e-mail**
-
-O passo mais importante desta task.
+Gerar o client secret **sem que ele passe pelo terminal**:
 
 ```bash
-nslookup -type=MX alvesmaia.com 173.245.58.108
-nslookup -type=TXT alvesmaia.com 173.245.58.108
-nslookup -type=TXT _dmarc.alvesmaia.com 173.245.58.108
-nslookup -type=CNAME selector1._domainkey.alvesmaia.com 173.245.58.108
+SEG=$(az ad app credential reset --id <appId> --display-name "swa-alvesmaia-site" \
+  --years 2 --query password -o tsv)
+az staticwebapp appsettings set -n swa-alvesmaia-site -g rg-alvesmaia-site \
+  --setting-names "GRAPH_CLIENT_SECRET=$SEG"
+unset SEG
 ```
 
-Esperado, sem nenhuma alteração:
-- MX → `alvesmaia-com.mail.protection.outlook.com`
-- TXT → `v=spf1 include:spf.protection.outlook.com ~all` (mais o TXT de validação do Azure, que é esperado)
-- `_dmarc` → `v=DMARC1; p=none; rua=mailto:...@dmarc-reports.cloudflare.net`
-- `selector1._domainkey` → `...dkim.mail.microsoft`
+O endpoint de `appsettings` corta a conexão com frequência. **Repita até
+confirmar** — se o `set` falhar depois do `unset`, o segredo se perde e é
+preciso gerar outro.
 
-Se qualquer um tiver mudado, **parar e reverter o domínio customizado** antes de continuar.
+### Domínio
 
-- [ ] **Passo 12: Checklist de verificação manual**
+Os registros vão na **Cloudflare**, que é a autoridade de DNS; o Azure só
+aceita o hostname e emite o certificado. Nenhum dos dois substitui o outro.
 
-Executar os 11 itens da seção "Verificação" da spec. Os dois que não podem ser pulados:
+| Nome | Tipo | Conteúdo | Proxy |
+|---|---|---|---|
+| `@` | TXT | token de validação do Azure | Somente DNS |
+| `@` | CNAME | `<swa>.azurestaticapps.net` | Somente DNS |
+| `www` | CNAME | `<swa>.azurestaticapps.net` | Somente DNS |
 
-- **Item 10:** confirmar pelo `Test-ApplicationAccessPolicy` que o app **não** envia como `uemerson@alvesmaia.com`
-- **Item 11:** o passo 11 acima
+**Proxy desligado** — a nuvem laranja quebra a validação do certificado. E o
+TXT de validação entra **ao lado** do SPF, nunca no lugar: substituir aquele
+registro derruba o e-mail do domínio.
+
+Ordem: para o apex, registrar no Azure primeiro (ele devolve o token) e criar
+o TXT depois. Para o `www`, o inverso — o CNAME precisa existir antes, senão
+o Azure recusa com "CNAME Record is invalid".
+
+### Verificação de regressão do e-mail
+
+Antes e depois de mexer no domínio, fotografar e comparar. Três adições são
+esperadas (TXT de validação e os dois CNAME); **qualquer remoção ou alteração
+em MX, SPF, DMARC ou DKIM é motivo para reverter.**
+
+```bash
+for q in "MX alvesmaia.com" "TXT alvesmaia.com" "TXT _dmarc.alvesmaia.com" \
+         "CNAME selector1._domainkey.alvesmaia.com" \
+         "CNAME selector2._domainkey.alvesmaia.com"; do
+  set -- $q; echo "--- $1 $2"; nslookup -type=$1 $2 1.1.1.1
+done
+```
+
+### Operação
+
+```bash
+node docs/deploy/leads-nao-entregues.js   # contatos gravados que não foram enviados
+pwsh -File docs/deploy/ver-politicas.ps1  # o que restringe o Mail.Send hoje
+```
+
+A primeira existe porque o handler grava antes de enviar: se o Graph falhar, o
+contato fica na tabela com `enviado:false` e **nada avisa**. A segunda porque a
+Application Access Policy não aparece em interface nenhuma — nem no portal do
+Azure, nem no Entra, nem no centro de administração do Exchange.
+
+### Pendências que sobraram
+
+- O client secret vence em **11/09/2028**. Quando expirar, o formulário para de
+  enviar sem aviso nenhum.
+- Não há expurgo de contatos antigos. Decisão registrada do controlador: os
+  dados são usados só para responder, e ficam.
+- As páginas de Privacidade e Termos têm sete lacunas jurídicas marcadas —
+  razão social, CNPJ e foro.
 
 ---
 
 ## Notas para o executor
 
-**Sobre a duplicação de cabeçalho e rodapé:** é intencional, decidida na spec. Ao alterar navegação ou rodapé, alterar nos 4 arquivos. Conferir com:
+**Sobre a estrutura do site:** é **uma página só** (`public/index.html`), desde
+o redesenho v2. A nota anterior falava em quatro arquivos HTML com cabeçalho e
+rodapé duplicados — não vale mais. As únicas outras páginas são
+`privacidade.html` e `termos.html`, documentos legais independentes.
 
-```bash
-grep -c "cabecalho__nav" public/*.html
-```
+**Sobre o JavaScript:** o site tem JavaScript próprio (`public/js/app.js`), e a
+nota anterior dizia que não. Ele cuida do tema, do carrossel, do menu e do
+envio do formulário sem recarregar. Tudo é **progressive enhancement**: sem
+JavaScript o formulário continua funcionando por POST nativo e `:target`. Ao
+mexer, preservar esse caminho.
 
-Esperado: `1` em cada um dos 4 arquivos.
+**Sobre CommonJS na pasta `api/`:** o `package.json` da raiz é
+`"type": "module"`, mas o `api/tsconfig.json` compila para CommonJS. Não é
+inconsistência — é o que o runtime do Azure Functions v4 espera. Não "corrigir".
 
-**Sobre o JavaScript:** o único `<script>` do site é o widget do Turnstile, carregado da Cloudflare, apenas em `contato.html`. Nenhum JavaScript próprio. Se surgir vontade de adicionar, revisar a spec antes.
+**Sobre o client secret:** se aparecer em qualquer arquivo commitado, é
+incidente de segurança — revogar no Entra imediatamente e gerar outro.
 
-**Sobre CommonJS na pasta `api/`:** o `package.json` da raiz é `"type": "module"`, mas o `api/tsconfig.json` compila para CommonJS. Não é inconsistência — é o que o runtime do Azure Functions v4 espera. Não "corrigir".
-
-**Sobre o client secret:** se aparecer em qualquer arquivo commitado, é incidente de segurança — revogar no Entra imediatamente e gerar outro.
+**Sobre o `staticwebapp.config.json`:** ele vive em `public/`, não na raiz. O
+Azure o procura dentro do `app_location`; na raiz ele é silenciosamente
+ignorado e nenhum header de segurança chega a produção.
