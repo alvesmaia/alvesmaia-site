@@ -790,7 +790,9 @@ img[data-logo="escuro"] { display: none; }
 @media (max-width: 860px) {
   .flutuante {
     display: flex;
-    align-items: center;
+    /* Balão acima do círculo, os dois alinhados à direita. */
+    flex-direction: column;
+    align-items: flex-end;
     gap: 10px;
     position: fixed;
     /* Ancorado à direita, não esticado: é um botão, não uma barra. */
@@ -821,15 +823,17 @@ img[data-logo="escuro"] { display: none; }
   .flutuante__balao::after {
     content: "";
     position: absolute;
-    top: 50%;
-    left: 100%;
+    top: 100%;
+    /* Alinhado ao centro do círculo, que tem 58px e fica encostado à
+       direita: 29px da borda. */
+    right: 29px;
     border: 7px solid transparent;
-    border-left-color: var(--rule-forte);
-    transform: translateY(-50%);
+    border-top-color: var(--rule-forte);
+    transform: translateX(50%);
   }
   .flutuante__balao::after {
-    border-left-color: var(--card);
-    margin-left: -1.5px;
+    border-top-color: var(--card);
+    margin-top: -1.5px;
   }
 
   .flutuante__circulo {
@@ -840,9 +844,10 @@ img[data-logo="escuro"] { display: none; }
     flex: none;
     border-radius: 50%;
     background: var(--cta);
+    color: var(--cta-ink);
     box-shadow: 0 10px 26px rgba(16, 42, 67, 0.32);
   }
-  .flutuante__circulo img { display: block; }
+  .flutuante__circulo svg { display: block; }
 
   .flutuante:active .flutuante__circulo { transform: scale(0.95); }
 
@@ -860,7 +865,6 @@ img[data-logo="escuro"] { display: none; }
   .flutuante { transition: none; }
 }
 
-/* Telas muito estreitas: o balão come a largura toda; fica só o círculo. */
-@media (max-width: 380px) {
-  .flutuante__balao { display: none; }
-}
+/* Empilhado, o balão não disputa mais a largura com o círculo — por isso
+   ele fica visível também nas telas estreitas, ao contrário do arranjo
+   lado a lado. */
