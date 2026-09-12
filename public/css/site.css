@@ -649,7 +649,16 @@ img[data-logo="escuro"] { display: none; }
     box-shadow: 0 -5px 0 currentColor, 0 5px 0 currentColor;
   }
   .cabecalho__interno { flex-wrap: wrap; gap: 14px; padding-top: 12px; padding-bottom: 12px; }
-  .cabecalho__logo { flex: 1; }
+  /* O logo nao encolhe. Com `flex: 1` ele tinha base zero e cedia espaco
+     para o CTA de 208px, chegando a 5px de largura — ilegivel. Com
+     `flex: none` ele mantem a largura natural e e o CTA que quebra para a
+     linha de baixo, que e o comportamento certo num cabecalho estreito. */
+  .cabecalho__logo { flex: none; }
+  /* 30px em vez de 26: ao lado de controles de 36px, o logo em 26 parecia
+     rebaixado. Continua cabendo com folga depois que o CTA passou a quebrar
+     para a linha de baixo. */
+  .cabecalho__logo img { height: 30px; }
+  .cabecalho__interno > .nav-hamburguer { margin-left: auto; }
   .nav {
     display: none;
     order: 3;
