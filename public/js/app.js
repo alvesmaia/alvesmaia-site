@@ -216,7 +216,6 @@
   if (!TOTAL_FLUXOS) return;
 
   const semMovimento = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const botaoPausa = document.getElementById("fluxos-pausa");
 
   let fluxo = 0;
   let etapa = 0;
@@ -263,31 +262,26 @@
     agendar();
   }
 
+  /**
+   * A seta assume o controle: escolher um fluxo à mão encerra a rotação
+   * automática, e ela não volta.
+   *
+   * Esse é o mecanismo que atende a WCAG 2.2.2 (nível A) desde que o botão
+   * dedicado de pausa saiu. É mais fraco que o botão — não se anuncia como
+   * "pausar" —, mas continua sendo um controle de teclado que para o
+   * movimento, e é o único que sobrou.
+   */
   Array.prototype.forEach.call(
     cartao.querySelectorAll("[data-passo-fluxo]"),
     function (botao) {
       botao.addEventListener("click", function () {
+        pausado = true;
+        // A animação é CSS; o atributo é o que o CSS lê para congelá-la.
+        cartao.dataset.pausado = "true";
         irPara(fluxo + Number(botao.dataset.passoFluxo));
       });
     },
   );
-
-  // As setas avançam e reiniciam o timer — nenhuma delas para o movimento.
-  // WCAG 2.2.2, nível A, exige uma forma de pausar o que se move sozinho.
-  if (botaoPausa) {
-    botaoPausa.addEventListener("click", function () {
-      pausado = !pausado;
-      botaoPausa.setAttribute("aria-pressed", String(pausado));
-      botaoPausa.setAttribute(
-        "aria-label",
-        pausado ? "Retomar a rotação dos fluxos" : "Pausar a rotação dos fluxos",
-      );
-      // A animação é CSS; o atributo é o que o CSS lê para congelá-la.
-      cartao.dataset.pausado = String(pausado);
-      if (pausado) clearTimeout(timer);
-      else agendar();
-    });
-  }
 
   // Fora da viewport o loop não tem público: pausa e devolve a CPU.
   if ("IntersectionObserver" in window) {

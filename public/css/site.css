@@ -709,11 +709,6 @@ img[data-logo="escuro"] { display: none; }
 
 /* Botão de pausa do carrossel — exigência de WCAG 2.2.2, nível A: as setas
    avançam e reiniciam o timer; nenhuma delas para o movimento. */
-#fluxos-pausa [data-icone="retomar"] { display: none; }
-#fluxos-pausa[aria-pressed="true"] [data-icone="pausar"] { display: none; }
-#fluxos-pausa[aria-pressed="true"] [data-icone="retomar"] { display: block; }
-#fluxos-pausa[aria-pressed="true"] { color: var(--ink); border-color: var(--ink); }
-
 /* Congelar as animações CSS junto com o timer. O IntersectionObserver
    parava o loop JS, mas `girar`, `fluir` e `rodar` continuavam rodando fora
    da tela — o comentário sobre devolver CPU só valia para metade do
