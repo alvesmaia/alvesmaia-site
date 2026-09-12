@@ -784,28 +784,71 @@ img[data-logo="escuro"] { display: none; }
    quando o envio acontece sem recarregar a página. */
 .aviso--visivel { display: block; }
 
-/* ---------- Botao flutuante (so no celular) ---------- */
+/* ---------- Botão flutuante com mascote ---------- */
 .flutuante { display: none; }
 
 @media (max-width: 860px) {
   .flutuante {
     display: flex;
+    align-items: center;
+    gap: 10px;
     position: fixed;
-    left: 16px;
+    /* Ancorado à direita, não esticado: é um botão, não uma barra. */
     right: 16px;
     /* env() protege a barra de gestos do iPhone; o fallback cobre o resto. */
     bottom: calc(16px + env(safe-area-inset-bottom, 0px));
     z-index: 60;
-    justify-content: center;
-    box-shadow: 0 10px 28px rgba(16, 42, 67, 0.30);
+    text-decoration: none;
     transition: opacity 0.22s ease, transform 0.22s ease;
   }
 
-  /* Sem isto o botao cobre o fim do rodape, que ninguem consegue rolar
-     alem do fundo da pagina. */
-  body { padding-bottom: 84px; }
+  .flutuante__balao {
+    background: var(--card);
+    color: var(--ink);
+    border: 1px solid var(--rule-forte);
+    border-radius: 100px;
+    padding: 9px 15px;
+    font-size: 13.5px;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+    box-shadow: var(--shadow);
+    /* O bico do balão, apontando para o círculo. Dois triângulos: o de
+       baixo faz a borda, o de cima tampa com a cor do fundo. */
+    position: relative;
+  }
+  .flutuante__balao::before,
+  .flutuante__balao::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    border: 7px solid transparent;
+    border-left-color: var(--rule-forte);
+    transform: translateY(-50%);
+  }
+  .flutuante__balao::after {
+    border-left-color: var(--card);
+    margin-left: -1.5px;
+  }
 
-  /* Chegando no formulario, o botao perde a funcao e vira estorvo. */
+  .flutuante__circulo {
+    display: grid;
+    place-items: center;
+    width: 58px;
+    height: 58px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--cta);
+    box-shadow: 0 10px 26px rgba(16, 42, 67, 0.32);
+  }
+  .flutuante__circulo img { display: block; }
+
+  .flutuante:active .flutuante__circulo { transform: scale(0.95); }
+
+  /* Sem isto o botão cobre o fim do rodapé. */
+  body { padding-bottom: 92px; }
+
   .flutuante[data-oculto="sim"] {
     opacity: 0;
     transform: translateY(12px);
@@ -815,4 +858,9 @@ img[data-logo="escuro"] { display: none; }
 
 @media (max-width: 860px) and (prefers-reduced-motion: reduce) {
   .flutuante { transition: none; }
+}
+
+/* Telas muito estreitas: o balão come a largura toda; fica só o círculo. */
+@media (max-width: 380px) {
+  .flutuante__balao { display: none; }
 }

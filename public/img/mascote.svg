@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" role="img" aria-label="Mascote da Alvesmaia">
+  <title>Mascote da Alvesmaia</title>
+
+  <!--
+    Construído com as duas primitivas do símbolo da marca: o pico de dois
+    traços e o ponto. A crista é o "A" do logo reduzido; os olhos são o
+    ponto, duplicado. Nada aqui é forma nova — é o mesmo vocabulário.
+
+    Desenhado em traço branco para viver dentro do botão índigo. Traço, e
+    não preenchimento, porque em 28px um desenho sólido vira mancha.
+  -->
+
+  <g fill="none" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Crista: o pico do símbolo. O traço menor à direita repete a
+         proporção do segundo traço do logo. -->
+    <path d="M 25 17 L 36 4 L 45 17" />
+    <path d="M 47 12 L 52 17" />
+
+    <!-- Haste até a cabeça -->
+    <path d="M 36 17 L 36 23" />
+
+    <!-- Cabeça: quadrado arredondado, mesmo raio generoso dos cartões -->
+    <rect x="13" y="23" width="46" height="37" rx="13" />
+
+    <!-- Boca: arco curto e simétrico -->
+    <path d="M 30 47 Q 36 51 42 47" />
+  </g>
+
+  <!-- Olhos: o ponto da marca, duplicado. Preenchidos para serem o único
+       peso sólido do desenho — é o que dá foco ao rosto. -->
+  <circle cx="27" cy="38" r="4" fill="#FFFFFF" />
+  <circle cx="45" cy="38" r="4" fill="#FFFFFF" />
+</svg>

@@ -433,7 +433,12 @@
      cabecalho usa backdrop-filter, que cria bloco de contencao e faria um
      filho position:fixed se ancorar nele em vez de na tela. O do cabecalho
      continua existindo para o desktop; so um dos dois aparece por vez. -->
-<a class="botao botao--primario flutuante" href="#contato" data-flutuante>Falar com um especialista</a>
+<a class="flutuante" href="#contato" aria-label="Falar com um especialista" data-flutuante>
+  <span class="flutuante__balao">Falar com um especialista</span>
+  <span class="flutuante__circulo">
+    <img src="/img/mascote.svg" alt="" width="34" height="34">
+  </span>
+</a>
 
 <script src="/js/app.js" defer></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
