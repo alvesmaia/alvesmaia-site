@@ -807,7 +807,14 @@ img[data-logo="escuro"] { display: none; }
   .flutuante__balao {
     background: var(--card);
     color: var(--ink);
-    border: 1px solid var(--rule-forte);
+    /* --rule, nao --rule-forte: aquele token existe para borda de CONTROLE,
+       que precisa de 3:1. Isto e superficie flutuante — ja se separa do
+       fundo pela sombra, e com a borda escura destoava de todos os cartoes
+       da pagina, que usam --rule. */
+    --balao-fundo: var(--card);
+    --balao-linha: var(--rule);
+    background: var(--balao-fundo);
+    border: 1px solid var(--balao-linha);
     border-radius: 100px;
     padding: 9px 15px;
     font-size: 13.5px;
@@ -827,13 +834,19 @@ img[data-logo="escuro"] { display: none; }
     /* Alinhado ao centro do círculo, que tem 58px e fica encostado à
        direita: 29px da borda. */
     right: 29px;
-    border: 7px solid transparent;
-    border-top-color: var(--rule-forte);
     transform: translateX(50%);
   }
+  /* O de fora e 1px maior e faz a linha; o de dentro tampa com a cor do
+     balao. A diferenca de tamanho e o que desenha o contorno da ponta —
+     mais estavel que sobrepor dois triangulos iguais com recuo. */
+  .flutuante__balao::before {
+    border: 8px solid transparent;
+    border-top-color: var(--balao-linha);
+  }
   .flutuante__balao::after {
-    border-top-color: var(--card);
-    margin-top: -1.5px;
+    border: 7px solid transparent;
+    border-top-color: var(--balao-fundo);
+    margin-top: -1px;
   }
 
   .flutuante__circulo {
@@ -863,6 +876,16 @@ img[data-logo="escuro"] { display: none; }
 
 @media (max-width: 860px) and (prefers-reduced-motion: reduce) {
   .flutuante { transition: none; }
+}
+
+/* No tema escuro, sombra escura sobre fundo escuro nao separa nada — a
+   elevacao tem que vir da superficie. Com --card o balao rendia 1.08:1
+   contra o fundo da pagina e deixava de ler como forma. */
+@media (max-width: 860px) {
+  [data-tema="escuro"] .flutuante__balao {
+    --balao-fundo: #2C2F35;
+    --balao-linha: #454A52;
+  }
 }
 
 /* Empilhado, o balão não disputa mais a largura com o círculo — por isso
