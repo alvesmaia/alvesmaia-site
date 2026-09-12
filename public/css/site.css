@@ -662,7 +662,11 @@ img[data-logo="escuro"] { display: none; }
   .nav {
     display: none;
     order: 3;
-    width: 100%;
+    /* `flex: 0 0 100%`, nao `width: 100%`: a regra base define `flex: 1`,
+       cujo flex-basis de 0 vence a largura no calculo do flex. O menu
+       ficava com a largura do conteudo e o botao de tema subia para a
+       mesma linha, flutuando ao lado. */
+    flex: 0 0 100%;
     flex-direction: column;
     gap: 0;
     border-top: 1px solid var(--rule);
@@ -670,8 +674,14 @@ img[data-logo="escuro"] { display: none; }
   }
   .nav a { padding: 10px 0; }
   .nav-toggle:checked ~ .nav { display: flex; }
-  .tema-btn { order: 4; }
-  .botao--cabecalho { order: 5; }
+  /* Barra fechada no celular: logo e hamburguer, nada mais.
+     O CTA sai porque a mesma pagina tem outros cinco caminhos ate o
+     contato, o primeiro deles logo abaixo, no hero. O botao de tema entra
+     no menu: e uma preferencia, nao uma acao — e o tema ja segue o do
+     sistema quando ninguem escolhe. */
+  .botao--cabecalho { display: none; }
+  .tema-btn { display: none; order: 4; }
+  .nav-toggle:checked ~ .tema-btn { display: grid; margin-right: auto; }
 }
 
 @media (min-width: 861px) {
