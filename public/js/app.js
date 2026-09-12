@@ -176,6 +176,38 @@
     });
   }
 
+  /* ---------- Botão flutuante ---------- */
+  // Ele existe para levar ao formulário. Uma vez que o formulário está na
+  // tela, deixa de ter função e passa a cobrir justamente o que a pessoa
+  // veio ver — inclusive o próprio botão de enviar.
+  const flutuante = document.querySelector("[data-flutuante]");
+  const secaoContato = document.getElementById("contato");
+  const acoesDoHero = document.querySelector(".hero__acoes");
+
+  if (flutuante && "IntersectionObserver" in window) {
+    // Dois motivos para sumir, e ambos são o mesmo motivo: já existe na
+    // tela um caminho para o contato. No topo são os botões do hero — sem
+    // isto o flutuante vira um terceiro botão empilhado logo abaixo deles.
+    // No fim é o próprio formulário, que ele cobriria.
+    const concorrentes = [acoesDoHero, secaoContato].filter(Boolean);
+    const naTela = new Set();
+
+    const observador = new IntersectionObserver(
+      function (entradas) {
+        for (const e of entradas) {
+          if (e.isIntersecting) naTela.add(e.target);
+          else naTela.delete(e.target);
+        }
+        flutuante.dataset.oculto = naTela.size > 0 ? "sim" : "nao";
+      },
+      { threshold: 0.12 },
+    );
+    for (const alvo of concorrentes) observador.observe(alvo);
+
+    // Nasce escondido: a página abre no hero, onde ele não deve aparecer.
+    flutuante.dataset.oculto = "sim";
+  }
+
   /* ---------- Cartão de fluxos ---------- */
   const cartao = document.querySelector(".fluxos");
   if (!cartao) return;

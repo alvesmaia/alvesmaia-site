@@ -769,3 +769,36 @@ img[data-logo="escuro"] { display: none; }
 /* O aviso aparece por :target no caminho sem JavaScript, e por esta classe
    quando o envio acontece sem recarregar a página. */
 .aviso--visivel { display: block; }
+
+/* ---------- Botao flutuante (so no celular) ---------- */
+.flutuante { display: none; }
+
+@media (max-width: 860px) {
+  .flutuante {
+    display: flex;
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    /* env() protege a barra de gestos do iPhone; o fallback cobre o resto. */
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    z-index: 60;
+    justify-content: center;
+    box-shadow: 0 10px 28px rgba(16, 42, 67, 0.30);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+  }
+
+  /* Sem isto o botao cobre o fim do rodape, que ninguem consegue rolar
+     alem do fundo da pagina. */
+  body { padding-bottom: 84px; }
+
+  /* Chegando no formulario, o botao perde a funcao e vira estorvo. */
+  .flutuante[data-oculto="sim"] {
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+  }
+}
+
+@media (max-width: 860px) and (prefers-reduced-motion: reduce) {
+  .flutuante { transition: none; }
+}
