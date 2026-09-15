@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Alvesmaia - Soluções sob medida para a sua empresa</title>
 <meta name="description" content="Automação de processos, integrações entre sistemas e Power Platform para tirar o trabalho repetitivo das mãos das pessoas.">
+<link rel="alternate" hreflang="pt-BR" href="https://alvesmaia.com/">
+<link rel="alternate" hreflang="en" href="https://alvesmaia.com/en/">
+<link rel="alternate" hreflang="x-default" href="https://alvesmaia.com/">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,6 +49,39 @@
     });
   })();
 </script>
+<script>
+  // O portal manda `?lang=pt|en` na assinatura do rodapé. Aqui isso vira a
+  // página correspondente — antes da primeira pintura, para ninguém ver a
+  // versão errada piscar. A escolha fica guardada: quem já leu em inglês uma
+  // vez não deveria ter de escolher de novo.
+  (function () {
+    try {
+      var q = new URLSearchParams(location.search).get("lang");
+      if (q) localStorage.setItem("alvesmaia-idioma", q.slice(0, 2).toLowerCase());
+      var pref = localStorage.getItem("alvesmaia-idioma");
+      if (!pref) return;
+      var aqui = document.documentElement.lang.slice(0, 2).toLowerCase();
+      if (pref === aqui) return;
+      // Só troca quando a preferência é explícita E diferente desta página.
+      var destino = pref === "en" ? "/en/" : "/";
+      if (location.pathname !== destino) location.replace(destino + location.hash);
+    } catch (e) {}
+  })();
+
+  // O clique no seletor grava a escolha ANTES de sair da página.
+  //
+  // Sem isto o seletor parece quebrado para quem já chegou com `?lang=` alguma
+  // vez: a preferência antiga continuaria valendo, e o script acima devolveria
+  // a pessoa para o idioma que ela acabou de recusar. Escrever no localStorage
+  // é síncrono, então o registro acontece antes de a navegação começar.
+  addEventListener("click", function (e) {
+    var alvo = e.target.closest && e.target.closest("[data-idioma]");
+    if (!alvo) return;
+    try {
+      localStorage.setItem("alvesmaia-idioma", alvo.dataset.idioma);
+    } catch (err) {}
+  });
+</script>
 </head>
 <body>
 
@@ -66,6 +102,10 @@
       <a href="#metodo">Metodologia</a>
       <a href="#sobre">Sobre</a>
     </nav>
+    <div class="idioma" role="group" aria-label="Idioma">
+      <a class="idioma__opcao idioma__opcao--ativa" href="/" hreflang="pt-BR" aria-current="true" data-idioma="pt">PT</a>
+      <a class="idioma__opcao" href="/en/" hreflang="en" data-idioma="en">EN</a>
+    </div>
     <button class="tema-btn" type="button" id="tema" aria-label="Alternar tema claro e escuro">
       <span data-icone="claro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></span>
       <span data-icone="escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg></span>
