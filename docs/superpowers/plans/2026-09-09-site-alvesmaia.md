@@ -109,7 +109,7 @@ A lógica de validação e seus 9 testes são aproveitados integralmente. O que 
 - [ ] **Passo 1: Mover a validação e apagar o que foi descartado**
 
 ```bash
-cd C:/PROJETOS/alvesmaia-site
+cd C:/PROJETOS/PROD/Alvesmaia/alvesmaia-site
 mkdir -p api/src/functions
 git mv src/validacao.ts api/src/validacao.ts
 git rm -r --quiet functions tests/contato.test.ts tsconfig.json
@@ -312,7 +312,7 @@ O `local.settings.json` guarda segredos de desenvolvimento local. Nunca versiona
 - [ ] **Passo 9: Instalar e verificar**
 
 ```bash
-cd C:/PROJETOS/alvesmaia-site
+cd C:/PROJETOS/PROD/Alvesmaia/alvesmaia-site
 npm install
 cd api && npm install && cd ..
 npm run verificar
