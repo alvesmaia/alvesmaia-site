@@ -77,8 +77,20 @@ describe("as duas versões do site", () => {
   });
 
   it("trazem o seletor de idioma, com o idioma corrente marcado", () => {
-    expect(pt).toContain('idioma__opcao--ativa" href="/" hreflang="pt-BR"');
-    expect(en).toContain('idioma__opcao--ativa" href="/en/" hreflang="en"');
+    expect(pt).toContain('idioma__item--ativo" href="/" hreflang="pt-BR"');
+    expect(en).toContain('idioma__item--ativo" href="/en/" hreflang="en"');
+  });
+
+  it("oferecem os dois idiomas pelo nome, em cada página", () => {
+    // Cada idioma escrito na PRÓPRIA língua: quem procura o seletor não lê o
+    // idioma corrente, procura o nome do seu.
+    for (const [nome, html] of [
+      ["pt", pt],
+      ["en", en],
+    ] as const) {
+      expect(html, nome).toContain(">Português<");
+      expect(html, nome).toContain(">English<");
+    }
   });
 
   it("não deixam texto em português na versão em inglês", () => {
@@ -86,7 +98,12 @@ describe("as duas versões do site", () => {
     // de idioma — é detector de uma classe de erro, e o custo de um falso
     // negativo ("Power Platform") é uma string, não um teste em que ninguém
     // confia.
-    const semBloco = en.replace(/<(svg|script|style)\b[\s\S]*?<\/\1>/g, "");
+    // O menu de idiomas fica de fora: "Português" está ali de propósito,
+    // escrito na própria língua. Quem procura o seletor não lê o idioma da
+    // página — procura o nome do SEU idioma, e não o acharia em "Portuguese".
+    const semBloco = en
+      .replace(/<(svg|script|style)\b[\s\S]*?<\/\1>/g, "")
+      .replace(/<div class="idioma__menu"[\s\S]*?<\/div>/, "");
     const restos = [...semBloco.matchAll(/>([^<>]+)</g)]
       .map((m) => m[1].trim())
       .filter((t) => t && /[À-ſ]/.test(t));

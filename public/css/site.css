@@ -76,46 +76,99 @@ h3 { font-size: 18px; font-weight: 800; letter-spacing: -0.01em; color: var(--in
 }
 .cabecalho__logo img { height: 26px; width: auto; }
 
-/* Seletor de idioma — par PT/EN no cabeçalho, ao lado do botão de tema.
+/* Seletor de idioma — gatilho discreto (globo + código) e painel ao passar.
 
-   São ÂNCORAS, não botões: cada idioma é uma página própria (`/` e `/en/`), e
-   o visitante precisa poder abrir a outra em nova aba, copiar o endereço e
-   mandar para alguém. Um botão movido a JavaScript quebraria as três coisas —
-   e esconderia do buscador que a outra versão existe.
+   Sem caixa e sem os dois idiomas à mostra: o visitante já está lendo no
+   idioma dele, então o controle não precisa competir por atenção. Ele só
+   precisa ser encontrável por quem está no idioma errado.
 
-   A altura acompanha a do `.tema-btn` (36px), para os dois assentarem na mesma
-   linha do cabeçalho. */
+   ABRE EM TRÊS SITUAÇÕES, e não só no hover: `:hover` para o mouse,
+   `:focus-within` para o teclado, e `[data-aberto]` para o toque, onde hover
+   não existe. Um menu só de hover é invisível no celular e intransponível por
+   teclado — e este é o controle de quem não consegue ler a página.
+
+   As opções são ÂNCORAS com o nome do idioma por extenso. "Português" e
+   "English" cada um escrito na própria língua: quem procura o seletor não lê
+   o idioma corrente, procura o nome do seu. */
 .idioma {
+  position: relative;
   display: inline-flex;
-  align-items: stretch;
-  height: 36px;
   flex: none;
-  border: 1px solid var(--rule-forte);
-  border-radius: 6px;
-  overflow: hidden;
 }
 
-.idioma__opcao {
-  display: grid;
-  place-items: center;
-  padding: 0 9px;
+.idioma__gatilho {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 36px;
+  padding: 0 6px;
+  border: 0;
+  background: transparent;
   color: var(--muted);
+  font: inherit;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: .04em;
-  text-decoration: none;
+  cursor: pointer;
 }
 
-.idioma__opcao + .idioma__opcao { border-left: 1px solid var(--rule-forte); }
+.idioma__gatilho svg { width: 16px; height: 16px; }
 
-.idioma__opcao:hover { color: var(--ink); }
+.idioma:hover .idioma__gatilho,
+.idioma:focus-within .idioma__gatilho { color: var(--ink); }
 
-/* O idioma corrente fica MARCADO, não escondido: escondê-lo deixaria um botão
-   solto, sem dizer de onde para onde se está indo. */
-.idioma__opcao--ativa {
-  background: var(--rule);
+.idioma__gatilho:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+
+/* O painel encosta no gatilho por um `padding-top` no próprio menu, e não por
+   `margin`: um vão real entre os dois faz o menu fechar quando o cursor o
+   atravessa, e o clique se torna uma questão de pontaria. */
+.idioma__menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 60;
+  min-width: 150px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  border: 1px solid var(--rule-forte);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgb(0 0 0 / .18);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity .12s ease, transform .12s ease, visibility .12s;
+}
+
+.idioma:hover .idioma__menu,
+.idioma:focus-within .idioma__menu,
+.idioma[data-aberto] .idioma__menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.idioma__item {
+  padding: 7px 10px;
+  border-radius: 5px;
   color: var(--ink);
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.idioma__item:hover { background: var(--rule); }
+
+/* O idioma corrente fica marcado e continua clicável: escondê-lo deixaria um
+   menu de um item só, sem dizer de onde para onde se está indo. */
+.idioma__item--ativo {
+  color: var(--muted);
   cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .idioma__menu { transition: none; }
 }
 
 /* O checkbox comanda o menu no mobile e nunca é visto em largura nenhuma.

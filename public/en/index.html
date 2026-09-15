@@ -68,6 +68,43 @@
     } catch (e) {}
   })();
 
+  // No toque não existe hover: o gatilho abre e fecha por clique.
+  //
+  // `:hover` e `:focus-within` cobrem mouse e teclado pelo CSS, sem script.
+  // Falta o dedo — e num celular o seletor de idioma é justamente o controle
+  // de quem abriu a página na língua errada.
+  addEventListener("click", function (e) {
+    var alvo = e.target.closest && e.target.closest(".idioma__gatilho");
+    var abertos = document.querySelectorAll(".idioma[data-aberto]");
+    if (!alvo) {
+      // Clique fora fecha.
+      abertos.forEach(function (d) {
+        d.removeAttribute("data-aberto");
+        var b = d.querySelector(".idioma__gatilho");
+        if (b) b.setAttribute("aria-expanded", "false");
+      });
+      return;
+    }
+    var caixa = alvo.parentElement;
+    var estava = caixa.hasAttribute("data-aberto");
+    abertos.forEach(function (d) { d.removeAttribute("data-aberto"); });
+    if (estava) {
+      caixa.removeAttribute("data-aberto");
+    } else {
+      caixa.setAttribute("data-aberto", "");
+    }
+    alvo.setAttribute("aria-expanded", String(!estava));
+  });
+
+  addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    document.querySelectorAll(".idioma[data-aberto]").forEach(function (d) {
+      d.removeAttribute("data-aberto");
+      var b = d.querySelector(".idioma__gatilho");
+      if (b) { b.setAttribute("aria-expanded", "false"); b.focus(); }
+    });
+  });
+
   // O clique no seletor grava a escolha ANTES de sair da página.
   //
   // Sem isto o seletor parece quebrado para quem já chegou com `?lang=` alguma
@@ -102,9 +139,15 @@
       <a href="#metodo">How we work</a>
       <a href="#sobre">About</a>
     </nav>
-    <div class="idioma" role="group" aria-label="Language">
-      <a class="idioma__opcao" href="/" hreflang="pt-BR" data-idioma="pt">PT</a>
-      <a class="idioma__opcao idioma__opcao--ativa" href="/en/" hreflang="en" aria-current="true" data-idioma="en">EN</a>
+    <div class="idioma" data-idioma-menu>
+      <button class="idioma__gatilho" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Language: English">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18Z"></path></svg>
+        <span class="idioma__codigo">EN</span>
+      </button>
+      <div class="idioma__menu" role="menu" aria-label="Languages">
+        <a class="idioma__item" href="/" hreflang="pt-BR" data-idioma="pt" role="menuitem">Português</a>
+        <a class="idioma__item idioma__item--ativo" href="/en/" hreflang="en" data-idioma="en" role="menuitem" aria-current="true">English</a>
+      </div>
     </div>
     <button class="tema-btn" type="button" id="tema" aria-label="Toggle light and dark theme">
       <span data-icone="claro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></span>
