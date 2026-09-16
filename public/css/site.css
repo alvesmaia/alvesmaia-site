@@ -229,6 +229,9 @@ img[data-logo="escuro"] { display: none; }
 .botao--secundario { border-color: var(--rule-forte); color: var(--text); }
 .botao--secundario:hover { border-color: var(--muted); color: var(--ink); }
 .botao--cabecalho { font-size: 14px; padding: 9px 16px; }
+/* Entrar e o CTA nao competem: quem ja e cliente procura a porta, quem
+   nao e procura o contato. O secundario diz isso sem precisar de rotulo. */
+.botao--entrar { margin-right: 8px; }
 .botao--grande { font-size: 15.5px; font-weight: 700; padding: 14px 24px; border-radius: 7px; }
 .botao--bloco { display: block; width: 100%; padding: 12px; border-radius: 7px; margin-top: 24px; font-size: 15px; }
 .botao--bloco.botao--primario { padding: 13px; }
@@ -749,6 +752,7 @@ img[data-logo="escuro"] { display: none; }
      no menu: e uma preferencia, nao uma acao — e o tema ja segue o do
      sistema quando ninguem escolhe. */
   .botao--cabecalho { display: none; }
+  .botao--entrar { display: inline-flex; margin-right: 0; margin-left: auto; }
   .tema-btn { display: none; order: 4; }
   .nav-toggle:checked ~ .tema-btn { display: grid; margin-right: auto; }
 }
