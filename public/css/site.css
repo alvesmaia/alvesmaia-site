@@ -1225,3 +1225,12 @@ img[data-logo="escuro"] { display: none; }
 /* Empilhado, o balão não disputa mais a largura com o círculo — por isso
    ele fica visível também nas telas estreitas, ao contrário do arranjo
    lado a lado. */
+
+/* ============================================================
+   Revelação ao rolar — itens aparecem conforme entram na viewport
+   ============================================================ */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.is-visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}

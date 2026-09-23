@@ -2,15 +2,41 @@
    Alvesmaia — comportamento
 
    O que o CSS não resolve sozinho: persistir a escolha de tema, avançar a
-   máquina de estados do cartão de fluxos, fechar o menu ao navegar e
-   anunciar o resultado do formulário. Todo o resto — animação, revelação,
-   transição — é CSS reagindo a data-tema, data-ativo e data-etapa. Este
-   arquivo só troca números e atributos.
+   máquina de estados do cartão de fluxos, fechar o menu ao navegar,
+   marcar quem entrou na viewport como revelado e anunciar o resultado do
+   formulário. Todo o resto — animação, transição — é CSS reagindo a
+   data-tema, data-ativo, data-etapa e is-visible. Este arquivo só troca
+   números e atributos.
    ============================================================ */
 (function () {
   "use strict";
 
   const raiz = document.documentElement;
+
+  /* ---------- Revelação ao rolar ---------- */
+  //
+  // Cada .reveal aparece só quando entra na viewport — não tudo de uma vez
+  // no load. unobserve depois de revelar: é ida só, não deveria sumir de
+  // novo ao rolar pra cima (isso lê como bug, não como efeito).
+  const itensRevelaveis = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    const observadorRevelacao = new IntersectionObserver(
+      function (entradas, observadorAtual) {
+        entradas.forEach(function (entrada) {
+          if (entrada.isIntersecting) {
+            entrada.target.classList.add("is-visible");
+            observadorAtual.unobserve(entrada.target);
+          }
+        });
+      },
+      { threshold: 0.12 },
+    );
+    itensRevelaveis.forEach(function (item) { observadorRevelacao.observe(item); });
+  } else {
+    // Sem suporte a IntersectionObserver: mostra tudo de uma vez em vez de
+    // deixar o conteúdo invisível pra sempre (o CSS parte de opacity: 0).
+    itensRevelaveis.forEach(function (item) { item.classList.add("is-visible"); });
+  }
 
   /* ---------- Tema ---------- */
   const CHAVE = "alvesmaia-tema";
