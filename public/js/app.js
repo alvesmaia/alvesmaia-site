@@ -307,4 +307,75 @@
 
   pintar();
   agendar();
+
+  /* ---------- Painel do herói ---------- */
+  const painel = document.querySelector(".painel");
+  if (!painel) return;
+
+  // app.js é compartilhado entre / e /en/ (mesmo <script src>) — o texto
+  // trocado por clique não pode vir hardcoded num idioma só, ou a página em
+  // inglês mostraria português ao trocar de vista.
+  const idioma = raiz.lang.slice(0, 2).toLowerCase() === "en" ? "en" : "pt";
+  const VISTAS = {
+    pt: {
+      geral: ["Visão geral", "PROCESSOS CONCLUÍDOS ESTE MÊS", "1.248", "Em processamento"],
+      processos: ["Processos", "PROCESSOS CONCLUÍDOS HOJE", "84", "Últimos processados"],
+      integracoes: ["Integrações", "SINCRONIZAÇÕES HOJE", "312", "Últimas execuções"],
+      clientes: ["Clientes", "CLIENTES ATIVOS", "6", "Adicionados recentemente"],
+      faturamento: ["Faturamento", "FATURAMENTO NO MÊS", "R$ 84.200", "Últimas cobranças"],
+    },
+    en: {
+      geral: ["Overview", "PROCESSES COMPLETED THIS MONTH", "1,248", "In progress"],
+      processos: ["Processes", "PROCESSES COMPLETED TODAY", "84", "Latest completed"],
+      integracoes: ["Integrations", "SYNCS TODAY", "312", "Latest runs"],
+      clientes: ["Clients", "ACTIVE CLIENTS", "6", "Recently added"],
+      faturamento: ["Revenue", "REVENUE THIS MONTH", "$16,400", "Latest charges"],
+    },
+  }[idioma];
+  const concluidoRotulo = idioma === "en" ? "Done" : "Concluído";
+
+  // Tema do PAINEL é independente do tema do site: começa sempre claro (é a
+  // "captura de tela" de um produto real, não deveria escurecer só porque o
+  // visitante prefere o site escuro) — o botão aqui é um toggle à parte.
+  const botaoTemaPainel = painel.querySelector(".painel__tema");
+  if (botaoTemaPainel) {
+    botaoTemaPainel.addEventListener("click", function () {
+      painel.dataset.temaPainel = painel.dataset.temaPainel === "escuro" ? "claro" : "escuro";
+    });
+  }
+
+  const titulo = painel.querySelector(".painel__titulo");
+  const resumoRotulo = painel.querySelector(".painel__resumo-rotulo");
+  const resumoValor = painel.querySelector(".painel__resumo-valor");
+  const cartaoTitulo = painel.querySelector(".painel__cartao-titulo");
+
+  Array.prototype.forEach.call(painel.querySelectorAll(".painel__item"), function (item) {
+    item.addEventListener("click", function () {
+      const vista = VISTAS[item.dataset.vista];
+      if (!vista) return;
+      Array.prototype.forEach.call(painel.querySelectorAll(".painel__item"), function (b) {
+        b.classList.remove("is-ativo");
+      });
+      item.classList.add("is-ativo");
+      titulo.textContent = vista[0];
+      resumoRotulo.textContent = vista[1];
+      resumoValor.textContent = vista[2];
+      cartaoTitulo.textContent = vista[3];
+    });
+  });
+
+  Array.prototype.forEach.call(painel.querySelectorAll(".painel__tarefa"), function (tarefa) {
+    tarefa.addEventListener("click", function () {
+      const check = tarefa.querySelector(".painel__check");
+      const concluida = tarefa.classList.toggle("is-concluida");
+      check.textContent = concluida ? "✓" : "";
+      const rotulo = tarefa.querySelector("small");
+      if (concluida) {
+        rotulo.dataset.original = rotulo.dataset.original || rotulo.textContent;
+        rotulo.textContent = concluidoRotulo;
+      } else if (rotulo.dataset.original) {
+        rotulo.textContent = rotulo.dataset.original;
+      }
+    });
+  });
 })();

@@ -171,6 +171,75 @@
         </div>
       </div>
 
+      <div class="painel" aria-label="Interactive preview of the automation-portal">
+        <div class="painel__janela">
+          <div class="painel__barra">
+            <span></span><span></span><span></span>
+            <small>portal / workspace</small>
+            <button class="painel__tema" type="button" aria-label="Toggle panel theme">
+              <span data-icone="claro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></span>
+              <span data-icone="escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg></span>
+            </button>
+          </div>
+          <div class="painel__corpo">
+            <aside class="painel__lateral">
+              <div class="painel__marca">
+                <img data-logo-painel="claro" src="/img/logo-claro.svg" alt="Alvesmaia" width="151" height="26">
+                <img data-logo-painel="escuro" src="/img/logo-escuro.svg" alt="Alvesmaia" width="151" height="26">
+              </div>
+              <div class="painel__grupo">
+                <small>OPERATIONS</small>
+                <button class="painel__item is-ativo" type="button" data-vista="geral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"></path></svg><span>Overview</span></button>
+                <button class="painel__item" type="button" data-vista="processos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6"></path></svg><span>Processes</span><i>12</i></button>
+                <button class="painel__item" type="button" data-vista="integracoes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 17 6-10"></path><circle cx="7" cy="17" r="3"></circle><circle cx="17" cy="7" r="3"></circle></svg><span>Integrations</span></button>
+              </div>
+              <div class="painel__grupo">
+                <small>MANAGEMENT</small>
+                <button class="painel__item" type="button" data-vista="clientes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="20" x="4" y="2" rx="1"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"></path></svg><span>Clients</span></button>
+                <button class="painel__item" type="button" data-vista="faturamento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg><span>Revenue</span></button>
+              </div>
+              <div class="painel__conta"><span class="painel__avatar">MC</span><span>Marina Costa</span></div>
+            </aside>
+            <div class="painel__principal">
+              <div class="painel__topo">
+                <small>OPERATIONS PANEL</small>
+                <h2 class="painel__titulo">Overview</h2>
+              </div>
+              <div class="painel__resumo">
+                <div>
+                  <small class="painel__resumo-rotulo">PROCESSES COMPLETED THIS MONTH</small>
+                  <strong class="painel__resumo-valor">1,248</strong>
+                  <p><b>↑ 18%</b> vs. last month</p>
+                </div>
+                <div class="painel__grafico" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              </div>
+              <div class="painel__colunas">
+                <div class="painel__cartao">
+                  <div class="painel__cartao-cabeca"><b class="painel__cartao-titulo">In progress</b><span>See all →</span></div>
+                  <button class="painel__tarefa is-concluida" type="button"><span class="painel__check">✓</span><span>Invoice reconciliation · Batch 42</span><small>Done</small></button>
+                  <button class="painel__tarefa" type="button"><span class="painel__check"></span><span>Onboarding · Ana Ribeiro</span><small>Now</small></button>
+                  <button class="painel__tarefa" type="button"><span class="painel__check"></span><span>Accounts payable · Vendor XPTO</span><small>2 min</small></button>
+                </div>
+                <div class="painel__foco">
+                  <small>AVERAGE TIME</small>
+                  <div class="painel__anel"><b>2.4</b><span>min/proc.</span></div>
+                  <p>Queue to delivery.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--fluxos" id="exemplos">
+    <div class="container">
+      <div class="secao__cabeca">
+        <span class="eyebrow">In practice</span>
+        <h2>Five routines, five automated flows</h2>
+        <p class="lead">One example per department — the logic repeats: someone used to do this by hand, every day, and now they don't.</p>
+      </div>
       <div class="fluxos" data-ativo="0" data-etapa="0" role="group" aria-roledescription="carrossel" aria-label="Examples of automated flows">
         <div class="fluxos__barra" aria-hidden="true"><i></i><i></i><i></i></div>
         <div class="fluxos__caixa">
@@ -245,6 +314,7 @@
       </div>
     </div>
   </section>
+
 
   <section class="secao" id="servicos">
     <div class="container">

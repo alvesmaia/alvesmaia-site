@@ -688,6 +688,274 @@ img[data-logo="escuro"] { display: none; }
 }
 
 /* ============================================================
+   Painel — prévia interativa do automation-portal, no herói
+   ============================================================ */
+
+/* perspective vive no pai, não em quem gira: é o que dá profundidade ao
+   rotateY/rotateX abaixo em vez de simplesmente distorcer o retângulo. */
+/* line-height 1.3, não o 1.6 do body: o painel é UI compacta, não prosa —
+   com 1.6 cada rótulo de uma linha só inflava ~50% mais alto que o
+   necessário, e foi metade do motivo do conteúdo não caber nos 350px. */
+.painel { perspective: 1000px; line-height: 1.3; }
+
+/* Paleta PRÓPRIA, fixa — o painel é a "captura de tela" de um produto real,
+   e não deve trocar de cor com o tema do SITE (fica branco tanto no hero
+   claro quanto no escuro, de propósito, para sempre destacar por contraste).
+   O botão .painel__tema é um toggle À PARTE, só deste componente — não lê
+   nem escreve data-tema do <html>. Valores copiados literalmente dos tokens
+   claro/escuro de tokens.css, não reduzidos a variável global porque aqui
+   precisam ficar fixos mesmo quando o restante do tema muda. */
+.painel {
+  --p-bg: #FFFFFF;
+  --p-bg-alt: #F6F9FC;
+  --p-rule: #D7E2EC;
+  --p-rule-2: #B9C8D6;
+  --p-rule-3: #EAF1F7;
+  --p-ink: #102A43;
+  --p-text: #0F1E2B;
+  --p-muted: #5A7189;
+  --p-faint: #4E6478;
+  --p-acento: #4F6BFF;
+  --p-chip: #EEF1FF;
+  --p-ok: #0E7A54;
+  --p-halo-ok: rgba(14, 122, 84, 0.10);
+}
+/* Cinza médio, não quase-preto: um #202020 ficava perto demais do
+   --hero escuro do SITE (que também tende a preto) — as duas superfícies
+   quase se fundiam, sobrando só a sombra pra separar uma da outra.
+   Acinzentado dá contraste contra o hero tanto claro quanto escuro. */
+.painel[data-tema-painel="escuro"] {
+  --p-bg: #35353A;
+  --p-bg-alt: #2B2B2F;
+  --p-rule: #46464C;
+  --p-rule-2: #57575E;
+  --p-rule-3: #3C3C41;
+  --p-ink: #FFFFFF;
+  --p-text: #EDEDED;
+  --p-muted: #AEAEB4;
+  --p-faint: #9F9FA6;
+  --p-acento: #7C93FF;
+  --p-chip: #2E3040;
+  --p-ok: #4FC79A;
+  --p-halo-ok: rgba(79, 199, 154, 0.16);
+}
+
+.painel__janela {
+  border: 1px solid var(--p-rule);
+  border-radius: 12px;
+  background: var(--p-bg);
+  /* Mais forte que --shadow do site: o painel precisa se destacar tanto
+     sobre o gradiente claro quanto sobre o escuro do herói, sozinho. */
+  box-shadow: 0 30px 70px rgba(8, 20, 33, 0.28), 0 0 0 1px rgba(16, 42, 67, 0.04);
+  overflow: hidden;
+  transform: rotateY(-4deg) rotateX(2deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .painel__janela { transform: none; }
+}
+.painel__barra {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px 0 14px;
+  background: var(--p-bg-alt);
+  border-bottom: 1px solid var(--p-rule);
+}
+.painel__barra > span { width: 8px; height: 8px; border-radius: 50%; background: var(--p-rule-2); }
+.painel__barra small { margin-right: auto; margin-left: 8px; font-size: 10px; letter-spacing: 0.04em; color: var(--p-faint); }
+.painel__tema {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--p-faint);
+  cursor: pointer;
+}
+.painel__tema:hover, .painel__tema:focus-visible { background: var(--p-rule-3); color: var(--p-ink); outline: none; }
+.painel__tema svg { width: 13px; height: 13px; }
+.painel__tema [data-icone="escuro"] { display: none; }
+.painel[data-tema-painel="escuro"] .painel__tema [data-icone="claro"] { display: none; }
+.painel[data-tema-painel="escuro"] .painel__tema [data-icone="escuro"] { display: block; }
+/* Altura FIXA (não min-height): as 5 vistas trocam texto/números, nunca a
+   quantidade de linhas — sem isto o painel "respirava" um pouco a cada
+   clique na barra lateral, o que lia como instável, não como produto real. */
+.painel__corpo { display: flex; height: 378px; }
+
+.painel__lateral {
+  width: 168px;
+  flex: none;
+  padding: 20px 14px 14px;
+  background: var(--p-bg-alt);
+  border-right: 1px solid var(--p-rule);
+  display: flex;
+  flex-direction: column;
+  font-size: 12.5px;
+}
+.painel__marca { display: flex; align-items: center; margin-bottom: 22px; }
+.painel__marca img { height: 18px; width: auto; display: block; }
+.painel__marca img[data-logo-painel="escuro"] { display: none; }
+.painel[data-tema-painel="escuro"] .painel__marca img[data-logo-painel="claro"] { display: none; }
+.painel[data-tema-painel="escuro"] .painel__marca img[data-logo-painel="escuro"] { display: block; }
+.painel__grupo { display: grid; gap: 4px; margin-bottom: 18px; }
+.painel__grupo > small {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--p-faint);
+  font-weight: 700;
+  margin: 2px 0 4px;
+}
+.painel__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--p-muted);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+.painel__item svg { width: 14px; height: 14px; flex: none; }
+.painel__item:hover, .painel__item:focus-visible { background: var(--p-rule-3); color: var(--p-ink); outline: none; }
+.painel__item.is-ativo { background: var(--p-bg); color: var(--p-ink); box-shadow: 0 1px 3px rgba(16, 42, 67, 0.08); }
+.painel__item i {
+  margin-left: auto;
+  font-style: normal;
+  background: var(--p-acento);
+  color: #fff;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+}
+.painel__conta {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--p-rule);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--p-muted);
+  font-weight: 600;
+}
+.painel__avatar {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--p-chip);
+  color: var(--p-acento);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.painel__principal { flex: 1; min-width: 0; padding: 16px 24px; overflow: hidden; }
+.painel__topo small { font-size: 10px; letter-spacing: 0.1em; color: var(--p-faint); font-weight: 700; }
+.painel__titulo { font-size: 19px; margin: 4px 0 16px; color: var(--p-ink); }
+.painel__resumo {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 18px;
+  border: 1px solid var(--p-rule);
+  border-radius: 8px;
+  background: var(--p-bg-alt);
+}
+.painel__resumo-rotulo { display: block; font-size: 10px; letter-spacing: 0.08em; color: var(--p-faint); font-weight: 700; }
+.painel__resumo-valor { display: block; font-size: 24px; font-weight: 900; letter-spacing: -0.03em; color: var(--p-ink); margin-top: 4px; }
+.painel__resumo p { font-size: 11px; color: var(--p-faint); margin: 6px 0 0; }
+.painel__resumo p b { color: var(--p-ok); }
+.painel__grafico { display: flex; align-items: flex-end; gap: 5px; height: 52px; }
+.painel__grafico i { display: block; width: 8px; border-radius: 2px 2px 0 0; background: var(--p-chip); height: 30%; }
+.painel__grafico i:nth-child(2) { height: 45%; }
+.painel__grafico i:nth-child(3) { height: 38%; }
+.painel__grafico i:nth-child(4) { height: 66%; }
+.painel__grafico i:nth-child(5) { height: 52%; }
+.painel__grafico i:nth-child(6) { height: 78%; }
+.painel__grafico i:nth-child(7) { height: 100%; background: var(--p-acento); }
+
+.painel__colunas { display: grid; grid-template-columns: 1.3fr 0.8fr; gap: 12px; margin-top: 8px; }
+.painel__cartao, .painel__foco {
+  border: 1px solid var(--p-rule);
+  border-radius: 8px;
+  padding: 12px 16px;
+  background: var(--p-bg);
+}
+.painel__cartao-cabeca { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
+/* white-space: nowrap, não wrap: os rótulos das vistas são propositalmente
+   curtos (ver VISTAS em app.js) — quebrar em duas linhas ao lado do link
+   "Ver tudo" parece bug, não conteúdo comprido demais para caber. */
+.painel__cartao-titulo { font-size: 12px; color: var(--p-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.painel__cartao-cabeca span { font-size: 11px; color: var(--p-acento); font-weight: 700; flex: none; white-space: nowrap; }
+.painel__tarefa {
+  display: grid;
+  grid-template-columns: 16px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 0;
+  border: 0;
+  border-top: 1px solid var(--p-rule-3);
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  color: var(--p-text);
+  text-align: left;
+  cursor: pointer;
+}
+.painel__tarefa:hover { color: var(--p-acento); }
+/* Coluna do meio é 1fr numa carta estreita: sem nowrap, um nome de
+   processo um pouco mais longo quebrava em 2 linhas e dobrava a altura
+   da linha inteira — foi metade do overflow medido (144px) que estourava
+   os 350px fixos do corpo. */
+.painel__tarefa > span:nth-child(2) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.painel__tarefa small { color: var(--p-faint); font-size: 10.5px; white-space: nowrap; }
+.painel__check {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--p-rule-2);
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+}
+.painel__tarefa.is-concluida { color: var(--p-faint); text-decoration: line-through; }
+.painel__tarefa.is-concluida .painel__check { background: var(--p-ok); border-color: var(--p-ok); color: #fff; }
+.painel__foco { background: var(--p-halo-ok); border-color: transparent; text-align: center; }
+.painel__foco > small { font-size: 10px; letter-spacing: 0.08em; color: var(--p-faint); font-weight: 700; }
+.painel__anel {
+  width: 58px;
+  height: 58px;
+  margin: 10px auto 8px;
+  border-radius: 50%;
+  border: 4px solid var(--p-ok);
+  border-right-color: var(--p-acento);
+  display: grid;
+  place-items: center;
+  line-height: 1.1;
+}
+.painel__anel b { font-size: 14px; color: var(--p-ink); }
+.painel__anel span { font-size: 8px; color: var(--p-faint); }
+.painel__foco p { font-size: 11px; color: var(--p-muted); margin: 0; }
+
+/* ============================================================
+   Seção "Na prática" — carrossel de fluxos, realocado do herói
+   ============================================================ */
+
+.secao--fluxos .fluxos { max-width: 760px; margin: 0 auto; }
+
+/* ============================================================
    Responsivo
    ============================================================ */
 
@@ -698,6 +966,18 @@ img[data-logo="escuro"] { display: none; }
   .hero { padding: 88px 0 48px; }
   .hero__grade { gap: 36px; }
   .duas-colunas, .contato-grade { gap: 32px; }
+  /* A barra lateral vira ruído numa janela que já encolheu para uma
+     coluna — o mesmo motivo do fluxos__rodape sumir no fluxo original. */
+  .painel__lateral { display: none; }
+  /* Sem a lateral e sem o cartão de foco, o conteúdo restante é mais baixo
+     que os 350px fixos do desktop — altura automática aqui, não a mesma
+     trava, ou sobraria vão vazio embaixo da lista de tarefas. */
+  .painel__corpo { height: auto; }
+  /* A largura já encolheu pra 1 coluna: a inclinação 3D só cortava
+     quina, sem espaço de sobra pra "flutuar" como no desktop. */
+  .painel__janela { transform: none; }
+  .painel__colunas { grid-template-columns: 1fr; }
+  .painel__foco { display: none; }
 }
 
 @media (max-width: 860px) {
