@@ -987,7 +987,9 @@ img[data-logo="escuro"] { display: none; }
     place-items: center;
     width: 36px;
     height: 36px;
-    border: 1px solid var(--rule);
+    /* --rule-forte, como Entrar, tema e idioma: é borda de CONTROLE (3:1).
+       Com --rule o hambúrguer destoava dos botões vizinhos no cabeçalho. */
+    border: 1px solid var(--rule-forte);
     border-radius: 6px;
     color: var(--muted);
     cursor: pointer;
@@ -1032,7 +1034,22 @@ img[data-logo="escuro"] { display: none; }
      no menu: e uma preferencia, nao uma acao — e o tema ja segue o do
      sistema quando ninguem escolhe. */
   .botao--cabecalho { display: none; }
-  .botao--entrar { display: inline-flex; margin-right: 0; margin-left: auto; }
+  /* Uma linha só: logo | Entrar · idioma · hambúrguer. Com o Entrar no fim
+     do DOM e o padding do desktop, a soma passava de 375px e ele caía para
+     uma segunda linha solta. `order` o traz para antes do idioma e o
+     hambúrguer fecha a linha; o gap menor e o padding menor fazem caber. */
+  .cabecalho__interno { gap: 10px; }
+  .botao--entrar {
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 12px;
+    font-size: 13.5px;
+    margin: 0 0 0 auto;
+    order: 1;
+  }
+  .idioma { order: 2; }
+  .cabecalho__interno > .nav-hamburguer { margin-left: 0; order: 3; }
   .tema-btn { display: none; order: 4; }
   .nav-toggle:checked ~ .tema-btn { display: grid; margin-right: auto; }
 }
@@ -1066,9 +1083,23 @@ img[data-logo="escuro"] { display: none; }
    de fluxos, cujos passos têm largura mínima própria. */
 .cf-turnstile { max-width: 100%; overflow-x: auto; }
 
+/* Celular comum (360–430px): logo | Entrar · idioma · hambúrguer precisam
+   caber em uma linha. Com logo de 30px e gaps de 10px a soma passava de
+   ~326px úteis e o hambúrguer quebrava para baixo. */
+@media (max-width: 440px) {
+  .cabecalho__interno { gap: 6px; }
+  .cabecalho__logo img { height: 24px; }
+  .botao--entrar { padding: 0 10px; margin-right: 2px; }
+  .idioma__gatilho { padding: 0 4px; }
+}
+
 @media (max-width: 380px) {
   .fluxos__caixa { margin-left: 14px; margin-right: 14px; padding: 12px; overflow-x: auto; }
   .container { padding-left: 16px; padding-right: 16px; }
+  /* 360px com "Sign in" ainda estourava: logo menor e sem o globo, que o
+     rótulo PT/EN dispensa nessa largura. */
+  .cabecalho__logo img { height: 21px; }
+  .idioma__gatilho svg { display: none; }
 }
 
 /* Região viva para leitor de tela. Fora do fluxo e sem altura: anunciar o
@@ -1233,4 +1264,12 @@ img[data-logo="escuro"] { display: none; }
 .reveal.is-visible { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* 320px (iPhone SE 1ª geração): último aperto para a linha única do
+   cabeçalho — sem isso o hambúrguer quebrava para baixo. */
+@media (max-width: 340px) {
+  .cabecalho__interno { gap: 4px; }
+  .cabecalho__logo img { height: 18px; }
+  .botao--entrar { padding: 0 8px; font-size: 13px; }
 }
