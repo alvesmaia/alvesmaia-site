@@ -232,6 +232,10 @@ img[data-logo="escuro"] { display: none; }
 /* Entrar e o CTA nao competem: quem ja e cliente procura a porta, quem
    nao e procura o contato. O secundario diz isso sem precisar de rotulo. */
 .botao--entrar { margin-right: 8px; }
+/* Borda índigo (o mesmo --cta do botão principal): a porta do cliente se
+   destaca dos controles cinza do cabeçalho sem virar um segundo CTA cheio. */
+.botao--secundario.botao--entrar { border-color: var(--cta); color: var(--ink); }
+.botao--secundario.botao--entrar:hover { border-color: var(--cta-hover); color: var(--cta); }
 .botao--grande { font-size: 15.5px; font-weight: 700; padding: 14px 24px; border-radius: 7px; }
 .botao--bloco { display: block; width: 100%; padding: 12px; border-radius: 7px; margin-top: 24px; font-size: 15px; }
 .botao--bloco.botao--primario { padding: 13px; }
