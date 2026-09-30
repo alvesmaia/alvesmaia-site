@@ -202,7 +202,7 @@ h3 { font-size: 18px; font-weight: 800; letter-spacing: -0.01em; color: var(--in
   color: var(--muted);
   cursor: pointer;
 }
-.tema-btn:hover { color: var(--ink); border-color: var(--ink); }
+.tema-btn:hover { color: var(--ink); background: var(--rule-3); }
 .tema-btn svg { width: 17px; height: 17px; }
 /* Um ícone por tema, alternado por CSS — sem trocar src por script. */
 .tema-btn [data-icone="escuro"] { display: none; }
