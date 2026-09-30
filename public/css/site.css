@@ -196,7 +196,9 @@ h3 { font-size: 18px; font-weight: 800; letter-spacing: -0.01em; color: var(--in
   flex: none;
   display: grid;
   place-items: center;
-  border: 1px solid var(--rule-forte);
+  /* Sem borda: ícone solto, como no cabeçalho do ailair — com borda ele
+     parecia mais um botão de ação ao lado do Entrar. */
+  border: 0;
   border-radius: 6px;
   background: transparent;
   color: var(--muted);
